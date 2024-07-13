@@ -6,7 +6,6 @@ import { DatabaseModule } from './database/database.module';
 import { AuthController } from './user/auth/auth.controller';
 import { AuthService } from './user/auth/auth.service';
 import { UserModule } from './user/user.module';
-import { UserModule } from './user/user.module';
 
 @Module({
   imports: [ConfigModule.forRoot(), DatabaseModule, UserModule],
