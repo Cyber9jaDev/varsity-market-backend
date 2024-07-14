@@ -1,4 +1,11 @@
-import { IsEmail, IsNotEmpty, IsString, Matches, MinLength } from "class-validator";
+import { UserType } from "@prisma/client";
+import { IsEmail, isEnum, IsEnum, IsNotEmpty, IsString, Matches, MinLength } from "class-validator";
+
+// enum UserType {
+//   BUYER = "BUYER",
+//   SELLER = "SELLER",
+//   ADMIN = "ADMIN"
+// }
 
 export class SignUpDto{
   @IsString()
@@ -11,9 +18,12 @@ export class SignUpDto{
   @MinLength(5)
   @IsString()
   password: string;
-  
+
   @Matches(/^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, { message: "Phone must be a valid phone number" })
   phone: string;
+
+  @IsEnum(UserType)
+  userType: UserType;
 }
 
 export class SignInDto{
