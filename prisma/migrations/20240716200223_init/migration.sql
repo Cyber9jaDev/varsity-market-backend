@@ -2,10 +2,10 @@
 CREATE TYPE "UserType" AS ENUM ('BUYER', 'SELLER', 'ADMIN');
 
 -- CreateEnum
-CREATE TYPE "Category" AS ENUM ('ALL', 'PET', 'CAR');
+CREATE TYPE "CategoryType" AS ENUM ('ALL', 'PET', 'CAR');
 
 -- CreateEnum
-CREATE TYPE "Condition" AS ENUM ('NEW', 'USED', 'REFURBISHED');
+CREATE TYPE "ConditionType" AS ENUM ('NEW', 'USED', 'REFURBISHED');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -15,9 +15,9 @@ CREATE TABLE "User" (
     "password" VARCHAR(255) NOT NULL,
     "phone" TEXT NOT NULL,
     "userType" "UserType" NOT NULL,
+    "hasDisplayPicture" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "hasDisplayPicture" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("userId")
 );
@@ -35,16 +35,16 @@ CREATE TABLE "Picture" (
 -- CreateTable
 CREATE TABLE "Product" (
     "productId" TEXT NOT NULL,
-    "productName" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
     "description" TEXT NOT NULL,
     "location" TEXT NOT NULL,
-    "condition" "Condition" NOT NULL,
-    "category" "Category" NOT NULL,
+    "condition" "ConditionType" NOT NULL,
+    "category" "CategoryType" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "sellerId" TEXT NOT NULL,
-    "productInCartId" TEXT NOT NULL,
+    "productInCartId" TEXT,
 
     CONSTRAINT "Product_pkey" PRIMARY KEY ("productId")
 );
@@ -92,7 +92,7 @@ ALTER TABLE "Picture" ADD CONSTRAINT "Picture_userPicId_fkey" FOREIGN KEY ("user
 ALTER TABLE "Product" ADD CONSTRAINT "Product_sellerId_fkey" FOREIGN KEY ("sellerId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Product" ADD CONSTRAINT "Product_productInCartId_fkey" FOREIGN KEY ("productInCartId") REFERENCES "Cart"("cartId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Product" ADD CONSTRAINT "Product_productInCartId_fkey" FOREIGN KEY ("productInCartId") REFERENCES "Cart"("cartId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Image" ADD CONSTRAINT "Image_productImageId_fkey" FOREIGN KEY ("productImageId") REFERENCES "Product"("productId") ON DELETE RESTRICT ON UPDATE CASCADE;

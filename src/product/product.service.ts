@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { Category, Condition } from '@prisma/client';
+import { CategoryType, ConditionType } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 
 interface ProductParam{
-  productName: string;
+  name: string;
   description: string;
   price: number;
-  category: Category
-  condition: Condition
+  category: CategoryType;
+  condition: ConditionType,
+  location: string,
+  sellerId: string
 }
 
 @Injectable()
@@ -19,9 +21,27 @@ export class ProductService {
     return products;
   }
 
-  async createProduct(body: ProductParam){
-    const newProduct = await this.databaseService.product.create({
-      data: { ...body }
-    })
+  async createProduct({ name, description, price, category, condition, location, sellerId }: ProductParam){
+  // async createProduct(body: ProductParam){
+    // const newProduct = await this.databaseService.product.create({
+    //   data: { 
+    //     name: name,
+    //     description,
+    //     price,
+    //     category,
+    //     condition,
+    //     location,
+    //     sellerId
+    //   }
+    // })
+    // return newProduct
+    console.log(name);
+    console.log(description);
+    console.log(price);
+    console.log(category);
+    console.log(condition);
+    console.log(location);
+    console.log(sellerId);
+    return name
   }
 }

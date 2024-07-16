@@ -13,47 +13,35 @@ model User {
   name                String  @db.VarChar(255)
   password            String  @db.VarChar(255)
   phone               String  @unique
-
   userType            UserType
-
+  hasDisplayPicture   Boolean @default(false)
   createdAt           DateTime  @default(now())
   updatedAt           DateTime @updatedAt
-
-  hasDisplayPicture   Boolean @default(false)
-
   displayPicture      Picture?
-
   Products            Product[]
 }
 
 model Picture{
   pictureId              String  @id @default(uuid())
-
   publicId               String?
   url                    String?
-
   user                   User    @relation(fields: [userPicId], references: [userId])
   userPicId              String  @unique              
 }
 
 model Product{
   productId              String  @id @default(uuid())
-  productName            String
+  name                   String
   price                  Float
   description            String
   location               String
-
   condition              ConditionType
   category               CategoryType
-
   createdAt              DateTime  @default(now())
-  updatedAt              DateTime @updatedAt  
-
+  updatedAt              DateTime  @updatedAt  
   seller                 User    @relation(fields: [sellerId], references: [userId])
   sellerId               String
-
   images                 Image[]
-  
   cart                   Cart?    @relation(fields: [productInCartId], references: [cartId])
   productInCartId        String? 
 }

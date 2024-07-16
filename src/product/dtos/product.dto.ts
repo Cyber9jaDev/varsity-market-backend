@@ -1,9 +1,11 @@
+import { CategoryType, ConditionType } from "@prisma/client";
 
-export class createProductDto{
-  productName: string;
+export class CreateProductDto{
+  name: string;
   description: string;
   location: string;
-  price: Float32Array;
-  condition: Condition;
-  category: Category;
+  price: number;
+  condition: ConditionType;
+  category: CategoryType;
+  sellerId: string
 }
