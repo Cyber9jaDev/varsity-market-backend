@@ -61,7 +61,9 @@ export class AuthService {
     if(!user){
       return new BadRequestException('An error has occurred')
     }
-    return user
+
+    const token = this.generateJWT(user.userId, user.name)
+    return { ...user, token }
   }
 
   async signIn({ email, password }: Partial<authParams>) {
@@ -79,11 +81,9 @@ export class AuthService {
       throw new BadRequestException('Invalid credentials')
     }
 
-    const token = jwt.sign({ userId: user.userId }, process.env.TOKEN_SECRET, {
-      expiresIn: '7d'
-    });
+    const token = this.generateJWT(user.userId, user.name);
 
-    return { user, token }
+    return { ...user, token }
   }
 
   private generateJWT(userId: string, name: string){

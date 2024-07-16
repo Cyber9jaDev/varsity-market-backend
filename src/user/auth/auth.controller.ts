@@ -36,8 +36,8 @@ export class AuthController {
   }
 
   @Post('/signin')
-  async signin (){
-    return []
+  signin (@Body() body: SignInDto){
+    return this.authService.signIn(body);
   }
 
   // Only admin can generate a registration key
