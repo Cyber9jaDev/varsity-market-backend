@@ -35,11 +35,16 @@ export class AuthController {
     return this.authService.signUp({ name, email, password, phone, userType });
   }
 
+  @Post('/signin')
+  async signin (){
+    return []
+  }
+
   // Only admin can generate a registration key
   @Post('/registration_key')
   generateRegistrationKey(
     @Body() { email, userType }: RegistrationKeyDto
-  ){
+  ) {
     return this.authService.generateRegistrationKey(email, userType)
   }
 }

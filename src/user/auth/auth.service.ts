@@ -11,6 +11,7 @@ interface signUpParams {
   phone: string;
   userType: UserType
 }
+
 interface authParams {
   name: string;
   email: string;
@@ -62,6 +63,38 @@ export class AuthService {
     }
     return user
   }
+
+  async signIn({ email, password }: Partial<authParams>) {
+    const user = await this.databaseService.user.findUnique({
+      where: { email }
+    });
+
+    if(!user) {
+      throw new BadRequestException('Invalid credentials');
+    }
+
+    const isValidPassword = await bcrypt.compare(password, user.password);
+
+    if(!isValidPassword) {
+      throw new BadRequestException('Invalid credentials')
+    }
+
+    const token = jwt.sign({ userId: user.userId }, process.env.TOKEN_SECRET, {
+      expiresIn: '7d'
+    });
+
+    return { user, token }
+  }
+
+  private generateJWT(userId: string, name: string){
+    return jwt.sign(
+      { userId, name },  // Use the name and userId to sign the token
+      process.env.JWT_KEY, 
+      { expiresIn: process.env.JWT_LIFETIME }
+    );
+  }
+
+
 
 
   // To generate a registration key
