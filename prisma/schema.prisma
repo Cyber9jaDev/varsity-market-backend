@@ -43,8 +43,8 @@ model Product{
   description            String
   location               String
 
-  condition              Condition
-  category               Category
+  condition              ConditionType
+  category               CategoryType
 
   createdAt              DateTime  @default(now())
   updatedAt              DateTime @updatedAt  
@@ -54,8 +54,8 @@ model Product{
 
   images                 Image[]
   
-  cart                   Cart    @relation(fields: [productInCartId], references: [cartId])
-  productInCartId        String 
+  cart                   Cart?    @relation(fields: [productInCartId], references: [cartId])
+  productInCartId        String? 
 }
 
 model Cart{
@@ -65,7 +65,7 @@ model Cart{
 
 model Image{
   imageId                String  @id @default(uuid())
-  imageUrl              String
+  imageUrl               String
   
   product                Product @relation(fields: [productImageId], references: [productId])
   productImageId         String     
@@ -88,14 +88,15 @@ enum UserType {
 }
 
 
-enum Category {
+enum CategoryType {
   ALL
   PET
   CAR
 }
 
-enum Condition {
+enum ConditionType {
   NEW 
   USED
   REFURBISHED
 }
+
