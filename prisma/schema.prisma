@@ -56,7 +56,6 @@ model Product{
   
   cart                   Cart    @relation(fields: [productInCartId], references: [cartId])
   productInCartId        String 
-
 }
 
 model Cart{
