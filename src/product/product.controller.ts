@@ -4,7 +4,6 @@ import { CreateProductDto } from './dtos/product.dto';
 
 @Controller('product')
 export class ProductController {
-
   constructor(private readonly productService: ProductService) {}
 
   @Get()
@@ -13,8 +12,8 @@ export class ProductController {
   }
 
   @Post()
-  async createProduct(@Body() body: CreateProductDto){
-    console.log(body);
-    return this.productService.createProduct(body);
+  createProduct( @Body() createproductDto: CreateProductDto ) {
+    return this.productService.createProduct(createproductDto)
+    
   }
 }
