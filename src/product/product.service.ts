@@ -2,16 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { CategoryType, ConditionType } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 import { ProductResponseDto } from './dtos/product.dto';
+import { createProductParams } from './interface/product.interface';
 
-interface ProductParam{
-  name: string;
-  description: string;
-  price: number;
-  category: CategoryType;
-  condition: ConditionType,
-  location: string,
-  sellerId: string
-}
+
 
 @Injectable()
 export class ProductService {
@@ -33,7 +26,7 @@ export class ProductService {
     return products;
   }
 
-  async createProduct({ name, description, price, category, condition, location, sellerId }: ProductParam){
+  async createProduct({ name, description, price, category, condition, location, sellerId, images }: createProductParams){
     const product = await this.databaseService.product.create({
       data: { 
         name,
@@ -55,6 +48,15 @@ export class ProductService {
         sellerId: true
       }
     });
+
+    await this.databaseService.image.createMany({
+      data: images.map((image) => {
+        return {
+          ...image,
+          productImageId: product.productId
+        }
+      })
+    })
     return product;
   }
 }
