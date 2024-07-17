@@ -18,7 +18,18 @@ export class ProductService {
   constructor(private readonly databaseService: DatabaseService){}
 
   async getAllProducts(): Promise<ProductResponseDto[]>{
-    const products = await this.databaseService.product.findMany({});
+    const products = await this.databaseService.product.findMany({
+      select: {
+        productId: true,
+        name: true,
+        description: true,
+        price: true,
+        category: true,
+        condition: true,
+        location: true,
+        sellerId: true
+      }
+    });
     return products;
   }
 

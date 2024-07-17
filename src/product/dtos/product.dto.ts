@@ -41,8 +41,7 @@ export class ProductResponseDto {
   condition: ConditionType;
   category: CategoryType;
   sellerId: string;
-
-  @Exclude()  updatedAt: Date
-  @Exclude()  createdAt: Date
-  @Exclude()  productInCartId: string
+  // updatedAt: Date
+  // createdAt: Date
+  // productInCartId: string
 }
