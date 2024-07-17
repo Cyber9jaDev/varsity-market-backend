@@ -26,37 +26,38 @@ export class ProductService {
     return products;
   }
 
-  async createProduct({ name, description, price, category, condition, location, sellerId, images }: createProductParams){
-    const product = await this.databaseService.product.create({
-      data: { 
-        name,
-        description,
-        price,
-        category,
-        condition,
-        location,
-        sellerId
-      }, 
-      select: {
-        productId: true,
-        name: true,
-        description: true,
-        price: true,
-        category: true,
-        condition: true,
-        location: true,
-        sellerId: true
-      }
-    });
-
-    await this.databaseService.image.createMany({
-      data: images.map((image) => {
-        return {
+  async createProduct({ name, description, price, category, condition, location, sellerId, images }: createProductParams) {
+    return await this.databaseService.$transaction(async (prisma) => {
+      const product = await prisma.product.create({
+        data: {
+          name,
+          description,
+          price,
+          category,
+          condition,
+          location,
+          sellerId
+        },
+        select: {
+          productId: true,
+          name: true,
+          description: true,
+          price: true,
+          category: true,
+          condition: true,
+          location: true,
+          sellerId: true,
+        }
+      });
+  
+      await prisma.image.createMany({
+        data: images.map((image) => ({
           ...image,
           productImageId: product.productId
-        }
-      })
-    })
-    return product;
+        }))
+      });
+  
+      return product;
+    });
   }
 }
