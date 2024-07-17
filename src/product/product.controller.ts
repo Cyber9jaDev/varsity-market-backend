@@ -12,7 +12,7 @@ export class ProductController {
   }
 
   @Post()
-  createProduct( @Body() createproductDto: CreateProductDto ) {
+  createProduct( @Body() createproductDto: CreateProductDto ): Promise<ProductResponseDto> {
     return this.productService.createProduct(createproductDto)
   }
 }

@@ -4,13 +4,11 @@ import { DatabaseService } from 'src/database/database.service';
 import { ProductResponseDto } from './dtos/product.dto';
 import { createProductParams } from './interface/product.interface';
 
-
-
 @Injectable()
 export class ProductService {
-  constructor(private readonly databaseService: DatabaseService){}
+  constructor(private readonly databaseService: DatabaseService) {}
 
-  async getAllProducts(): Promise<ProductResponseDto[]>{
+  async getAllProducts(): Promise<ProductResponseDto[]> {
     const products = await this.databaseService.product.findMany({
       select: {
         productId: true,
@@ -20,13 +18,24 @@ export class ProductService {
         category: true,
         condition: true,
         location: true,
-        sellerId: true
-      }
+        sellerId: true,
+      },
     });
     return products;
   }
 
-  async createProduct({ name, description, price, category, condition, location, sellerId, images }: createProductParams) {
+  // Be careful with the use of transaction in case it fails
+  // check the global config settings or documentation
+  async createProduct({
+    name,
+    description,
+    price,
+    category,
+    condition,
+    location,
+    sellerId,
+    images,
+  }: createProductParams): Promise<ProductResponseDto> {
     return await this.databaseService.$transaction(async (prisma) => {
       const product = await prisma.product.create({
         data: {
@@ -36,7 +45,7 @@ export class ProductService {
           category,
           condition,
           location,
-          sellerId
+          sellerId,
         },
         select: {
           productId: true,
@@ -47,17 +56,16 @@ export class ProductService {
           condition: true,
           location: true,
           sellerId: true,
-        }
+        },
       });
-  
+
       await prisma.image.createMany({
         data: images.map((image) => ({
           ...image,
-          productImageId: product.productId
-        }))
+          productImageId: product.productId,
+        })),
       });
-  
-      return product;
+      return new ProductResponseDto(product);
     });
   }
 }
