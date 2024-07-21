@@ -34,10 +34,6 @@ export class CreateProductDto {
   @IsEnum(CategoryType)
   category: CategoryType;
 
-  @IsNotEmpty()
-  @IsString()
-  sellerId: string;
-
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => Image)

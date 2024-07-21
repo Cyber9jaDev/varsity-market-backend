@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CategoryType, ConditionType } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 import { ProductResponseDto } from './dtos/product.dto';
 import { createProductParams } from './interface/product.interface';
@@ -26,16 +25,15 @@ export class ProductService {
 
   // Be careful with the use of transaction in case it fails
   // check the global config settings or documentation
-  async createProduct({
-    name,
+  async createProduct(sellerId: string, {
+    name, 
     description,
     price,
     category,
     condition,
     location,
-    sellerId,
     images,
-  }: createProductParams): Promise<ProductResponseDto> {
+  }: createProductParams ): Promise<ProductResponseDto> {
     return await this.databaseService.$transaction(async (prisma) => {
       const product = await prisma.product.create({
         data: {

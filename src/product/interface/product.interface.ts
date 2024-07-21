@@ -7,6 +7,6 @@ export interface createProductParams{
   category: CategoryType;
   condition: ConditionType,
   location: string,
-  sellerId: string
-  images: { imageUrl: string }[];
+  images: { imageUrl: string }[]; 
 }
+
