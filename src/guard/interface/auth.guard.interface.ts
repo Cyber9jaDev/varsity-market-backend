@@ -1,6 +1,6 @@
 
 
-interface JWTPayload {
+export interface JWTPayload {
   userId: string;
   name: string;
   iat: number;

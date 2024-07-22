@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto, ProductResponseDto } from './dtos/product.dto';
 import { User } from 'src/user/decorators/user.decorator';
@@ -15,9 +15,16 @@ export class ProductController {
     return this.productService.getAllProducts();
   }
 
-  @Post() 
+  @Get('/:productId')
+  getSingleProduct(
+    @Param('productId') productId: string
+  ): Promise<ProductResponseDto> {
+    return this.productService.getSingleProduct(productId);
+  }
+
+  @Post()
   @Roles(UserType.SELLER, UserType.BUYER)
-  createProduct(   
+  createProduct(
     @Body() createProductDto: CreateProductDto,
     @User() user: UserEntity, // This user details will come from the interceptor
   ): Promise<ProductResponseDto> {

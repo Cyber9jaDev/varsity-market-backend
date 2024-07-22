@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { ProductResponseDto } from './dtos/product.dto';
 import { createProductParams } from './interface/product.interface';
@@ -21,6 +21,18 @@ export class ProductService {
       },
     });
     return products;
+  }
+
+  async getSingleProduct(productId: string): Promise<ProductResponseDto>{
+    const product = await this.databaseService.product.findUnique({
+      where: { productId }
+    });
+
+    
+    if(!product) throw new NotFoundException()
+      console.log(product);
+
+    return product
   }
 
   // Be careful with the use of transaction in case it fails
