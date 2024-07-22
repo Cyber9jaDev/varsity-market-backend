@@ -7,8 +7,9 @@ import { AuthController } from './user/auth/auth.controller';
 import { AuthService } from './user/auth/auth.service';
 import { UserModule } from './user/user.module';
 import { ProductModule } from './product/product.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { UserInterceptor } from './user/interceptor/user.interceptor';
+import { AuthGuard } from './guard/auth.guard';
 
 @Module({
   imports: [ConfigModule.forRoot(), DatabaseModule, UserModule, ProductModule],
@@ -20,6 +21,10 @@ import { UserInterceptor } from './user/interceptor/user.interceptor';
     {
       provide: APP_INTERCEPTOR,
       useClass: UserInterceptor
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard
     }
   ],
 })

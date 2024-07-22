@@ -3,6 +3,8 @@ import { ProductService } from './product.service';
 import { CreateProductDto, ProductResponseDto } from './dtos/product.dto';
 import { User } from 'src/user/decorators/user.decorator';
 import { UserEntity } from 'src/user/interface/user.interface';
+import { UserType } from '@prisma/client';
+import { Roles } from 'src/decorator/roles.decorator';
 
 @Controller('product')
 export class ProductController {
@@ -13,8 +15,9 @@ export class ProductController {
     return this.productService.getAllProducts();
   }
 
-  @Post()
-  createProduct(
+  @Post() 
+  @Roles(UserType.SELLER, UserType.BUYER)
+  createProduct(   
     @Body() createProductDto: CreateProductDto,
     @User() user: UserEntity, // This user details will come from the interceptor
   ): Promise<ProductResponseDto> {
