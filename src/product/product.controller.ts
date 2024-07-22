@@ -23,11 +23,11 @@ export class ProductController {
   }
 
   @Post()
-  @Roles(UserType.SELLER, UserType.BUYER)
-  createProduct(
+  @Roles(UserType.SELLER)
+  addProduct(
     @Body() createProductDto: CreateProductDto,
     @User() user: UserEntity, // This user details will come from the interceptor
   ): Promise<ProductResponseDto> {
-    return this.productService.createProduct(user?.userId, createProductDto);
+    return this.productService.addProduct(user?.userId, createProductDto);
   }
 }

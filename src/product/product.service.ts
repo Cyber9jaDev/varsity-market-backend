@@ -27,7 +27,6 @@ export class ProductService {
     const product = await this.databaseService.product.findUnique({
       where: { productId }
     });
-
     
     if(!product) throw new NotFoundException()
       console.log(product);
@@ -37,7 +36,7 @@ export class ProductService {
 
   // Be careful with the use of transaction in case it fails
   // check the global config settings or documentation
-  async createProduct(sellerId: string, {
+  async addProduct(sellerId: string, {
     name, 
     description,
     price,
