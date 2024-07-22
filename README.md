@@ -1,73 +1,101 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
+## Authentication
 
 ```bash
-$ npm install
-```
+  $POST /auth/register 
+  - Register a new user
 
-## Running the app
+  $POST /auth/login
+  - User login
 
-```bash
-# development
-$ npm run start
+  $POST /auth/forgot-password
+  - Initiate forgot password process
 
-# watch mode
-$ npm run start:dev
+  $POST /auth/reset-password
+  - Reset password
+ ```
 
-# production mode
-$ npm run start:prod
-```
-
-## Test
+## Products
 
 ```bash
-# unit tests
-$ npm run test
+  $GET /products
+  - Get a list of all products
 
-# e2e tests
-$ npm run test:e2e
+  $GET /products/:id
+  - Get details of a specific product
 
-# test coverage
-$ npm run test:cov
+  $POST /products
+  - Create a new product (authenticated)
+
+  $PUT /products/:id
+  - Update a product (authenticated, owner)
+
+  $DELETE /products/:id
+  - Delete a product (authenticated, owner)
+
+  $GET /products/category/:category
+  - Get products by category
+
+  $GET /products/seller/:sellerId
+  - Get products by seller
+ ```
+
+## Messages
+
+```bash
+  $GET /messages
+  - $Get all messages for the authenticated user
+
+  $POST /messages
+  - Send a new message (authenticated)
+
+  $GET /messages/:id
+  - Get details of a specific message (authenticated)
 ```
+## Users
 
-## Support
+```bash
+  $GET /users/:id
+  - Get user profile (authenticated)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+  $PUT /users/:id
+  - Update user profile (authenticated)
 
-## Stay in touch
+  $GET /users/:id/products
+  - Get products listed by a user
+```
+## Orders
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+  $GET /orders
+  - Get all orders for the authenticated user
 
-## License
+  $POST /orders
+  - Create a new order (authenticated)
 
-Nest is [MIT licensed](LICENSE).
+  $GET /orders/:id
+  - Get details of a specific order (authenticated)
+
+  $PUT /orders/:id
+  - Update order status (authenticated, seller)
+```
+## Reviews
+
+```bash
+  $GET /reviews
+  - Get all reviews for a product
+
+  $POST /reviews
+  - Create a new review (authenticated)
+
+  $PUT /reviews/:id
+  - Update a review (authenticated, owner)
+
+  $DELETE /reviews/:id
+  - Delete a review (authenticated, owner)
+```
+## Categories
+
+```bash
+  $GET /categories
+  - Get a list of all product categories
+ ```

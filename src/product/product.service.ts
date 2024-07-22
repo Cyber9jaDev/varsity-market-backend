@@ -62,7 +62,7 @@ export class ProductService {
           ...image,
           productImageId: product.productId,
         })),
-      });
+      }); 
       return new ProductResponseDto(product);
     });
   }

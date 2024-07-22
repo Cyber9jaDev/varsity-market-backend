@@ -4,12 +4,6 @@ import { UserType } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 import * as jwt from 'jsonwebtoken';
 
-interface JWTPayload {
-  userId: string;
-  name: string;
-  iat: number;
-  exp: number;
-}
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -43,7 +37,7 @@ export class AuthGuard implements CanActivate {
 
       if (!user) return false;
 
-      if (requiredRoles.includes(user.userType)) return true;
+      if (requiredRoles.includes(user.userType)) return true;  
 
       return true;
     } catch (error) {
