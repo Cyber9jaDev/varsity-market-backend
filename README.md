@@ -32,9 +32,6 @@
   $DELETE /products/:id
   - Delete a product (authenticated, owner)
 
-  $GET /products/category/:category
-  - Get products by category
-
   $GET /products/seller/:sellerId
   - Get products by seller
  ```

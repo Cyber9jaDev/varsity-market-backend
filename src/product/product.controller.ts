@@ -55,7 +55,9 @@ export class ProductController {
     const product = await this.productService.findUserByProductId(productId);
 
     if (product.sellerId !== user.userId) {
-      throw new UnauthorizedException("You are not allowed to update this product.");
+      throw new UnauthorizedException(
+        'You are not allowed to update this product.',
+      );
     }
 
     return this.productService.updateProduct(productId, updateProductDto);
@@ -63,7 +65,18 @@ export class ProductController {
 
   @Delete('/:productId')
   @Roles(UserType.SELLER)
-  deleteProduct(@Param('productId') productId: string) {
-    return this.productService.deleteProduct(productId)
+  async deleteProduct(
+    @Param('productId') productId: string,
+    @User() user: UserEntity,
+  ) {
+    const product = await this.productService.findUserByProductId(productId);
+
+    if (product.sellerId !== user.userId) {
+      throw new UnauthorizedException(
+        'You are not allowed to update this product.',
+      );
+    }
+
+    return this.productService.deleteProduct(productId);
   }
 }
