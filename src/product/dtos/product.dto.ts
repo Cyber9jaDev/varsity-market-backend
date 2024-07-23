@@ -75,7 +75,7 @@ export class UpdateProductDto {
   // @IsArray()
   // @ValidateNested({ each: true })
   // @Type(() => Image)
-  // images?: Image[]
+  // images?: Image[] 
 }
 
 export class ProductResponseDto {

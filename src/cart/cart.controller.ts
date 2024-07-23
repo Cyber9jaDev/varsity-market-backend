@@ -10,7 +10,10 @@ export class CartController {
 
   @Roles(UserType.BUYER)
   @Post()
-  addItemToCart(@Body() addItemToCartDto: AddItemToCartDto) {
+  addItemToCart(
+    @Body() addItemToCartDto: AddItemToCartDto
+  ) {
+    
     return this.cartService.addItemToCart();
     
   }

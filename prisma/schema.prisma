@@ -56,10 +56,11 @@ model Product{
 
 model Cart{
   id                      String  @id @default(uuid())
+  
   cartItems               CartItem[]
 
-  user                    User @relation(fields: [cartUserId], references: [userId])
-  cartUserId              String @unique
+  buyer                   User @relation(fields: [buyerId], references: [userId])
+  buyerId                 String @unique
 
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt  
@@ -68,6 +69,7 @@ model Cart{
 
 model CartItem{
   id                    String @id @default(uuid())
+
   price                 Decimal
   quantity              Int
 
@@ -79,7 +81,6 @@ model CartItem{
 
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
-
 }
 
 model Image{
