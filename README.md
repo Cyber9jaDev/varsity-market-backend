@@ -48,6 +48,7 @@
   $GET /messages/:id
   - Get details of a specific message (authenticated)
 ```
+
 ## Users
 
 ```bash
@@ -60,6 +61,7 @@
   $GET /users/:id/products
   - Get products listed by a user
 ```
+
 ## Cart
 
 ```bash
@@ -69,11 +71,11 @@
   $POST /cart/item
   - Create a new order (authenticated)
 
-  $GET /orders/:id
+  $GET /cart/:id
   - Get details of a specific order (authenticated)
 
-  $PUT /orders/:id
-  - Update order status (authenticated, seller)
+  $PUT /cart/:id
+  - Update order status (authenticated, seller);
 ```
 
 

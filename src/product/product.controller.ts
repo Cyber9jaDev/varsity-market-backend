@@ -31,14 +31,14 @@ export class ProductController {
   @Get("/:sellerId")
   getProductsBySeller(): Promise<ProductResponseDto[]> {
     return this.productService.getAllProducts();
-  }
+  } 
 
   @Get('/:productId')
   getSingleProduct(
     @Param('productId') productId: string,
   ): Promise<ProductResponseDto> {
     return this.productService.getSingleProduct(productId);
-  }
+  } 
 
   @Post()
   @Roles(UserType.SELLER)
