@@ -1,7 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { ProductResponseDto } from './dtos/product.dto';
-import { createProductParams } from './interface/product.interface';
+import {
+  createProductParams,
+  UpdateProductInterface,
+} from './interface/product.interface';
 
 @Injectable()
 export class ProductService {
@@ -23,28 +26,31 @@ export class ProductService {
     return products;
   }
 
-  async getSingleProduct(productId: string): Promise<ProductResponseDto>{
+  async getSingleProduct(productId: string): Promise<ProductResponseDto> {
     const product = await this.databaseService.product.findUnique({
-      where: { productId }
+      where: { productId },
     });
-    
-    if(!product) throw new NotFoundException()
-      console.log(product);
 
-    return product
+    if (!product) throw new NotFoundException();
+    console.log(product);
+
+    return product;
   }
 
   // Be careful with the use of transaction in case it fails
   // check the global config settings or documentation
-  async addProduct(sellerId: string, {
-    name, 
-    description,
-    price,
-    category,
-    condition,
-    location,
-    images,
-  }: createProductParams ): Promise<ProductResponseDto> {
+  async addProduct(
+    sellerId: string,
+    {
+      name,
+      description,
+      price,
+      category,
+      condition,
+      location,
+      images,
+    }: createProductParams,
+  ): Promise<ProductResponseDto> {
     return await this.databaseService.$transaction(async (prisma) => {
       const product = await prisma.product.create({
         data: {
@@ -73,8 +79,39 @@ export class ProductService {
           ...image,
           productImageId: product.productId,
         })),
-      }); 
+      });
       return new ProductResponseDto(product);
     });
+  }
+
+  async updateProduct(
+    productId: string,
+    updateProductParams: UpdateProductInterface
+  ) {
+
+    const product = await this.databaseService.product.update({
+      where: { productId },
+      data: {...updateProductParams },
+    });
+
+    if(!product) throw new BadRequestException()
+
+    return product;
+  }
+
+  async findUserByProductId(productId: string) {
+    const product = await this.databaseService.product.findUnique({
+      where: { productId },
+      select: {
+        sellerId: true,
+        // seller: {
+        //   select: { userId: true }
+        // },
+      },
+    });
+
+    if (!product) throw new NotFoundException();
+
+    return product;
   }
 }

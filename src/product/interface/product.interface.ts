@@ -10,3 +10,12 @@ export interface createProductParams{
   images: { imageUrl: string }[]; 
 }
 
+
+export interface UpdateProductInterface{
+  name?: string;
+  description?: string;
+  price?: number;
+  category?: CategoryType;
+  condition?: ConditionType,
+  location?: string,
+}
