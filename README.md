@@ -111,3 +111,28 @@
   $GET /categories
   - Get a list of all product categories
  ```
+
+
+ model Payment {
+  id                  String   @id @default(uuid())
+  amount              Float
+  currency            String
+  txRef               String   @unique
+  flwRef              String   @unique
+  status              PaymentStatus
+  paymentMethod       String
+  user                User     @relation(fields: [userId], references: [userId])
+  userId              String
+  cart                Cart     @relation(fields: [cartId], references: [id])
+  cartId              String   @unique
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([txRef, flwRef])
+}
+
+enum PaymentStatus {
+  SUCCESSFUL
+  FAILED
+  PENDING
+}

@@ -1,4 +1,4 @@
-import { CategoryType, ConditionType } from "@prisma/client";
+import { CategoryType, ConditionType, Location } from "@prisma/client";
 import { Exclude, Type } from "class-transformer";
 import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
 
@@ -8,7 +8,7 @@ export class Image {
   @IsString()
   imageUrl: string;
 }
- 
+
 export class CreateProductDto {
   @IsNotEmpty()
   @IsString()
@@ -19,8 +19,8 @@ export class CreateProductDto {
   description: string;
 
   @IsNotEmpty()
-  @IsString()
-  location: string;
+  @IsEnum(Location)
+  location: Location;
 
   @IsNotEmpty()
   @IsNumber()
@@ -53,8 +53,8 @@ export class UpdateProductDto {
 
   @IsOptional()
   @IsNotEmpty()
-  @IsString()
-  location?: string;
+  @IsEnum(Location)
+  location?: Location;
 
   @IsOptional()
   @IsNotEmpty()
@@ -82,7 +82,7 @@ export class ProductResponseDto {
   productId: string;
   name: string;
   description: string;
-  location: string;
+  location: Location;
   price: number;
   condition: ConditionType;
   category: CategoryType;

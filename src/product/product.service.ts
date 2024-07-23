@@ -41,8 +41,6 @@ export class ProductService {
     return product;
   }
 
-  // Be careful with the use of transaction in case it fails
-  // check the global config settings or documentation
   async addProduct(
     sellerId: string,
     {

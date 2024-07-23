@@ -1,4 +1,4 @@
-import { CategoryType, ConditionType } from "@prisma/client";
+import { CategoryType, ConditionType, Location } from "@prisma/client";
 
 export interface createProductParams{
   name: string;
@@ -6,10 +6,9 @@ export interface createProductParams{
   price: number;
   category: CategoryType;
   condition: ConditionType,
-  location: string,
+  location: Location,
   images: { imageUrl: string }[]; 
 }
-
 
 export interface UpdateProductInterface{
   name?: string;
@@ -17,5 +16,5 @@ export interface UpdateProductInterface{
   price?: number;
   category?: CategoryType;
   condition?: ConditionType,
-  location?: string,
+  location?: Location,
 }
