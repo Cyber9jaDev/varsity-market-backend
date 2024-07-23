@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { ProductResponseDto } from './dtos/product.dto';
 import {
@@ -86,17 +90,33 @@ export class ProductService {
 
   async updateProduct(
     productId: string,
-    updateProductParams: UpdateProductInterface
+    updateProductParams: UpdateProductInterface,
   ) {
-
-    const product = await this.databaseService.product.update({
+    const updatedProduct = await this.databaseService.product.update({
       where: { productId },
-      data: {...updateProductParams },
+      data: { ...updateProductParams },
     });
 
-    if(!product) throw new BadRequestException()
+    if (!updatedProduct) throw new BadRequestException();
 
-    return product;
+    return updatedProduct ;
+  }
+
+  async deleteProduct(productId: string) {
+    // To delete a product, we need to delete all the images associated with it first
+    await this.databaseService.image.deleteMany({
+      where: {
+        product: { productId },
+      },
+    });
+
+    const deletedProduct = await this.databaseService.product.delete({
+      where: { productId },
+    });
+
+    if (!deletedProduct) throw new BadRequestException();
+
+    return deletedProduct;
   }
 
   async findUserByProductId(productId: string) {
