@@ -8,9 +8,10 @@ import { ProductModule } from './product/product.module';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { UserInterceptor } from './user/interceptor/user.interceptor';
 import { AuthGuard } from './guard/auth.guard';
+import { CartModule } from './cart/cart.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), DatabaseModule, UserModule, ProductModule],
+  imports: [ConfigModule.forRoot(), DatabaseModule, UserModule, ProductModule, CartModule],
   controllers: [AppController],
   providers: [
     AppService, 

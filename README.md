@@ -60,7 +60,22 @@
   $GET /users/:id/products
   - Get products listed by a user
 ```
-## Orders
+## Cart
+
+```bash
+  $GET /cart
+  - Get all cart items for the user including the list of items, quantities, and total price.
+
+  $POST /cart/item
+  - Create a new order (authenticated)
+
+  $GET /orders/:id
+  - Get details of a specific order (authenticated)
+
+  $PUT /orders/:id
+  - Update order status (authenticated, seller)
+```
+
 
 ```bash
   $GET /orders

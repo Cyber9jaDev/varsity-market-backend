@@ -18,7 +18,6 @@ import { User } from 'src/user/decorators/user.decorator';
 import { UserEntity } from 'src/user/interface/user.interface';
 import { UserType } from '@prisma/client';
 import { Roles } from 'src/decorator/roles.decorator';
-import { createProductParams } from './interface/product.interface';
 
 @Controller('product')
 export class ProductController {
@@ -26,6 +25,11 @@ export class ProductController {
 
   @Get()
   getAllProducts(): Promise<ProductResponseDto[]> {
+    return this.productService.getAllProducts();
+  }
+
+  @Get("/:sellerId")
+  getProductsBySeller(): Promise<ProductResponseDto[]> {
     return this.productService.getAllProducts();
   }
 

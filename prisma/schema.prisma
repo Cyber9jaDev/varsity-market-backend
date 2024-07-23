@@ -17,8 +17,12 @@ model User {
   hasDisplayPicture   Boolean @default(false)
   createdAt           DateTime  @default(now())
   updatedAt           DateTime @updatedAt
+
   displayPicture      Picture?
-  Products            Product[]
+
+  products            Product[]
+
+  cart                Cart?
 }
 
 model Picture{
@@ -39,16 +43,37 @@ model Product{
   category               CategoryType
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt  
+
   seller                 User    @relation(fields: [sellerId], references: [userId])
   sellerId               String
+
   images                 Image[]
-  cart                   Cart?    @relation(fields: [productInCartId], references: [cartId])
-  productInCartId        String? 
+
+  cartItem               CartItem?
 }
 
 model Cart{
-  cartId                 String  @id @default(uuid())
-  products               Product[]
+  id                      String  @id @default(uuid())
+  cartItems               CartItem[]
+
+  user                    User @relation(fields: [cartUserId], references: [userId])
+  cartUserId              String @unique
+
+}
+
+model CartItem{
+  id                    String @id @default(uuid())
+  price                 Decimal
+  quantity              Int
+
+  product               Product @relation(fields: [productInCartId], references: [productId])
+  productInCartId       String  @unique
+
+  cart                  Cart  @relation(fields: [cartId], references: [id])
+  cartId                String
+
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 }
 
 model Image{
@@ -74,7 +99,6 @@ enum UserType {
   SELLER
   ADMIN
 }
-
 
 enum CategoryType {
   ALL
