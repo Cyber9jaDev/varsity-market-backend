@@ -11,54 +11,64 @@ export class CartService {
     buyerId: string,
     { quantity }: AddItemToCartParams,
   ) {
-    
-    // Find the user cart
-    const existingUserCart = await this.databaseService.cart.findUnique({
-      where: { buyerId },
-      include: { cartItems: true }
-    });
-
-    console.log(existingUserCart);
-
-    if (!existingUserCart) {
-      // create a new cart
-      await this.databaseService.cart.create({
-        // data: { buyerId },
-        data: { 
-          buyer: {
-            connect: { id: buyerId }
-          }
-        },
+    try {
+      // Find the user cart
+      const cart = await this.databaseService.cart.findUnique({
+        where: { buyerId },
+        include: { cartItems: true },
       });
-    }
 
-    // Check if the product is already in the cart
-    const existingCartItem = existingUserCart.cartItems.find( item => item.productId === productId)
-
-    if(existingCartItem) {
-      // Update the cart Item ( Quantity and the likes )
-      await this.databaseService.cartItem.update({
-        where: {
-          id: existingCartItem.id
-        },
-        data: {
-          quantity: existingCartItem.quantity
-        }
-      });
-    }
-
-    const newCartItem = await this.databaseService.cartItem.create({
-      data: {
-        quantity,
-        product: {
-          connect: { id: productId }
-        },
-        cart: {
-          connect: {
-            buyerId
-          }
-        }
+      if (!cart) {
+        // create a new cart
+        await this.databaseService.cart.create({
+          data: {
+            buyer: {
+              connect: { id: buyerId }
+            }
+          },
+          include: { cartItems: true }
+        });
       }
-    });
+
+      // Check if the product is already in the cart
+      const existingCartItem = await this.databaseService.cartItem.findFirst({
+        where: { 
+          cartId: cart.id,
+          productId,
+        },
+      });
+
+      if(existingCartItem) {
+        console.log(existingCartItem);
+        // Update the cart Item ( Quantity and the likes )
+        await this.databaseService.cartItem.update({
+          where: { id: existingCartItem.id },
+          data: { quantity: existingCartItem.quantity + quantity }
+        });
+      } 
+
+      else{
+        const newCartItem = await this.databaseService.cartItem.create({
+          data: {
+            quantity,
+            product: {
+              connect: { id: productId }
+            },
+            cart: {
+              connect: { buyerId }
+            }
+          }
+        });
+        return newCartItem
+      }
+
+      const updatedCart = await this.databaseService.cart.findUnique({
+        where: { buyerId },
+        include: { cartItems: true }
+      });
+
+      return updatedCart.cartItems;
+
+    } catch (error) {}
   }
 }
