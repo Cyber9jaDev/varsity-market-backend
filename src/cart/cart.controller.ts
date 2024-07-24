@@ -3,6 +3,7 @@ import { CartService } from './cart.service';
 import { AddItemToCartDto } from './dtos/cart.dto';
 import { Roles } from 'src/decorator/roles.decorator';
 import { UserType } from '@prisma/client';
+import { User } from 'src/user/decorators/user.decorator';
 
 @Controller('cart')
 export class CartController {
@@ -11,10 +12,10 @@ export class CartController {
   @Roles(UserType.BUYER)
   @Post()
   addItemToCart(
-    @Body() addItemToCartDto: AddItemToCartDto
+    @Body() addItemToCartDto: AddItemToCartDto,
+    @User() user: UserType
   ) {
-    
-    return this.cartService.addItemToCart();
-    
+    console.log(user);
+    // return this.cartService.addItemToCart();
   }
 }

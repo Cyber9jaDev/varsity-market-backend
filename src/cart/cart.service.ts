@@ -4,13 +4,16 @@ import { DatabaseService } from 'src/database/database.service';
 @Injectable()
 export class CartService {
   constructor(private readonly databaseService: DatabaseService) {}
-  
-  async addItemToCart() {
-    const cart = await this.databaseService.cartItem.create({
+
+  async addItemToCart(buyerId: string) {
+    const cart = await this.databaseService.cart.create({
       data: {
+        buyer: {
+          connect: { userId: buyerId }
+        },
         
       }
     })
-    // return this.databaseService.cart.create()
+    // return this.databaseService.cart.creat() 
   }
 }

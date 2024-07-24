@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  userId              String  @id @default(uuid())
+  id                  String  @id @default(uuid())
   email               String  @unique
   name                String  @db.VarChar(255)
   password            String  @db.VarChar(255)
@@ -22,19 +22,19 @@ model User {
 
   products            Product[]
 
-  cart                Cart?
+  test  Product[]
 }
 
 model Picture{
-  pictureId              String  @id @default(uuid())
+  id                   String  @id @default(uuid())
   publicId               String?
   url                    String?
-  user                   User    @relation(fields: [userPicId], references: [userId])
-  userPicId              String  @unique              
+  user                   User    @relation(fields: [userId], references: [id])
+  userId              String  @unique              
 }
 
 model Product{
-  productId              String  @id @default(uuid())
+  id                    String  @id @default(uuid())
   name                   String
   price                  Float
   description            String
@@ -46,59 +46,44 @@ model Product{
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt  
 
-  seller                 User    @relation(fields: [sellerId], references: [userId])
+  seller                 User    @relation(fields: [sellerId], references: [id])
   sellerId               String
 
   images                 Image[]
 
-  cartItem               CartItem?
+  cart                   Cart? @relation(fields: [cartId], references: [id])
+  cartId                 String?                
 }
 
 model Cart{
-  id                      String  @id @default(uuid())
+  id                     String  @id @default(uuid())
   
-  cartItems               CartItem[]
+  products               Product[]
 
-  buyer                   User @relation(fields: [buyerId], references: [userId])
-  buyerId                 String @unique
+  buyer                  User @relation(fields: [buyerId], references: [id])
+  buyerId                String @unique
 
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt  
 
 }
 
-model CartItem{
-  id                    String @id @default(uuid())
-
-  price                 Decimal
-  quantity              Int
-
-  product               Product @relation(fields: [productInCartId], references: [productId])
-  productInCartId       String  @unique
-
-  cart                  Cart  @relation(fields: [cartId], references: [id])
-  cartId                String
-
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-}
-
 model Image{
-  imageId                String  @id @default(uuid())
-  imageUrl               String
+  id                    String  @id @default(uuid())
+  url                   String
   
-  product                Product @relation(fields: [productImageId], references: [productId])
-  productImageId         String     
+  product                Product @relation(fields: [productId], references: [id])
+  productId              String     
 }
 
 model Message {
-  messageId              String @id  @default(uuid())
+  id                     String @id  @default(uuid())
+
   message                String?
   senderId               String
 
   createdAt              DateTime  @default(now())
   updatedAt              DateTime @updatedAt  
-
 }
 
 enum UserType {
