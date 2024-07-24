@@ -22,7 +22,8 @@ model User {
 
   products            Product[]
 
-  test  Product[]
+  cart                Cart?
+  
 }
 
 model Picture{
@@ -66,6 +67,11 @@ model Cart{
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt  
 
+}
+
+model CartItem {
+  id                    String @id  @default(uuid())
+  quantity              Int       
 }
 
 model Image{
