@@ -1,5 +1,3 @@
-export interface AddItemToCartDto {
-  price: number;
+export interface AddItemToCartParams {
   quantity: number;
-  productInCartId: string
 }

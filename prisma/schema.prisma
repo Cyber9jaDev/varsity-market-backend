@@ -17,14 +17,10 @@ model User {
   hasDisplayPicture Boolean  @default(false)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
-
-  displayPicture Picture?
-
-  products Product[]
-
-  cart Cart? // One active cart per user
-
-  orders Order[] // Historical orders
+  displayPicture    Picture?
+  products          Product[]
+  cart              Cart? // One active cart per user
+  orders            Order[] // Historical orders
 }
 
 model Product {
@@ -32,21 +28,16 @@ model Product {
   name        String
   price       Float
   description String
-
-  location  Location
-  condition ConditionType
-  category  CategoryType
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  seller   User   @relation(fields: [sellerId], references: [id])
-  sellerId String
-
-  images Image[]
-
-  cartItems CartItem[] // Products can appear in multiple cart items
-  OrderItem OrderItem[]
+  location    Location
+  condition   ConditionType
+  category    CategoryType
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  seller      User   @relation(fields: [sellerId], references: [id])
+  sellerId    String
+  images      Image[]
+  cartItems   CartItem[] // Products can appear in multiple cart items
+  OrderItem   OrderItem[]
 }
 
 model Cart {
@@ -108,7 +99,6 @@ model Message {
   id       String  @id @default(uuid())
   message  String?
   senderId String
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

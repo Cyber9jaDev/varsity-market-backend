@@ -4,6 +4,7 @@ import { AddItemToCartDto } from './dtos/cart.dto';
 import { Roles } from 'src/decorator/roles.decorator';
 import { UserType } from '@prisma/client';
 import { User } from 'src/user/decorators/user.decorator';
+import { UserEntity } from 'src/user/interface/user.interface';
 
 @Controller('cart')
 export class CartController {
@@ -13,9 +14,9 @@ export class CartController {
   @Post()
   addItemToCart(
     @Body() addItemToCartDto: AddItemToCartDto,
-    @User() user: UserType
+    @User() user: UserEntity
   ) {
-    console.log(user);
-    // return this.cartService.addItemToCart();
+    // console.log(user);
+    return this.cartService.addItemToCart("45387048-a9d3-409e-b1b4-ad655dd5e12d", user.userId, addItemToCartDto);
   }
 }
