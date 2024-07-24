@@ -50,7 +50,7 @@ export class AuthService {
         userType
       },
       select: {
-        userId: true,
+        id: true,
         email: true,
         name: true,
         phone: true,
@@ -62,7 +62,7 @@ export class AuthService {
       return new BadRequestException('An error has occurred')
     }
 
-    const token = this.generateJWT(user.userId, user.name)
+    const token = this.generateJWT(user.id, user.name)
     return { ...user, token }
   }
 
@@ -81,7 +81,7 @@ export class AuthService {
       throw new BadRequestException('Invalid credentials')
     }
 
-    const token = this.generateJWT(user.userId, user.name);
+    const token = this.generateJWT(user.id, user.name);
 
     return { ...user, token }
   }

@@ -1,12 +1,6 @@
 import { UserType } from "@prisma/client";
 import { IsEmail, isEnum, IsEnum, IsNotEmpty, IsOptional, IsString, Matches, MinLength } from "class-validator";
 
-// enum UserType {
-//   BUYER = "BUYER",
-//   SELLER = "SELLER",
-//   ADMIN = "ADMIN"
-// }
-
 export class SignUpDto{
   @IsString()
   @IsNotEmpty()
