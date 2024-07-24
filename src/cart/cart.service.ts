@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadGatewayException, Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { AddItemToCartParams } from './interface/cart.interface';
 
@@ -7,12 +7,10 @@ export class CartService {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async addItemToCart(
-    productId: string,
     buyerId: string,
-    { quantity }: AddItemToCartParams,
+    { quantity, productId }: AddItemToCartParams,
   ) {
     try {
-      // Find the user cart
       const cart = await this.databaseService.cart.findUnique({
         where: { buyerId },
         include: { cartItems: true },
@@ -23,52 +21,47 @@ export class CartService {
         await this.databaseService.cart.create({
           data: {
             buyer: {
-              connect: { id: buyerId }
-            }
+              connect: { id: buyerId },
+            },
           },
-          include: { cartItems: true }
+          include: { cartItems: true },
         });
       }
 
-      // Check if the product is already in the cart
       const existingCartItem = await this.databaseService.cartItem.findFirst({
-        where: { 
+        where: {
           cartId: cart.id,
           productId,
         },
       });
 
-      if(existingCartItem) {
-        console.log(existingCartItem);
-        // Update the cart Item ( Quantity and the likes )
+      if (existingCartItem) {
         await this.databaseService.cartItem.update({
           where: { id: existingCartItem.id },
-          data: { quantity: existingCartItem.quantity + quantity }
+          data: { quantity: existingCartItem.quantity + quantity },
         });
-      } 
-
-      else{
-        const newCartItem = await this.databaseService.cartItem.create({
+      } else {
+        await this.databaseService.cartItem.create({
           data: {
             quantity,
             product: {
-              connect: { id: productId }
+              connect: { id: productId },
             },
             cart: {
-              connect: { buyerId }
-            }
-          }
+              connect: { buyerId },
+            },
+          },
         });
-        return newCartItem
       }
 
       const updatedCart = await this.databaseService.cart.findUnique({
         where: { buyerId },
-        include: { cartItems: true }
+        include: { cartItems: true },
       });
 
       return updatedCart.cartItems;
-
-    } catch (error) {}
+    } catch (error) {
+      throw new BadGatewayException();
+    }
   }
 }

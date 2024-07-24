@@ -16,7 +16,6 @@ export class CartController {
     @Body() addItemToCartDto: AddItemToCartDto,
     @User() user: UserEntity
   ) {
-    // console.log(user);
-    return this.cartService.addItemToCart("45387048-a9d3-409e-b1b4-ad655dd5e12d", user.userId, addItemToCartDto);
+    return this.cartService.addItemToCart(user.userId, addItemToCartDto);
   }
 }
