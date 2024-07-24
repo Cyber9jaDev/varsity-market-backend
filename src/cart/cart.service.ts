@@ -38,7 +38,7 @@ export class CartService {
       if (existingCartItem) {
         await this.databaseService.cartItem.update({
           where: { id: existingCartItem.id },
-          data: { quantity: existingCartItem.quantity },
+          data: { quantity },
           // data: { quantity: existingCartItem.quantity + quantity },
         });
       } else {
