@@ -6,7 +6,7 @@ import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNe
 export class Image {
   @IsNotEmpty()
   @IsString()
-  imageUrl: string;
+  url: string;
 }
 
 export class CreateProductDto {
@@ -79,7 +79,7 @@ export class UpdateProductDto {
 }
 
 export class ProductResponseDto {
-  productId: string;
+  id: string;
   name: string;
   description: string;
   location: Location;

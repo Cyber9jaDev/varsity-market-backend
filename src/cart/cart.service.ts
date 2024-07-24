@@ -9,11 +9,10 @@ export class CartService {
     const cart = await this.databaseService.cart.create({
       data: {
         buyer: {
-          connect: { userId: buyerId }
+          connect: { id: buyerId }
         },
-        
       }
-    })
+    })     
     // return this.databaseService.cart.creat() 
   }
 }

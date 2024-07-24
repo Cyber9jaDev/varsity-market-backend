@@ -17,7 +17,7 @@ export class ProductService {
   async getAllProducts(): Promise<ProductResponseDto[]> {
     const products = await this.databaseService.product.findMany({
       select: {
-        productId: true,
+        id: true,
         name: true,
         description: true,
         price: true,
@@ -30,9 +30,9 @@ export class ProductService {
     return products;
   }
 
-  async getSingleProduct(productId: string): Promise<ProductResponseDto> {
+  async getSingleProduct(id: string): Promise<ProductResponseDto> {
     const product = await this.databaseService.product.findUnique({
-      where: { productId },
+      where: { id },
     });
 
     if (!product) throw new NotFoundException();
@@ -65,7 +65,7 @@ export class ProductService {
           sellerId,
         },
         select: {
-          productId: true,
+          id: true,
           name: true,
           description: true,
           price: true,
@@ -79,7 +79,7 @@ export class ProductService {
       await prisma.image.createMany({
         data: images.map((image) => ({
           ...image,
-          productImageId: product.productId,
+          productId: product.id,
         })),
       });
       return new ProductResponseDto(product);
@@ -87,11 +87,11 @@ export class ProductService {
   }
 
   async updateProduct(
-    productId: string,
+    id: string,
     updateProductParams: UpdateProductInterface,
   ) {
     const updatedProduct = await this.databaseService.product.update({
-      where: { productId },
+      where: { id },
       data: { ...updateProductParams },
     });
 
@@ -100,16 +100,16 @@ export class ProductService {
     return updatedProduct ;
   }
 
-  async deleteProduct(productId: string) {
+  async deleteProduct(id: string) {
     // To delete a product, we need to delete all the images associated with it first
     await this.databaseService.image.deleteMany({
       where: {
-        product: { productId },
+        product: { id },
       },
     });
 
     const deletedProduct = await this.databaseService.product.delete({
-      where: { productId },
+      where: { id },
     });
 
     if (!deletedProduct) throw new BadRequestException();
@@ -117,9 +117,9 @@ export class ProductService {
     return deletedProduct;
   }
 
-  async findUserByProductId(productId: string) {
+  async findUserByProductId(id: string) {
     const product = await this.databaseService.product.findUnique({
-      where: { productId },
+      where: { id },
       select: {
         sellerId: true,
         // seller: {

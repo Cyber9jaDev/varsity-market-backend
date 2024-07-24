@@ -7,7 +7,7 @@ export interface createProductParams{
   category: CategoryType;
   condition: ConditionType,
   location: Location,
-  images: { imageUrl: string }[]; 
+  images: { url: string }[]; 
 }
 
 export interface UpdateProductInterface{
