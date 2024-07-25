@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { AddItemToCartDto } from './dtos/cart.dto';
 import { Roles } from 'src/decorator/roles.decorator';
@@ -17,5 +17,13 @@ export class CartController {
     @User() user: UserEntity
   ) {
     return this.cartService.addItemToCart(user.userId, addItemToCartDto);
+  }
+
+  @Roles(UserType.BUYER)
+  @Get()
+  userCart(
+    @User() user: UserEntity
+  ) {
+    return this.cartService.userCart(user.userId);
   }
 }

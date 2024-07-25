@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { AddItemToCartParams } from './interface/cart.interface';
 
@@ -10,13 +14,12 @@ export class CartService {
     buyerId: string,
     { quantity, productId }: AddItemToCartParams,
   ) {
-
     // Ensure the product exist in the database
     const product = await this.databaseService.product.findUnique({
       where: { id: productId },
     });
 
-    if(!product){
+    if (!product) {
       return new NotFoundException();
     }
 
@@ -24,7 +27,7 @@ export class CartService {
       const cart = await this.databaseService.cart.findUnique({
         where: { buyerId },
         include: { cartItems: true },
-      });  
+      });
 
       if (!cart) {
         // create a new cart
@@ -66,12 +69,42 @@ export class CartService {
 
       const updatedCart = await this.databaseService.cart.findUnique({
         where: { buyerId },
-        include: { cartItems: true },
+        include: {
+          cartItems: {
+            include: { product: true },
+          },
+        },
       });
 
       return updatedCart.cartItems;
     } catch (error) {
       throw new InternalServerErrorException();
     }
+  }
+
+  async userCart(buyerId: string) {
+    const cart = await this.databaseService.cart.findUnique({
+      where: { buyerId },
+      include: {
+        cartItems: {
+          select: {
+            quantity: true,
+            product: {
+              select: {
+                name: true,
+                price: true,
+                images: {
+                  select: {
+                    url: true
+                  }
+                }
+              }
+            },
+          },
+        },
+      },
+    });
+
+    return cart.cartItems;
   }
 }
