@@ -1,4 +1,4 @@
-import { BadGatewayException, Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { AddItemToCartParams } from './interface/cart.interface';
 
@@ -10,11 +10,21 @@ export class CartService {
     buyerId: string,
     { quantity, productId }: AddItemToCartParams,
   ) {
+
+    // Ensure the product exist in the database
+    const product = await this.databaseService.product.findUnique({
+      where: { id: productId },
+    });
+
+    if(!product){
+      return new NotFoundException();
+    }
+
     try {
       const cart = await this.databaseService.cart.findUnique({
         where: { buyerId },
         include: { cartItems: true },
-      });
+      });  
 
       if (!cart) {
         // create a new cart
@@ -39,7 +49,6 @@ export class CartService {
         await this.databaseService.cartItem.update({
           where: { id: existingCartItem.id },
           data: { quantity },
-          // data: { quantity: existingCartItem.quantity + quantity },
         });
       } else {
         await this.databaseService.cartItem.create({
@@ -62,7 +71,7 @@ export class CartService {
 
       return updatedCart.cartItems;
     } catch (error) {
-      throw new BadGatewayException();
+      throw new InternalServerErrorException();
     }
   }
 }
