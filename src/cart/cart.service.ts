@@ -4,7 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { AddItemToCartParams } from './interface/cart.interface';
+import {
+  AddItemToCartParams,
+  RemoveItemFromCartParams,
+} from './interface/cart.interface';
 
 @Injectable()
 export class CartService {
@@ -95,10 +98,10 @@ export class CartService {
                 price: true,
                 images: {
                   select: {
-                    url: true
-                  }
-                }
-              }
+                    url: true,
+                  },
+                },
+              },
             },
           },
         },
@@ -106,5 +109,49 @@ export class CartService {
     });
 
     return cart.cartItems;
+  }
+
+  async removeItemFromCart(
+    buyerId: string,
+    { productId }: RemoveItemFromCartParams,
+  ) {
+    
+    // Check if the buyer has a Cart
+    const cart = await this.databaseService.cart.findUnique({
+      where: { buyerId },
+      include: {
+        cartItems: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+
+    if (!cart) {
+      throw new NotFoundException('Cart not found');
+    }
+
+    const cartItemToRemove = cart.cartItems.find(
+      (item) => item.product.id === productId,
+    );
+
+    if(!cartItemToRemove) {
+      return { message: 'Item not found in cart' }
+    }
+
+    const deletedCartItem = await this.databaseService.cartItem.delete({
+      where: {
+        id: cartItemToRemove.id 
+      },
+      include: {} 
+    }); 
+
+    if(!deletedCartItem){
+      throw new InternalServerErrorException();  
+    }
+
+    return deletedCartItem;
+    // return cart
   }
 }

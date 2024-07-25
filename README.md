@@ -92,6 +92,7 @@
   $PUT /orders/:id
   - Update order status (authenticated, seller)
 ```
+
 ## Reviews
 
 ```bash
@@ -107,14 +108,9 @@
   $DELETE /reviews/:id
   - Delete a review (authenticated, owner)
 ```
-## Categories
-
-```bash
-  $GET /categories
-  - Get a list of all product categories
- ```
 
 
+##  Payment
  model Payment {
   id                  String   @id @default(uuid())
   amount              Float

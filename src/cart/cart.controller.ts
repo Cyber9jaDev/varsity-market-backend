@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
 import { CartService } from './cart.service';
-import { AddItemToCartDto } from './dtos/cart.dto';
+import { AddItemToCartDto, RemoveItemFromCartDto } from './dtos/cart.dto';
 import { Roles } from 'src/decorator/roles.decorator';
 import { UserType } from '@prisma/client';
 import { User } from 'src/user/decorators/user.decorator';
@@ -25,5 +25,14 @@ export class CartController {
     @User() user: UserEntity
   ) {
     return this.cartService.userCart(user.userId);
+  }
+
+  @Roles(UserType.BUYER)
+  @Delete()
+  removeItemFromCart(
+    @User() user: UserEntity,
+    @Body() removeItemFromCartDto: RemoveItemFromCartDto
+  ) {
+    return this.cartService.removeItemFromCart(user.userId, removeItemFromCartDto);
   }
 }

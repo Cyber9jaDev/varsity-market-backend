@@ -9,3 +9,9 @@ export class AddItemToCartDto {
   @IsNotEmpty()
   productId: string;
 }
+
+export class RemoveItemFromCartDto {
+  @IsString()
+  @IsNotEmpty()
+  productId: string;
+}
