@@ -16,10 +16,10 @@ export class SignUpDto{
   @Matches(/^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, { message: "Phone must be a valid phone number" })
   phone: string;
 
-  @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  registration_key?: string
+  // @IsOptional()
+  // @IsString()
+  // @IsNotEmpty()
+  // registration_key?: string
 }
 
 export class SignInDto{

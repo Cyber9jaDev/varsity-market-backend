@@ -20,7 +20,7 @@ export class CartService {
     // Ensure the product exist in the database
     const product = await this.databaseService.product.findUnique({
       where: { id: productId },
-    });
+    }); 
 
     if (!product) {
       return new NotFoundException();

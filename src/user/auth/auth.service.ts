@@ -4,13 +4,13 @@ import * as bcrypt from 'bcryptjs'
 import * as jwt from 'jsonwebtoken'
 import { UserType } from '@prisma/client';
 
-interface signUpParams {
-  name: string;
-  email: string;
-  password: string;
-  phone: string;
-  userType: UserType
-}
+// interface signUpParams {
+//   name: string;
+//   email: string;
+//   password: string;
+//   phone: string;
+//   userType: UserType
+// }
 
 interface authParams {
   name: string;
@@ -20,10 +20,10 @@ interface authParams {
   userType: UserType
 }
 
-interface signInParams {
-  email: string;
-  password: string;
-}
+// interface signInParams {
+//   email: string;
+//   password: string;
+// }
 
 @Injectable()
 export class AuthService {
