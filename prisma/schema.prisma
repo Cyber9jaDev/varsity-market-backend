@@ -118,7 +118,6 @@ enum Location {
   LASPOTECH
   POLYIBADAN
   OSCOTECH
-  IREPOLY
   FUTA
   ACU
 }
