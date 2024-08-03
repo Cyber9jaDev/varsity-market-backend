@@ -1,4 +1,4 @@
 {
-  "cSpell.ignoreWords": ["createproduct", "dtos", "nestjs"],
+  "cSpell.ignoreWords": ["createproduct", "dtos", "nestjs", "streamifier"],
   "cSpell.words": ["cloudinary", "Cloudinary"]
 }
