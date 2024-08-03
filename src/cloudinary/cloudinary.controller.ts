@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Post,
   UploadedFiles,
@@ -17,6 +18,9 @@ export class CloudinaryController {
     const uploadPromises = files.map((file) =>
       this.cloudinaryService.uploadImage(file, 'unimarket/posts'),
     );
+    if(!files || !Array.isArray(files) || files.length === 0){
+      throw new BadRequestException('Please add product images');
+    }
     const results = await Promise.all(uploadPromises);
     return results;
   }
