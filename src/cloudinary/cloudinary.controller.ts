@@ -9,6 +9,7 @@ export class CloudinaryController {
   @Post('/upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File){
-    return await this.cloudinaryService.uploadImage(file);
+    console.log(file);
+    return await this.cloudinaryService.uploadImage(file, 'unimarket/posts');
   }
 }
