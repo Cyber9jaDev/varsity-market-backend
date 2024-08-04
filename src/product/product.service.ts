@@ -44,6 +44,7 @@ export class ProductService {
 
   async addProduct(
     sellerId: string,
+    images: ProductImageParams[],
     {
       name,
       description,
@@ -51,9 +52,7 @@ export class ProductService {
       category,
       condition,
       location,
-      // images,
     }: createProductParams,
-    images: ProductImageParams[]
   ): Promise<ProductResponseDto> {
     return await this.databaseService.$transaction(async (prisma) => {
       const product = await prisma.product.create({

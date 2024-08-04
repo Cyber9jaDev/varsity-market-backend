@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -49,33 +50,38 @@ export class ProductController {
 
   @Post()
   @Roles(UserType.SELLER)
-  @UseInterceptors(FilesInterceptor('images'))
+  @UseInterceptors(FilesInterceptor('productImages'))
   async addProduct(
     @Body() createProductDto: CreateProductDto,
     @User() user: UserEntity, // This user details will come from the interceptor
-    @UploadedFiles() images: Express.Multer.File[],
-  // ): Promise<ProductResponseDto> {
-  ) {
+    @UploadedFiles() productImages: Express.Multer.File[],
+  ): Promise<ProductResponseDto> {
+    if (!productImages || productImages.length === 0) {
+      throw new UnauthorizedException('Please upload at least one image');
+    }
 
-    const uploadPromises = images.map((image) =>
+    const uploadPromises = productImages.map((image) =>
       this.cloudinaryService.uploadImage(image, 'unimarket/posts'),
     );
 
     const uploadedImages = await Promise.all(uploadPromises);
 
-    console.log(uploadedImages);
+    if (!uploadedImages)
+      throw new BadRequestException('Error uploading images');
 
+    const images = uploadedImages.map((image) => {
+      return {
+        secure_url: image.secure_url,
+        public_id: image.public_id,
+        asset_id: image.asset_id,
+      };
+    });
 
-    // const results = this.cloudinaryService.uploadImage(images, 'unimarket/posts');
-    // if(!images || images.length === 0) {
-    //   throw new UnauthorizedException('Please upload at least one image');
-    // }
-    // const imagePromises = images.map(image => {})
-    // return this.productService.addProduct(
-    //   user?.userId,
-    //   createProductDto,
-    //   images,
-    // );
+    return this.productService.addProduct(
+      user?.userId,
+      images,
+      createProductDto,
+    );
   }
 
   @Put('/:productId')

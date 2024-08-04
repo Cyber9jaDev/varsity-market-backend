@@ -1,9 +1,14 @@
-import { CategoryType, ConditionType, Location } from "@prisma/client";
-import { Exclude, Type } from "class-transformer";
-import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
+import { CategoryType, ConditionType, Location } from '@prisma/client';
+import { Exclude, Type } from 'class-transformer';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
-
-export class Image {
+export class ImageDto {
   @IsNotEmpty()
   @IsString()
   secure_url: string;
@@ -83,7 +88,7 @@ export class UpdateProductDto {
   // @IsArray()
   // @ValidateNested({ each: true })
   // @Type(() => Image)
-  // images?: Image[] 
+  // images?: Image[]
 }
 
 export class ProductResponseDto {
@@ -96,7 +101,7 @@ export class ProductResponseDto {
   category: CategoryType;
   sellerId: string;
 
-  constructor(partial: Partial<ProductResponseDto>){
-    Object.assign(this, partial)
+  constructor(partial: Partial<ProductResponseDto>) {
+    Object.assign(this, partial);
   }
 }

@@ -7,11 +7,6 @@ export interface createProductParams{
   category: CategoryType;
   condition: ConditionType,
   location: Location,
-  // images: { 
-  //   secure_url: string,  
-  //   asset_id: string, 
-  //   public_id: string 
-  // }[]; 
 }
 
 export interface ProductImageParams{
