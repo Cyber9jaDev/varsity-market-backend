@@ -81,16 +81,19 @@ model OrderItem {
 }
 
 model Image {
-  id        String  @id @default(uuid())
-  url       String
-  product   Product @relation(fields: [productId], references: [id])
-  productId String
+  id          String  @id @default(uuid())
+  secure_url  String
+  public_id   String
+  asset_id    String
+  product     Product @relation(fields: [productId], references: [id])
+  productId   String
 }
 
 model Picture {
   id       String  @id @default(uuid())
-  publicId String?
-  url      String?
+  secure_url  String?
+  public_id   String?
+  asset_id    String?
   user     User    @relation(fields: [userId], references: [id])
   userId   String  @unique
 }
@@ -117,9 +120,10 @@ enum Location {
   BUK
   LASPOTECH
   POLYIBADAN
-  OSCOTECH
   FUTA
   ACU
+  UNILAG
+  UNIBEN
 }
 
 enum CategoryType {

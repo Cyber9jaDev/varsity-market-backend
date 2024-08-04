@@ -3,9 +3,10 @@ import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
 import { DatabaseModule } from 'src/database/database.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 
 @Module({
-  imports : [DatabaseModule],
+  imports : [DatabaseModule, CloudinaryModule],
   controllers: [ProductController],
   providers: [ProductService, {
     provide: APP_INTERCEPTOR,

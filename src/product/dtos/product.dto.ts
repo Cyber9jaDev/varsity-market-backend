@@ -6,7 +6,15 @@ import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNe
 export class Image {
   @IsNotEmpty()
   @IsString()
-  url: string;
+  secure_url: string;
+
+  @IsNotEmpty()
+  @IsString()
+  asset_id: string;
+
+  @IsNotEmpty()
+  @IsString()
+  public_id: string;
 }
 
 export class CreateProductDto {
