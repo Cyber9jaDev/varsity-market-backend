@@ -50,18 +50,32 @@ export class ProductController {
   @Post()
   @Roles(UserType.SELLER)
   @UseInterceptors(FilesInterceptor('images'))
-  addProduct(
+  async addProduct(
     @Body() createProductDto: CreateProductDto,
     @User() user: UserEntity, // This user details will come from the interceptor
     @UploadedFiles() images: Express.Multer.File[],
-  ): Promise<ProductResponseDto> {
-    console.log(1);
-    console.log(images);
+  // ): Promise<ProductResponseDto> {
+  ) {
+
+    const uploadPromises = images.map((image) =>
+      this.cloudinaryService.uploadImage(image, 'unimarket/posts'),
+    );
+
+    const uploadedImages = await Promise.all(uploadPromises);
+
+    console.log(uploadedImages);
+
+
+    // const results = this.cloudinaryService.uploadImage(images, 'unimarket/posts');
     // if(!images || images.length === 0) {
     //   throw new UnauthorizedException('Please upload at least one image');
     // }
     // const imagePromises = images.map(image => {})
-    return this.productService.addProduct(user?.userId, createProductDto);
+    // return this.productService.addProduct(
+    //   user?.userId,
+    //   createProductDto,
+    //   images,
+    // );
   }
 
   @Put('/:productId')

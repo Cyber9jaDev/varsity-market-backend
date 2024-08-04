@@ -13,12 +13,15 @@ export class CloudinaryController {
   constructor(private readonly cloudinaryService: CloudinaryService) {}
 
   @Post('/upload')
-  @UseInterceptors(FilesInterceptor('files'))
-  async uploadFile(@UploadedFiles() files: Express.Multer.File[]) {
-    const uploadPromises = files.map((file) =>
-      this.cloudinaryService.uploadImage(file, 'unimarket/posts'),
+  @UseInterceptors(FilesInterceptor('images'))
+  async uploadFile(
+    @UploadedFiles() images: Express.Multer.File[]
+  ) {
+    console.log(images);
+    const uploadPromises = images.map((image) =>
+      this.cloudinaryService.uploadImage(image, 'unimarket/posts'),
     );
-    if(!files || !Array.isArray(files) || files.length === 0){
+    if (!images || !Array.isArray(images) || images.length === 0) {
       throw new BadRequestException('Please add product images');
     }
     const results = await Promise.all(uploadPromises);

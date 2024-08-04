@@ -42,10 +42,10 @@ export class CreateProductDto {
   @IsEnum(CategoryType)
   category: CategoryType;
 
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => Image)
-  images: Image[]
+  // @IsArray()
+  // @ValidateNested({ each: true })
+  // @Type(() => Image)
+  // images: Image[]
 }
 
 export class UpdateProductDto {

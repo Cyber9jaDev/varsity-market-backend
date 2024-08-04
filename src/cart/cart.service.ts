@@ -98,7 +98,7 @@ export class CartService {
                 price: true,
                 images: {
                   select: {
-                    url: true,
+                    secure_url: true,
                   },
                 },
               },

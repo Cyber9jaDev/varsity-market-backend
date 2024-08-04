@@ -7,6 +7,7 @@ import { DatabaseService } from 'src/database/database.service';
 import { ProductResponseDto } from './dtos/product.dto';
 import {
   createProductParams,
+  ProductImageParams,
   UpdateProductInterface,
 } from './interface/product.interface';
 
@@ -50,8 +51,9 @@ export class ProductService {
       category,
       condition,
       location,
-      images,
+      // images,
     }: createProductParams,
+    images: ProductImageParams[]
   ): Promise<ProductResponseDto> {
     return await this.databaseService.$transaction(async (prisma) => {
       const product = await prisma.product.create({
@@ -86,10 +88,7 @@ export class ProductService {
     });
   }
 
-  async updateProduct(
-    id: string,
-    updateProductParams: UpdateProductInterface,
-  ) {
+  async updateProduct(id: string, updateProductParams: UpdateProductInterface) {
     const updatedProduct = await this.databaseService.product.update({
       where: { id },
       data: { ...updateProductParams },
@@ -97,7 +96,7 @@ export class ProductService {
 
     if (!updatedProduct) throw new BadRequestException();
 
-    return updatedProduct ;
+    return updatedProduct;
   }
 
   async deleteProduct(id: string) {
