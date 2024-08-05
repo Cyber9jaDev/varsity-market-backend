@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { ProductResponseDto } from './dtos/product.dto';
@@ -10,12 +11,42 @@ import {
   ProductImageParams,
   UpdateProductInterface,
 } from './interface/product.interface';
+import { CategoryType, ConditionType, Location } from '@prisma/client';
 
 @Injectable()
 export class ProductService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async getAllProducts(): Promise<ProductResponseDto[]> {
+  async getAllProducts(
+    @Query('searchText') searchText?: string,
+    @Query('category') category?: CategoryType,
+    @Query('condition') condition?: ConditionType,
+    @Query('location') location?: Location,
+    @Query('minPrice') minPrice?: string,
+    @Query('maxPrice') maxPrice?: string,
+    @Query('sortBy') sortBy?: string,
+    @Query('dateFrom') dateFrom?: Date,
+    @Query('dateTo') dateTo?: Date,
+  ): Promise<ProductResponseDto[]> {
+    const price =
+      minPrice || maxPrice
+        ? {
+            ...(minPrice && { gte: parseFloat(minPrice) }),
+            ...(maxPrice && { lte: parseFloat(maxPrice) }),
+          }
+        : undefined;
+
+    const filter = {
+      ...(searchText && { searchText }),
+      ...(category && { category }),
+      ...(condition && { condition }),
+      ...(dateFrom && { dateFrom }),
+      ...(dateTo && { dateTo }),
+      ...(condition && { condition }),
+      ...(sortBy && { sortBy }),
+      ...(price && { price }),
+      ...(location && { location }),
+    };
     const products = await this.databaseService.product.findMany({
       select: {
         id: true,
