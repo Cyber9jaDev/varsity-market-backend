@@ -20,7 +20,7 @@ export class ProductService {
   async getAllProducts(
     @Query('searchText') searchText?: string,
     @Query('category') category?: CategoryType,
-    @Query('condition') condition?: ConditionType,
+    // @Query('condition') condition?: ConditionType,
     @Query('location') location?: Location,
     @Query('minPrice') minPrice?: string,
     @Query('maxPrice') maxPrice?: string,
@@ -39,14 +39,16 @@ export class ProductService {
     const filter = {
       ...(searchText && { searchText }),
       ...(category && { category }),
-      ...(condition && { condition }),
+      ...(location && { location }),
+      // ...(condition && { condition }),
       ...(dateFrom && { dateFrom }),
       ...(dateTo && { dateTo }),
-      ...(condition && { condition }),
+      // ...(condition && { condition }),
       ...(sortBy && { sortBy }),
       ...(price && { price }),
       ...(location && { location }),
     };
+    
     const products = await this.databaseService.product.findMany({
       select: {
         id: true,
@@ -57,6 +59,12 @@ export class ProductService {
         condition: true,
         location: true,
         sellerId: true,
+        images: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      where: {
+        ...filter,
       },
     });
     return products;
