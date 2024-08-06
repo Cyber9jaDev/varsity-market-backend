@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UnauthorizedException,
   UploadedFiles,
   UseInterceptors,
@@ -19,7 +20,7 @@ import {
 } from './dtos/product.dto';
 import { User } from 'src/user/decorators/user.decorator';
 import { UserEntity } from 'src/user/interface/user.interface';
-import { UserType } from '@prisma/client';
+import { CategoryType, Location, UserType } from '@prisma/client';
 import { Roles } from 'src/decorator/roles.decorator';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
@@ -32,14 +33,49 @@ export class ProductController {
   ) {}
 
   @Get()
-  getAllProducts(): Promise<ProductResponseDto[]> {
-    return this.productService.getAllProducts();
+  getAllProducts(
+    @Query('searchText') searchText?: string,
+    @Query('category') category?: CategoryType,
+    @Query('location') location?: Location,
+    @Query('minPrice') minPrice?: string,
+    @Query('maxPrice') maxPrice?: string,
+    @Query('sortBy') sortBy?: string,
+    @Query('dateFrom') dateFrom?: Date,
+    @Query('dateTo') dateTo?: Date,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ): Promise<ProductResponseDto[]> {;
+
+    const price =
+      minPrice || maxPrice
+        ? {
+            ...(minPrice && { gte: parseFloat(minPrice) }),
+            ...(maxPrice && { lte: parseFloat(maxPrice) }),
+          }
+        : undefined;
+
+    // Create a dynamic filter object, consisting of the queries passed
+
+    const filter = {
+      ...(searchText && { searchText }),
+      ...(category && { category }),
+      ...(location && { location }),
+      ...(dateFrom && { dateFrom }),
+      ...(dateTo && { dateTo }),
+      ...(sortBy && { sortBy }),
+      ...(price && { price }),
+      ...(location && { location }),
+      ...(page && { page: parseInt(page) }),
+      ...(limit && { limit: parseInt(limit) }),
+    };
+
+    return this.productService.getAllProducts(filter);
   }
 
-  @Get('/:sellerId')
-  getProductsBySeller(): Promise<ProductResponseDto[]> {
-    return this.productService.getAllProducts();
-  }
+  // @Get('/:sellerId')
+  // getProductsBySeller(): Promise<ProductResponseDto[]> {
+  //   return this.productService.getAllProducts();
+  // }
 
   @Get('/:productId')
   getSingleProduct(
