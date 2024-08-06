@@ -57,16 +57,16 @@ export class ProductController {
     // Create a dynamic filter object, consisting of the queries passed
 
     const filter = {
-      ...(searchText && { searchText }),
-      ...(category && { category }),
-      ...(location && { location }),
-      ...(dateFrom && { dateFrom }),
-      ...(dateTo && { dateTo }),
-      ...(sortBy && { sortBy }),
+      // ...(searchText && { searchText }),
+      // ...(category && { category }),
+      // ...(location && { location }),
+      // ...(dateFrom && { dateFrom }),
+      // ...(dateTo && { dateTo }),
+      // ...(sortBy && { sortBy }),
       ...(price && { price }),
-      ...(location && { location }),
-      ...(page && { page: parseInt(page) }),
-      ...(limit && { limit: parseInt(limit) }),
+      // ...(location && { location }),
+      // // ...(page && { page: parseInt(page) }),
+      // ...(limit && { limit: parseInt(limit) }),
     };
 
     return this.productService.getAllProducts(filter);

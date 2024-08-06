@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  Query,
 } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { ProductResponseDto } from './dtos/product.dto';
@@ -12,7 +11,6 @@ import {
   ProductImageParams,
   UpdateProductInterface,
 } from './interface/product.interface';
-import { CategoryType, Location } from '@prisma/client';
 
 @Injectable()
 export class ProductService {
@@ -21,9 +19,11 @@ export class ProductService {
   async getAllProducts(
     filter: FilterQueries,
   ): Promise<ProductResponseDto[]> {
-    // console.log(filter);
+
+    console.log(filter);
 
     const products = await this.databaseService.product.findMany({
+      where: { ...filter }, 
       select: {
         id: true,
         name: true,
@@ -36,10 +36,7 @@ export class ProductService {
         images: true,
         createdAt: true,
         updatedAt: true,
-      },
-      // where: {
-      //   ...filter,
-      // },
+      }
     });
     return products;
   }
