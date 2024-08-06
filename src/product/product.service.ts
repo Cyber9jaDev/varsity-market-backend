@@ -16,14 +16,11 @@ import {
 export class ProductService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async getAllProducts(
-    filter: FilterQueries,
-  ): Promise<ProductResponseDto[]> {
-
+  async getAllProducts(filter: FilterQueries): Promise<ProductResponseDto[]> {
     console.log(filter);
 
     const products = await this.databaseService.product.findMany({
-      where: { ...filter }, 
+      where: { ...filter },
       select: {
         id: true,
         name: true,
@@ -36,7 +33,7 @@ export class ProductService {
         images: true,
         createdAt: true,
         updatedAt: true,
-      }
+      },
     });
     return products;
   }

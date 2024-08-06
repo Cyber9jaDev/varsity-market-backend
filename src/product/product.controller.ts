@@ -30,7 +30,7 @@ export class ProductController {
   constructor(
     private readonly productService: ProductService,
     private readonly cloudinaryService: CloudinaryService,
-  ) { }
+  ) {}
 
   @Get()
   getAllProducts(
@@ -44,8 +44,10 @@ export class ProductController {
     @Query('dateTo') dateTo?: Date,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
-  ): Promise<ProductResponseDto[]> {;
-
+  ): Promise<ProductResponseDto[]> {
+    const categories = Object.values(CategoryType);
+    const locations = Object.values(Location);
+    console.log(categories);
     const price =
       minPrice || maxPrice
         ? {
@@ -55,16 +57,15 @@ export class ProductController {
         : undefined;
 
     // Create a dynamic filter object, consisting of the queries passed
-
+    //
     const filter = {
-      // ...(searchText && { searchText }),
-      // ...(category && { category }),
-      // ...(location && { location }),
+      ...(searchText && { name: { search: searchText } }),
+      ...(categories.includes(category) && { category }),
+      ...(price && { price }),
+      ...(locations.includes(location) && { location }),
       // ...(dateFrom && { dateFrom }),
       // ...(dateTo && { dateTo }),
       // ...(sortBy && { sortBy }),
-      ...(price && { price }),
-      // ...(location && { location }),
       // // ...(page && { page: parseInt(page) }),
       // ...(limit && { limit: parseInt(limit) }),
     };
