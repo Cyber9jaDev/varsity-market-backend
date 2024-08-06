@@ -24,6 +24,7 @@ import { CategoryType, Location, UserType } from '@prisma/client';
 import { Roles } from 'src/decorator/roles.decorator';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { OrderBy, OrderByEnum } from './interface/product.interface';
 
 @Controller('product')
 export class ProductController {
@@ -39,7 +40,7 @@ export class ProductController {
     @Query('location') location?: Location,
     @Query('minPrice') minPrice?: string,
     @Query('maxPrice') maxPrice?: string,
-    @Query('sortBy') sortBy?: string,
+    @Query('orderBy') orderBy?: OrderByEnum,
     @Query('dateFrom') dateFrom?: Date,
     @Query('dateTo') dateTo?: Date,
     @Query('page') page?: string,
@@ -47,7 +48,7 @@ export class ProductController {
   ): Promise<ProductResponseDto[]> {
     const categories = Object.values(CategoryType);
     const locations = Object.values(Location);
-    console.log(categories);
+
     const price =
       minPrice || maxPrice
         ? {
@@ -57,7 +58,6 @@ export class ProductController {
         : undefined;
 
     // Create a dynamic filter object, consisting of the queries passed
-    //
     const filter = {
       ...(searchText && { name: { search: searchText } }),
       ...(categories.includes(category) && { category }),
@@ -65,12 +65,17 @@ export class ProductController {
       ...(locations.includes(location) && { location }),
       // ...(dateFrom && { dateFrom }),
       // ...(dateTo && { dateTo }),
-      // ...(sortBy && { sortBy }),
       // // ...(page && { page: parseInt(page) }),
       // ...(limit && { limit: parseInt(limit) }),
     };
 
-    return this.productService.getAllProducts(filter);
+    console.log(orderBy);
+
+    const orderProductsBy = {
+      ...(orderBy && { price: orderBy }),
+    };
+
+    return this.productService.getAllProducts(filter, orderProductsBy);
   }
 
   // @Get('/:sellerId')

@@ -7,7 +7,8 @@ import { DatabaseService } from 'src/database/database.service';
 import { ProductResponseDto } from './dtos/product.dto';
 import {
   createProductParams,
-  FilterQueries,
+  Filter,
+  OrderBy,
   ProductImageParams,
   UpdateProductInterface,
 } from './interface/product.interface';
@@ -16,11 +17,15 @@ import {
 export class ProductService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async getAllProducts(filter: FilterQueries): Promise<ProductResponseDto[]> {
+  async getAllProducts(
+    filter: Filter,
+    orderBy: OrderBy,
+  ): Promise<ProductResponseDto[]> {
     console.log(filter);
 
     const products = await this.databaseService.product.findMany({
       where: { ...filter },
+      orderBy: { ...orderBy },
       select: {
         id: true,
         name: true,
@@ -35,6 +40,7 @@ export class ProductService {
         updatedAt: true,
       },
     });
+
     return products;
   }
 

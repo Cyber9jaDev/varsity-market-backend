@@ -1,12 +1,20 @@
 import { CategoryType, ConditionType, Location } from '@prisma/client';
 
-export interface FilterQueries {
+export enum OrderByEnum {
+  asc = 'asc',
+  desc = 'desc',
+}
+
+export interface OrderBy {
+  price?: OrderByEnum
+}
+
+export interface Filter {
   searchText?: string,
   category?: CategoryType,
   location?: Location,
   dateFrom?: Date,
   dateTo?: Date,
-  sortBy?: string,
   page?: number,
   limit?: number,
   price?: { 
