@@ -20,10 +20,12 @@ export class ProductService {
   async getAllProducts(
     filter: Filter,
     orderBy: OrderBy,
+    take: number,
+    skip: number,
   ): Promise<ProductResponseDto[]> {
-    console.log(filter);
-
     const products = await this.databaseService.product.findMany({
+      take,
+      skip,
       where: { ...filter },
       orderBy: { ...orderBy },
       select: {

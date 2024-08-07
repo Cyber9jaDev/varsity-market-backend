@@ -24,7 +24,7 @@ import { CategoryType, Location, UserType } from '@prisma/client';
 import { Roles } from 'src/decorator/roles.decorator';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
-import { OrderBy, OrderByEnum } from './interface/product.interface';
+import { OrderByEnum } from './interface/product.interface';
 
 @Controller('product')
 export class ProductController {
@@ -61,7 +61,7 @@ export class ProductController {
       dateFrom || dateTo
         ? {
             ...(dateFrom && { gte: new Date(parseInt(dateFrom)) }),
-            ...(dateTo && { lte: new Date(parseInt(dateTo) )}),
+            ...(dateTo && { lte: new Date(parseInt(dateTo)) }),
           }
         : undefined;
 
@@ -72,19 +72,22 @@ export class ProductController {
       ...(price && { price }),
       ...(locations.includes(location) && { location }),
       ...(createdAt && { createdAt }),
-      // ...(dateFrom && { dateFrom }),
-      // ...(dateTo && { dateTo }),
-      // // ...(page && { page: parseInt(page) }),
-      // ...(limit && { limit: parseInt(limit) }),
     };
-
-    console.log(orderBy);
-
+    
     const orderProductsBy = {
       ...(orderBy && { price: orderBy }),
     };
 
-    return this.productService.getAllProducts(filter, orderProductsBy);
+    const take = limit ? Math.max(1, parseInt(limit)) : 10; // Ensure a positive limit or default to 10 items per page
+    const page_ = Math.max(1, parseInt(page)) || 1; // Ensure a positive page number or default to page 1
+    const skip = (page_ - 1) * take;
+
+    return this.productService.getAllProducts(
+      filter,
+      orderProductsBy,
+      take,
+      skip,
+    );
   }
 
   // @Get('/:sellerId')

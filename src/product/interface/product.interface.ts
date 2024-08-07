@@ -19,8 +19,6 @@ export interface Filter {
   },
   dateFrom?: Date,
   dateTo?: Date,
-  page?: number,
-  limit?: number,
   price?: { 
     gte?: number, 
     lte?: number,
