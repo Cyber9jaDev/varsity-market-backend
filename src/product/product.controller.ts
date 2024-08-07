@@ -82,9 +82,6 @@ export class ProductController {
     const page_ = Math.max(1, parseInt(page)) || 1; // Ensure a positive page number or default to page 1
     const skip = (page_ - 1) * take;
 
-    console.log(take);
-    console.log(skip);
-
     const { products, countProducts } =
       await this.productService.getAllProducts(
         filter,

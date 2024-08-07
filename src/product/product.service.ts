@@ -31,7 +31,7 @@ export class ProductService {
       take,
       skip,
       where: filter,
-      orderBy: { ...orderBy },
+      orderBy,
       select: {
         id: true,
         name: true,
