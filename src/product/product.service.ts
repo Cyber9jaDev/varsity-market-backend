@@ -22,11 +22,15 @@ export class ProductService {
     orderBy: OrderBy,
     take: number,
     skip: number,
-  ): Promise<ProductResponseDto[]> {
+  ): Promise<{ products: ProductResponseDto[]; countProducts: number }> {
+    const countProducts = await this.databaseService.product.count({
+      where: filter,
+    });
+
     const products = await this.databaseService.product.findMany({
       take,
       skip,
-      where: { ...filter },
+      where: filter,
       orderBy: { ...orderBy },
       select: {
         id: true,
@@ -43,7 +47,7 @@ export class ProductService {
       },
     });
 
-    return products;
+    return { products, countProducts };
   }
 
   async getSingleProduct(id: string): Promise<ProductResponseDto> {

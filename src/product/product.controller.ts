@@ -34,7 +34,7 @@ export class ProductController {
   ) {}
 
   @Get()
-  getAllProducts(
+  async getAllProducts(
     @Query('searchText') searchText?: string,
     @Query('category') category?: CategoryType,
     @Query('location') location?: Location,
@@ -45,7 +45,7 @@ export class ProductController {
     @Query('dateTo') dateTo?: string,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
-  ): Promise<ProductResponseDto[]> {
+  ): Promise<{ products: ProductResponseDto[]; totalPages: number }> {
     const categories = Object.values(CategoryType);
     const locations = Object.values(Location);
 
@@ -73,7 +73,7 @@ export class ProductController {
       ...(locations.includes(location) && { location }),
       ...(createdAt && { createdAt }),
     };
-    
+
     const orderProductsBy = {
       ...(orderBy && { price: orderBy }),
     };
@@ -82,12 +82,21 @@ export class ProductController {
     const page_ = Math.max(1, parseInt(page)) || 1; // Ensure a positive page number or default to page 1
     const skip = (page_ - 1) * take;
 
-    return this.productService.getAllProducts(
-      filter,
-      orderProductsBy,
-      take,
-      skip,
-    );
+    console.log(take);
+    console.log(skip);
+
+    const { products, countProducts } =
+      await this.productService.getAllProducts(
+        filter,
+        orderProductsBy,
+        take,
+        skip,
+      );
+
+    return {
+      products,
+      totalPages: Math.ceil(countProducts / take), // Number of pages for pagination on the frontend
+    };
   }
 
   // @Get('/:sellerId')
