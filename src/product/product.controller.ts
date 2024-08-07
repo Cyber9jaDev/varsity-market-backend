@@ -41,8 +41,8 @@ export class ProductController {
     @Query('minPrice') minPrice?: string,
     @Query('maxPrice') maxPrice?: string,
     @Query('orderBy') orderBy?: OrderByEnum,
-    @Query('dateFrom') dateFrom?: Date,
-    @Query('dateTo') dateTo?: Date,
+    @Query('dateFrom') dateFrom?: string,
+    @Query('dateTo') dateTo?: string,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
   ): Promise<ProductResponseDto[]> {
@@ -57,12 +57,21 @@ export class ProductController {
           }
         : undefined;
 
+    const createdAt =
+      dateFrom || dateTo
+        ? {
+            ...(dateFrom && { gte: new Date(parseInt(dateFrom)) }),
+            ...(dateTo && { lte: new Date(parseInt(dateTo) )}),
+          }
+        : undefined;
+
     // Create a dynamic filter object, consisting of the queries passed
     const filter = {
       ...(searchText && { name: { search: searchText } }),
       ...(categories.includes(category) && { category }),
       ...(price && { price }),
       ...(locations.includes(location) && { location }),
+      ...(createdAt && { createdAt }),
       // ...(dateFrom && { dateFrom }),
       // ...(dateTo && { dateTo }),
       // // ...(page && { page: parseInt(page) }),

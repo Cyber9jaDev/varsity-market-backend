@@ -13,6 +13,10 @@ export interface Filter {
   searchText?: string,
   category?: CategoryType,
   location?: Location,
+  createdAt?: {
+    gte?: Date,
+    lte?: Date,
+  },
   dateFrom?: Date,
   dateTo?: Date,
   page?: number,
