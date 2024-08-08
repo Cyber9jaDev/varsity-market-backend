@@ -53,10 +53,26 @@ export class ProductService {
   async getSingleProduct(id: string): Promise<ProductResponseDto> {
     const product = await this.databaseService.product.findUnique({
       where: { id },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        category: true,
+        condition: true,
+        location: true,
+        sellerId: true,
+        createdAt: true,
+        seller: {
+          select: { id: true, email: true },
+        },
+        images: {
+          select: { secure_url: true },
+        },
+      },
     });
 
     if (!product) throw new NotFoundException();
-    console.log(product);
 
     return product;
   }
