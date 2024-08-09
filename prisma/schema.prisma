@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"]
 }
 
@@ -9,60 +9,60 @@ datasource db {
 }
 
 model User {
-  id                String   @id @default(uuid())
-  email             String   @unique
-  name              String   @db.VarChar(255)
-  password          String   @db.VarChar(255)
-  phone             String   @unique
+  id                String            @id @default(uuid())
+  email             String            @unique
+  name              String            @db.VarChar(255)
+  password          String            @db.VarChar(255)
+  phone             String            @unique
   userType          UserType
-  hasDisplayPicture Boolean  @default(false)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  hasDisplayPicture Boolean           @default(false)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
   displayPicture    Picture?
   products          Product[]
   cart              Cart? // One active cart per user
   orders            Order[] // Historical orders
-  sentMessages      Message[]    @relation("sentMessages")
-  chats             ChatParticipant[]              
+  sentMessages      Message[]         @relation("sentMessages")
+  chats             ChatParticipant[]
 }
 
 model Message {
-  id            String   @id @default(uuid())
-  content       String
-  sentAt        DateTime @default(now())
-  sender        User     @relation(name: "sentMessages", fields: [senderId], references: [id])
-  senderId      String
-  chat          Chat     @relation(fields: [chatId], references: [id])
-  chatId        String
+  id       String   @id @default(uuid())
+  content  String
+  sentAt   DateTime @default(now())
+  sender   User     @relation(name: "sentMessages", fields: [senderId], references: [id])
+  senderId String
+  chat     Chat     @relation(fields: [chatId], references: [id])
+  chatId   String
 }
 
 model Chat {
-  id            String        @id  @default(uuid())
-  createdAt     DateTime      @default(now())
-  participants  ChatParticipant[]         
-  messages      Message[] 
+  id           String            @id @default(uuid())
+  createdAt    DateTime          @default(now())
+  participants ChatParticipant[]
+  messages     Message[]
 }
 
 model ChatParticipant {
-  chat          Chat          @relation(fields: [chatId], references: [id])
+  chat          Chat   @relation(fields: [chatId], references: [id])
   chatId        String
-  participant   User          @relation(fields: [participantId], references: [id])
+  participant   User   @relation(fields: [participantId], references: [id])
   participantId String
 
   @@id([chatId, participantId])
 }
 
 model Product {
-  id          String @id @default(uuid())
+  id          String        @id @default(uuid())
   name        String
   price       Float
   description String
   location    Location
   condition   ConditionType
   category    CategoryType
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  seller      User   @relation(fields: [sellerId], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  seller      User          @relation(fields: [sellerId], references: [id])
   sellerId    String
   images      Image[]
   cartItems   CartItem[] // Products can appear in multiple cart items
@@ -84,7 +84,7 @@ model CartItem {
   product   Product  @relation(fields: [productId], references: [id])
   productId String // Not unique to allow multiple cart entries in different carts
   cart      Cart     @relation(fields: [cartId], references: [id])
-  cartId    String 
+  cartId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -110,21 +110,21 @@ model OrderItem {
 }
 
 model Image {
-  id          String  @id @default(uuid())
-  secure_url  String
-  public_id   String
-  asset_id    String
-  product     Product @relation(fields: [productId], references: [id])
-  productId   String
+  id         String  @id @default(uuid())
+  secure_url String
+  public_id  String
+  asset_id   String
+  product    Product @relation(fields: [productId], references: [id])
+  productId  String
 }
 
 model Picture {
-  id          String  @id @default(uuid())
-  secure_url  String?
-  public_id   String?
-  asset_id    String?
-  user        User    @relation(fields: [userId], references: [id])
-  userId      String  @unique
+  id         String  @id @default(uuid())
+  secure_url String?
+  public_id  String?
+  asset_id   String?
+  user       User    @relation(fields: [userId], references: [id])
+  userId     String  @unique
 }
 
 enum UserType {
@@ -162,7 +162,7 @@ enum CategoryType {
 }
 
 enum ConditionType {
-  NEW 
+  NEW
   USED
   REFURBISHED
 }
