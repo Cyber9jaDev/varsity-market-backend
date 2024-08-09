@@ -6,10 +6,8 @@ export class ChatService {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async initiateChat(){
-    // const previousChat = await this.databaseService.chat.findUnique({
-    //   where: {
-        
-    //   }
+    // const createChat = await this.databaseService.chat.create({
+    //   data: 
     // })
   }
 }

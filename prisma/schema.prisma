@@ -27,7 +27,7 @@ model User {
 }
 
 model Message {
-  id            String  @id @default(uuid())
+  id            String   @id @default(uuid())
   content       String
   sentAt        DateTime @default(now())
   sender        User     @relation(name: "sentMessages", fields: [senderId], references: [id])
@@ -48,7 +48,7 @@ model ChatParticipant {
   chatId        String
   participant   User          @relation(fields: [participantId], references: [id])
   participantId String
-  
+
   @@id([chatId, participantId])
 }
 
