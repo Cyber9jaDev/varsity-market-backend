@@ -6,6 +6,10 @@ export class ChatService {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async initiateChat(){
-    const previousChat = await this.databaseService.chat.findMany()
+    // const previousChat = await this.databaseService.chat.findUnique({
+    //   where: {
+        
+    //   }
+    // })
   }
 }

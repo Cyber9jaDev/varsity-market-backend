@@ -120,8 +120,13 @@ export class ProductController {
       throw new UnauthorizedException('Please upload at least one image');
     }
 
-    const uploadPromises = productImages.map((image) =>
-      this.cloudinaryService.uploadImage(image, 'unimarket/posts'),
+    // const uploadPromises = productImages.map((image) =>
+    //   this.cloudinaryService.uploadImage(image, 'unimarket/posts'),
+    // );
+
+    const uploadPromises = productImages.map(
+      async (image) =>
+        await this.cloudinaryService.uploadImage(image, 'unimarket/posts'),
     );
 
     const uploadedImages = await Promise.all(uploadPromises);

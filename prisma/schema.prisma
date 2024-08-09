@@ -22,9 +22,34 @@ model User {
   products          Product[]
   cart              Cart? // One active cart per user
   orders            Order[] // Historical orders
+  sentMessages      Message[]    @relation("sentMessages")
+  chats             ChatParticipant[]              
+}
 
-  chat              Chat?   @relation(fields: [chatId], references: [id])   // One chat per user
-  chatId            String? @unique
+model Message {
+  id            String  @id @default(uuid())
+  content       String
+  sentAt        DateTime @default(now())
+  sender        User     @relation(name: "sentMessages", fields: [senderId], references: [id])
+  senderId      String
+  chat          Chat     @relation(fields: [chatId], references: [id])
+  chatId        String
+}
+
+model Chat {
+  id            String        @id  @default(uuid())
+  createdAt     DateTime      @default(now())
+  participants  ChatParticipant[]         
+  messages      Message[] 
+}
+
+model ChatParticipant {
+  chat          Chat          @relation(fields: [chatId], references: [id])
+  chatId        String
+  participant   User          @relation(fields: [participantId], references: [id])
+  participantId String
+  
+  @@id([chatId, participantId])
 }
 
 model Product {
@@ -100,21 +125,6 @@ model Picture {
   asset_id    String?
   user        User    @relation(fields: [userId], references: [id])
   userId      String  @unique
-}
-
-model Chat {
-  id          String    @id  @default(uuid())
-  users       User[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-}
-
-model Message {
-  id       String  @id @default(uuid())
-  message  String?
-  senderId String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 enum UserType {
