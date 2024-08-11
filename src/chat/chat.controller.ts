@@ -7,9 +7,8 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @Post('/initiate-chat')
-  initiateChat(@Body() { senderId, receiverId }: CreateChatDto) {
-    return this.chatService.initiateChat(senderId, receiverId);
+  initiateChat(@Body() createChatDto: CreateChatDto) {
+    return this.chatService.initiateChat(createChatDto);
   }
 
-  
 }

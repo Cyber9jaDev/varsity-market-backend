@@ -1,38 +1,44 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
+import { CreateChatInterface } from './interface/chat.interface';
 
 @Injectable()
 export class ChatService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async initiateChat(senderId: string, receiverId: string) {
+  async initiateChat({ senderId, receiverId }: CreateChatInterface) {
     const previousChat = await this.databaseService.chat.findFirst({
       where: {
-        participants: {
-          every: {
-            participantId: {
-              in: [senderId, receiverId],
-            },
-          },
-        },
+        AND: [
+          { participants: { some: { participantId: senderId } } },
+          { participants: { some: { participantId: receiverId } } },
+        ],
       },
     });
 
-    if(!previousChat){
+    if (!previousChat) {
       const newChat = await this.databaseService.chat.create({
         data: {
           participants: {
             create: [
-              {participantId: senderId},
-              {participantId: receiverId},
-            ]
-          }
-        }
+              { participantId: senderId },
+              { participantId: receiverId },
+            ],
+          },
+        },
+        // data: {
+        //   participants: {
+        //     create: [
+        //       { participant: { connect: { id: senderId } } },
+        //       { participant: { connect: { id: receiverId } } },
+        //     ],
+        //   },
+        // },
       });
-      
-      return { message: 'Chat not found' };
+
+      return newChat;
     }
 
-    return { message: "Chat created"}
+    return previousChat;
   }
 }
