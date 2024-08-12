@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { CreateChatInterface } from './interface/chat.interface';
+import { CreateChatInterface, SendMessageInterface } from './interface/chat.interface';
 
 @Injectable()
 export class ChatService {
@@ -59,7 +59,11 @@ export class ChatService {
     return userChats;
   }
 
-  async userMessages () {
+  async sendMessage(chatId: string, { senderId, content }: SendMessageInterface){
     
+  }
+
+  async userMessages () {
+
   }
 }
