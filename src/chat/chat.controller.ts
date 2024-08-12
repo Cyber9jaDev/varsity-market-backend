@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { CreateChatDto } from './dtos/chat.dto';
 
@@ -11,4 +11,10 @@ export class ChatController {
     return this.chatService.initiateChat(createChatDto);
   }
 
+  @Get('/:userId')
+  getChatsByUserId(@Param('userId') userId: string) {
+    return this.chatService.userChats(userId);
+  }
+    
+  
 }

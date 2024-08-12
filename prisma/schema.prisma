@@ -49,7 +49,7 @@ model ChatParticipant {
   participant   User   @relation(fields: [participantId], references: [id])
   participantId String
 
-  @@id([chatId, participantId])
+  @@id([chatId, participantId]) 
 }
 
 model Product {
