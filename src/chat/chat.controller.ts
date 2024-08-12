@@ -1,6 +1,10 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ChatService } from './chat.service';
-import { CreateChatDto, SendMessageDto } from './dtos/chat.dto';
+import {
+  CreateChatDto,
+  SendMessageDto,
+  UserMessagesDto,
+} from './dtos/chat.dto';
 
 @Controller('chat')
 export class ChatController {
@@ -22,5 +26,14 @@ export class ChatController {
     @Body() sendMessageDto: SendMessageDto,
   ) {
     return this.chatService.sendMessage(chatId, sendMessageDto);
+  }
+
+  @Get('/:chatId/messages')
+  userMessages(
+    @Param('chatId') chatId: string,
+    @Body() userMessagesDto: UserMessagesDto,
+  ) {
+
+    return this.chatService.userMessages(chatId, userMessagesDto);
   }
 }

@@ -1,10 +1,14 @@
 export interface CreateChatInterface {
-  senderId : string,
-  receiverId : string,
+  senderId: string;
+  receiverId: string;
 }
 
 export interface SendMessageInterface {
-  chatId: string,
-  senderId: string,
-  content: string,
+  senderId: string;
+  content: string;
+}
+
+export interface UserMessagesInterface {
+  user2: string;
+  user1: string;
 }

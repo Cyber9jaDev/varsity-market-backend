@@ -1,6 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { CreateChatInterface, SendMessageInterface } from './interface/chat.interface';
+import {
+  CreateChatInterface,
+  SendMessageInterface,
+  UserMessagesInterface,
+} from './interface/chat.interface';
 
 @Injectable()
 export class ChatService {
@@ -59,11 +67,66 @@ export class ChatService {
     return userChats;
   }
 
-  async sendMessage(chatId: string, { senderId, content }: SendMessageInterface){
-    
+  async sendMessage(
+    chatId: string,
+    { senderId, content }: SendMessageInterface,
+  ) {
+    // Check if sender is allowed to use the chatId
+    const chat = await this.databaseService.chat.findFirst({
+      where: {
+        AND: {
+          id: chatId,
+          participants: { some: { participantId: senderId } },
+        },
+      },
+    });
+
+    if (!chat)
+      throw new BadRequestException(
+        'You are not allowed to send message. Please create a new chat',
+      );
+
+    const newMessage = this.databaseService.message.create({
+      data: {
+        content,
+        senderId,
+        chatId,
+      },
+    });
+
+    if (!newMessage) throw new BadRequestException();
+
+    return newMessage;
   }
 
-  async userMessages () {
+  async userMessages(chatId: string, { user1, user2 }: UserMessagesInterface) {
+    const chat = await this.databaseService.chat.findFirst({
+      where: {
+        id: chatId,
+        participants: {
+          some: {
+            participantId: {
+              in: [user1, user2],
+            },
+          },
+        },
+      },
+      select: {
+        messages: {
+          select: {
+            content: true,
+            senderId: true,
+            sentAt: true,
+          },
+        },
+      },
+    });
 
+    if (!chat) throw new BadRequestException();
+
+    if (chat.messages.length === 0)
+      throw new NotFoundException('No messages found');
+
+    return chat.messages;
   }
 }

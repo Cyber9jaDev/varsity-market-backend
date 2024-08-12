@@ -14,13 +14,19 @@ export class CreateChatDto {
 export class SendMessageDto {
   @IsNotEmpty()
   @IsString()
-  chatId: string;
-
-  @IsNotEmpty()
-  @IsString()
   senderId: string;
 
   @IsNotEmpty()
   @IsString()
   content: string;
+}
+
+export class UserMessagesDto {
+  @IsNotEmpty()
+  @IsString()
+  user1: string;
+
+  @IsNotEmpty()
+  @IsString()
+  user2: string;
 }
