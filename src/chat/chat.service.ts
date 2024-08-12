@@ -112,13 +112,7 @@ export class ChatService {
         },
       },
       select: {
-        messages: {
-          select: {
-            content: true,
-            senderId: true,
-            sentAt: true,
-          },
-        },
+        messages: true,
       },
     });
 
