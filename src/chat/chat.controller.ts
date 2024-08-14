@@ -28,12 +28,19 @@ export class ChatController {
     return this.chatService.sendMessage(chatId, sendMessageDto);
   }
 
-  @Get('/:chatId/messages')
+  @Get('/:chatId/messages/:user1/:user2')
   userMessages(
     @Param('chatId') chatId: string,
-    @Body() userMessagesDto: UserMessagesDto,
+    @Param('user1') user1: string,
+    @Param('user2') user2: string,
   ) {
+    return this.chatService.userMessages(chatId, user1, user2);
+  }
 
-    return this.chatService.userMessages(chatId, userMessagesDto);
+  @Get('/secondParticipantId/:secondParticipantId')
+  secondChatParticipant(
+    @Param('secondParticipantId') secondParticipantId: string,
+  ) {
+    return this.chatService.secondChatParticipant(secondParticipantId);
   }
 }

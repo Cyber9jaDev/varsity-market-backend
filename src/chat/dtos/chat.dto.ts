@@ -4,11 +4,11 @@ export class CreateChatDto {
 
   @IsNotEmpty()
   @IsString()
-  senderId: string;
+  user1: string;
 
   @IsNotEmpty()
   @IsString()
-  receiverId: string;
+  user2: string;
 }
 
 export class SendMessageDto {

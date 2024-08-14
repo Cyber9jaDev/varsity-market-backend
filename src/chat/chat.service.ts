@@ -14,17 +14,20 @@ import {
 export class ChatService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async initiateChat({ senderId, receiverId }: CreateChatInterface) {
+  async initiateChat({ user1, user2 }: CreateChatInterface) {
     // Ensure user cannot initiate chat
-    if (senderId === receiverId)
+    if (user1 === user2)
       throw new BadRequestException('You cannot initiate chat with yourself');
 
     const previousChat = await this.databaseService.chat.findFirst({
       where: {
         AND: [
-          { participants: { some: { participantId: senderId } } },
-          { participants: { some: { participantId: receiverId } } },
+          { participants: { some: { participantId: user1 } } },
+          { participants: { some: { participantId: user2 } } },
         ],
+      },
+      include: {
+        participants: true,
       },
     });
 
@@ -41,10 +44,13 @@ export class ChatService {
         data: {
           participants: {
             create: [
-              { participant: { connect: { id: senderId } } },
-              { participant: { connect: { id: receiverId } } },
+              { participant: { connect: { id: user1 } } },
+              { participant: { connect: { id: user2 } } },
             ],
           },
+        },
+        include: {
+          participants: true,
         },
       });
 
@@ -59,6 +65,14 @@ export class ChatService {
       where: {
         participants: {
           some: { participantId: userId },
+        },
+      },
+      select: {
+        id: true,
+        participants: {
+          select: {
+            participantId: true,
+          },
         },
       },
     });
@@ -99,7 +113,7 @@ export class ChatService {
     return newMessage;
   }
 
-  async userMessages(chatId: string, { user1, user2 }: UserMessagesInterface) {
+  async userMessages(chatId: string, user1: string, user2: string) {
     const chat = await this.databaseService.chat.findFirst({
       where: {
         id: chatId,
@@ -112,7 +126,14 @@ export class ChatService {
         },
       },
       select: {
-        messages: true,
+        messages: {
+          select: {
+            id: true,
+            content: true,
+            sentAt: true,
+            senderId: true,
+          }
+        },
       },
     });
 
@@ -122,5 +143,9 @@ export class ChatService {
       throw new NotFoundException('No messages found');
 
     return chat.messages;
+  }
+
+  async secondChatParticipant(participantId: string) {
+
   }
 }

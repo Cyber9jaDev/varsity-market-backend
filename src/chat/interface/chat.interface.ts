@@ -1,6 +1,6 @@
 export interface CreateChatInterface {
-  senderId: string;
-  receiverId: string;
+  user1: string;
+  user2: string;
 }
 
 export interface SendMessageInterface {

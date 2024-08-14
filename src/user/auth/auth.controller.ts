@@ -1,4 +1,4 @@
-import { Body, Controller, Param, ParseEnumPipe, Post, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseEnumPipe, Post, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegistrationKeyDto, SignInDto, SignUpDto } from '../dtos/auth.dto';
 import { UserType } from '@prisma/client';
@@ -48,4 +48,12 @@ export class AuthController {
   ) {
     return this.authService.generateRegistrationKey(email, userType)
   }
+
+  @Get('/secondParticipantId/:secondParticipantId')
+  secondChatParticipant(
+    @Param('secondParticipantId') secondParticipantId: string,
+  ) {
+    return this.authService.secondChatParticipant(secondParticipantId);
+  }
+  
 }
