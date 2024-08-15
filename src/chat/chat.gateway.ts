@@ -7,32 +7,51 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
+
+interface User {
+  id: string;
+  socketId: string;
+}
 
 @WebSocketGateway()
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
-  // constructor(private readonly logger: new Logger(ChatGateway.name)){}
   private readonly logger = new Logger(ChatGateway.name);
+  private users: User[] = [];
 
-  @WebSocketServer() io: Server;
+  // This decorator injects the WebSocket server instance (Socket.io instance) enabling direct communication with connected clients.
+  @WebSocketServer()
+  io: Server;
 
-  afterInit(server: any) {
-      this.logger.log('Gateway initialized');
+  afterInit() {
+    this.logger.log('Gateway initialized');
   }
 
-  handleConnection(client: any, ...args: any[]) {
-    const sockets = this.io.sockets;
-
-    this.logger.log(`Socket id: ${client.id} connected`);
-      
+  handleConnection(client: Socket) {
+    const { sockets } = this.io.sockets;
+    this.logger.log(`Client id: ${client.id} connected`);
+    this.logger.debug(`Number of connected clients: ${sockets.size}`);
+    console.log(this.users);
+    this.logger.log(this.users);
   }
 
-  @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    return 'Hello world!';
+  // Get Active Users
+  handleDisconnect(client: Socket) {
+    this.logger.log(`ClientId:${client.id} disconnected`);
+    this.users = this.users.filter((user) => user.socketId !== client.id);
+    this.io.emit('get-users', this.users);
   }
 
+  @SubscribeMessage('add-new-user')
+  handleNewUser(client: Socket, newUserId: string) {
+    if (!this.users.some((user) => user.id === newUserId)) {
+      this.users.push({ id: newUserId, socketId: client.id });
+    }
+    this.io.emit('get-users', this.users);
+  }
 
+  @SubscribeMessage('send-message')
+  handleSendMessage() {}
 }
