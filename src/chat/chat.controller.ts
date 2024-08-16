@@ -37,10 +37,10 @@ export class ChatController {
     return this.chatService.userMessages(chatId, user1, user2);
   }
 
-  @Get('/secondParticipantId/:secondParticipantId')
-  secondChatParticipant(
-    @Param('secondParticipantId') secondParticipantId: string,
-  ) {
-    return this.chatService.secondChatParticipant(secondParticipantId);
-  }
+  // @Get('/secondParticipantId/:secondParticipantId')
+  // secondChatParticipant(
+  //   @Param('secondParticipantId') secondParticipantId: string,
+  // ) {
+  //   return this.chatService.secondChatParticipant(secondParticipantId);
+  // }
 }

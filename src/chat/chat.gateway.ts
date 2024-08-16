@@ -14,6 +14,16 @@ interface User {
   socketId: string;
 }
 
+interface Message {
+  senderId: string
+  content: string
+  chatId: string
+  receiverId: {
+    participantId: string
+  }
+}
+
+
 @WebSocketGateway()
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -53,5 +63,8 @@ export class ChatGateway
   }
 
   @SubscribeMessage('send-message')
-  handleSendMessage() {}
+  handleSendMessage(client: Socket, data: Message) {
+    
+    this.logger.log(data);
+  }
 }

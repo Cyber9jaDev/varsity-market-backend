@@ -145,7 +145,4 @@ export class ChatService {
     return chat.messages;
   }
 
-  async secondChatParticipant(participantId: string) {
-
-  }
 }
