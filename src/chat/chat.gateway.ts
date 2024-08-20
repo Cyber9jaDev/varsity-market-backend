@@ -15,14 +15,13 @@ interface User {
 }
 
 interface Message {
-  senderId: string
-  content: string
-  chatId: string
+  senderId: string;
+  content: string;
+  chatId: string;
   receiverId: {
-    participantId: string
-  }
+    participantId: string;
+  };
 }
-
 
 @WebSocketGateway()
 export class ChatGateway
@@ -64,7 +63,6 @@ export class ChatGateway
 
   @SubscribeMessage('send-message')
   handleSendMessage(client: Socket, data: Message) {
-    
     this.logger.log(data);
   }
 }
