@@ -39,6 +39,8 @@ export class ProductService {
       where: filter,
     });
 
+    console.log(filter)
+
     const products = await this.databaseService.product.findMany({
       take,
       skip,
@@ -118,7 +120,8 @@ export class ProductService {
           productId: product.id,
         })),
       });
-      return new ProductResponseDto(product);
+      // return new ProductResponseDto(product);
+      return product;
     });
   }
 

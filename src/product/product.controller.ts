@@ -5,6 +5,8 @@ import {
   Delete,
   Get,
   Param,
+  ParseEnumPipe,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -115,15 +117,18 @@ export class ProductController {
   })
   async getAllProducts(
     @Query('searchText') searchText?: string,
-    @Query('category') category?: CategoryType,
-    @Query('location') location?: Location,
-    @Query('minPrice') minPrice?: number,
-    @Query('maxPrice') maxPrice?: number,
-    @Query('orderBy') orderBy?: OrderByEnum,
+    @Query('category', new ParseEnumPipe(CategoryType, { optional: true }))
+    category?: CategoryType,
+    @Query('location', new ParseEnumPipe(Location, { optional: true }))
+    location?: Location,
+    @Query('minPrice', new ParseIntPipe({ optional: true })) minPrice?: number,
+    @Query('maxPrice', new ParseIntPipe({ optional: true })) maxPrice?: number,
+    @Query('orderBy', new ParseEnumPipe(OrderByEnum, { optional: true }))
+    orderBy?: OrderByEnum,
     @Query('dateFrom') dateFrom?: Date,
     @Query('dateTo') dateTo?: Date,
-    @Query('page') page?: number,
-    @Query('limit') limit?: number,
+    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
   ): Promise<{ products: ProductResponseDto[]; totalPages: number }> {
     const categories = Object.values(CategoryType);
     const locations = Object.values(Location);
@@ -139,9 +144,7 @@ export class ProductController {
     const createdAt =
       dateFrom || dateTo
         ? {
-            // ...(dateFrom && { gte: new Date(parseInt(dateFrom)) }),
             ...(dateFrom && { gte: new Date(dateFrom) }),
-            // ...(dateTo && { lte: new Date(parseInt(dateTo)) }),
             ...(dateTo && { lte: new Date(dateTo) }),
           }
         : undefined;
@@ -149,7 +152,11 @@ export class ProductController {
     // Create a dynamic filter object, consisting of the queries passed
     const filter = {
       ...(searchText && {
-        name: { search: searchText.split(' ').join(' & ') },
+        // name: { search: searchText.split(' ').join(' & ') },
+        name: {
+          contains: searchText.split(' ').join(' & '),
+          mode: 'insensitive',
+        },
       }),
       ...(categories.includes(category) && { category }),
       ...(price && { price }),
@@ -161,9 +168,7 @@ export class ProductController {
       ...(orderBy && { price: orderBy }),
     };
 
-    // const take = limit ? Math.max(1, parseInt(limit)) : 10; // Ensure a positive limit or default to 10 items per page
     const take = limit ? Math.max(1, limit) : 10; // Ensure a positive limit or default to 10 items per page
-    // const page_ = Math.max(1, parseInt(page)) || 1; // Ensure a positive page number or default to page 1
     const page_ = Math.max(1, page) || 1; // Ensure a positive page number or default to page 1
     const skip = (page_ - 1) * take;
 
