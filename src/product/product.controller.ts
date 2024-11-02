@@ -26,7 +26,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { OrderByEnum } from './interface/product.interface';
 
-@Controller('product')
+@Controller('products')
 export class ProductController {
   constructor(
     private readonly productService: ProductService,
