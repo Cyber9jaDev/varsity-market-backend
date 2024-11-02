@@ -7,8 +7,7 @@ import {
   SignUpDto,
 } from '../dtos/auth.dto';
 import { UserType } from '@prisma/client';
-import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
-// import * as bcrypt from 'bcryptjs';
+import { ApiBody, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -87,7 +86,47 @@ export class AuthController {
   }
 
   @Post('/signin')
-  signin(@Body() body: SignInDto) {
+  @ApiResponse({
+    status: 201,
+    description: 'Created',
+    schema: {
+      example: {
+        id: '02b4c5a9-aef2-4189-8f0e-aa75df03f4b6',
+        email: 'seller4@gmail.com',
+        name: 'Seller 4',
+        phone: '8013428022',
+        userType: 'SELLER',
+        token: 'Token',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+    schema: {
+      example: {
+        message: 'Invalid credentials',
+        error: 'Bad Request',
+        statusCode: 400,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    schema: {
+      example: {
+        statusCode: 500,
+        message: 'Internal server error',
+        error: 'Internal Server Error',
+      },
+    },
+  })
+  @ApiBody({
+    required: true,
+    type: SignInDto,
+  })
+  signin(@Body() body: SignInDto): Promise<AuthResponseDto> {
     return this.authService.signIn(body);
   }
 

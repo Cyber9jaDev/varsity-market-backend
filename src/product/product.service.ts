@@ -13,6 +13,18 @@ import {
   UpdateProductInterface,
 } from './interface/product.interface';
 
+const selectOptions = {
+  id: true,
+  name: true,
+  description: true,
+  price: true,
+  condition: true,
+  location: true,
+  seller: { select: { name: true, phone: true, email: true } },
+  images: { select: { secure_url: true } },
+  createdAt: true,
+};
+
 @Injectable()
 export class ProductService {
   constructor(private readonly databaseService: DatabaseService) {}
@@ -30,21 +42,9 @@ export class ProductService {
     const products = await this.databaseService.product.findMany({
       take,
       skip,
-      where: filter,
+      where: { ...filter },
       orderBy,
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        price: true,
-        category: true,
-        condition: true,
-        location: true,
-        sellerId: true,
-        images: true,
-        createdAt: true,
-        updatedAt: true,
-      },
+      select: { ...selectOptions },
     });
 
     return { products, countProducts };

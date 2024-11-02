@@ -98,8 +98,6 @@ export class ProductResponseDto {
   location: Location;
   price: number;
   condition: ConditionType;
-  category: CategoryType;
-  sellerId: string;
 
   constructor(partial: Partial<ProductResponseDto>) {
     Object.assign(this, partial);
