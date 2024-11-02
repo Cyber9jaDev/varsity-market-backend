@@ -65,9 +65,13 @@ export class AuthService {
     }
   }
 
-  async signIn({ email, password }: Partial<AuthParams>) {
+  async signIn({
+    email,
+    password,
+  }: Partial<AuthParams>): Promise<AuthResponseDto> {
     const user = await this.databaseService.user.findUnique({
       where: { email },
+      select: { ...select, password: true },
     });
 
     if (!user) {
@@ -81,6 +85,8 @@ export class AuthService {
     }
 
     const token = this.generateJWT(user.id, user.name);
+
+    delete user.password
 
     return { ...user, token };
   }

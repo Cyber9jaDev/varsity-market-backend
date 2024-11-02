@@ -25,6 +25,7 @@ import { Roles } from 'src/decorator/roles.decorator';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { OrderByEnum } from './interface/product.interface';
+import { ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 @Controller('products')
 export class ProductController {
@@ -34,17 +35,53 @@ export class ProductController {
   ) {}
 
   @Get()
+  @ApiQuery({ example: 'Toyota Camry', required: false, name: 'searchText', type: "string" })
+  @ApiQuery({ required: false, name: 'category', enum: CategoryType})
+  @ApiQuery({ required: false, name: 'orderBy', enum: OrderByEnum})
+  @ApiQuery({ required: false, name: 'location', enum: Location })
+  @ApiQuery({ example: 10000, required: false, name: 'minPrice', type: "number" })
+  @ApiQuery({ example: 500000, required: false, name: 'maxPrice', type: "number" })
+  @ApiQuery({ example: '2020-08-12T16:16:32.282Z', required: false, name: 'dateFrom', type: Date })
+  @ApiQuery({ example: '2024-08-12T16:16:32.282Z', required: false, name: 'dateTo', type: Date })
+  @ApiQuery({ example: 1, required: false, name: 'page', type: "page number" })
+  @ApiQuery({ example: 5, required: false, name: 'limit', type: "number", description: "Number of products to be returned per page" })
+  @ApiResponse({
+    status: 200,
+    description: 'Ok',
+    schema: {
+      example: {
+        id: '02b4c5a9-aef2-4189-8f0e-aa75df03f4b6',
+        email: 'seller4@gmail.com',
+        name: 'Seller 4',
+        phone: '8013428022',
+        userType: 'SELLER',
+        token: 'Token',
+      },
+    },
+  })
+
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    schema: {
+      example: {
+        statusCode: 500,
+        message: 'Internal server error',
+        error: 'Internal Server Error',
+      },
+    },
+  })
   async getAllProducts(
     @Query('searchText') searchText?: string,
     @Query('category') category?: CategoryType,
     @Query('location') location?: Location,
-    @Query('minPrice') minPrice?: string,
-    @Query('maxPrice') maxPrice?: string,
+    @Query('minPrice') minPrice?: number,
+    @Query('maxPrice') maxPrice?: number,
     @Query('orderBy') orderBy?: OrderByEnum,
-    @Query('dateFrom') dateFrom?: string,
-    @Query('dateTo') dateTo?: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
+    @Query('dateFrom') dateFrom?: Date,
+    @Query('dateTo') dateTo?: Date,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
   ): Promise<{ products: ProductResponseDto[]; totalPages: number }> {
     const categories = Object.values(CategoryType);
     const locations = Object.values(Location);
@@ -52,16 +89,18 @@ export class ProductController {
     const price =
       minPrice || maxPrice
         ? {
-            ...(minPrice && { gte: parseFloat(minPrice) }),
-            ...(maxPrice && { lte: parseFloat(maxPrice) }),
+            ...(minPrice && { gte: minPrice }),
+            ...(maxPrice && { lte: maxPrice }),
           }
         : undefined;
 
     const createdAt =
       dateFrom || dateTo
         ? {
-            ...(dateFrom && { gte: new Date(parseInt(dateFrom)) }),
-            ...(dateTo && { lte: new Date(parseInt(dateTo)) }),
+            // ...(dateFrom && { gte: new Date(parseInt(dateFrom)) }),
+            ...(dateFrom && { gte: new Date((dateFrom)) }),
+            // ...(dateTo && { lte: new Date(parseInt(dateTo)) }),
+            ...(dateTo && { lte: new Date(dateTo) }),
           }
         : undefined;
 
@@ -78,8 +117,10 @@ export class ProductController {
       ...(orderBy && { price: orderBy }),
     };
 
-    const take = limit ? Math.max(1, parseInt(limit)) : 10; // Ensure a positive limit or default to 10 items per page
-    const page_ = Math.max(1, parseInt(page)) || 1; // Ensure a positive page number or default to page 1
+    // const take = limit ? Math.max(1, parseInt(limit)) : 10; // Ensure a positive limit or default to 10 items per page
+    const take = limit ? Math.max(1, limit) : 10; // Ensure a positive limit or default to 10 items per page
+    // const page_ = Math.max(1, parseInt(page)) || 1; // Ensure a positive page number or default to page 1
+    const page_ = Math.max(1, page) || 1; // Ensure a positive page number or default to page 1
     const skip = (page_ - 1) * take;
 
     const { products, countProducts } =
