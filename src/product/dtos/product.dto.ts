@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { CategoryType, ConditionType, Location } from '@prisma/client';
 import { Exclude, Type } from 'class-transformer';
 import {
@@ -23,6 +24,7 @@ export class ImageDto {
 }
 
 export class CreateProductDto {
+  @ApiProperty({})
   @IsNotEmpty()
   @IsString()
   name: string;

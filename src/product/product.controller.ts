@@ -25,7 +25,7 @@ import { Roles } from 'src/decorator/roles.decorator';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { OrderByEnum } from './interface/product.interface';
-import { ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 @Controller('products')
 export class ProductController {
@@ -182,6 +182,61 @@ export class ProductController {
   }
 
   @Get('/:productId')
+  @ApiParam({
+    name: 'productId',
+    type: 'string',
+    required: true,
+    example: '58b7f14f-dcdd-4957-867e-0cf7f88b00fb',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Ok',
+    schema: {
+      example: {
+        id: '58b7f14f-dcdd-4957-867e-0cf7f88b00fb',
+        name: 'Range Rover',
+        description: 'Range Rover',
+        price: 150000,
+        condition: 'NEW',
+        location: 'OAU',
+        seller: {
+          name: 'Seller 1',
+          phone: '8012228021',
+          email: 'seller1@gmail.com',
+        },
+        images: [
+          {
+            secure_url:
+              'https://res.cloudinary.com/unimarket/image/upload/v1723234978/unimarket/posts/qwb17b2au7ghhaly9t3n.jpg',
+          },
+        ],
+        createdAt: '2024-08-09T20:22:56.624Z',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    schema: {
+      example: {
+        statusCode: 500,
+        message: 'Internal server error',
+        error: 'Internal Server Error',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Not Found',
+    schema: {
+      example: {
+        statusCode: 404,
+        message: 'Not Found',
+        error: 'Not Found',
+      },
+    },
+  })
+  @ApiOperation({ summary: 'Get a single product by id' })
   getSingleProduct(
     @Param('productId') productId: string,
   ): Promise<ProductResponseDto> {
