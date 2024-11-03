@@ -39,8 +39,6 @@ export class ProductService {
       where: filter,
     });
 
-    console.log(filter)
-
     const products = await this.databaseService.product.findMany({
       take,
       skip,

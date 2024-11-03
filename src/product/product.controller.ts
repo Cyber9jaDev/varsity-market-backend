@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   ParseEnumPipe,
   ParseIntPipe,
@@ -83,24 +84,28 @@ export class ProductController {
     description: 'Ok',
     schema: {
       example: {
-        id: '58b7f14f-dcdd-4957-867e-0cf7f88b00fb',
-        name: 'Range Rover',
-        description: 'Range Rover',
-        price: 150000,
-        condition: 'NEW',
-        location: 'OAU',
-        createdAt: '2024-08-09T20:22:56.624Z',
-        seller: {
-          name: 'Seller 1',
-          phone: '8012228021',
-          email: 'seller1@gmail.com',
-        },
-        images: [
-          {
-            secure_url:
-              'https://res.cloudinary.com/unimarket/image/upload/v1723234978/unimarket/posts/qwb17b2au7ghhaly9t3n.jpg',
+      
+        products: {
+          id: '58b7f14f-dcdd-4957-867e-0cf7f88b00fb',
+          name: 'Range Rover',
+          description: 'Range Rover',
+          price: 150000,
+          condition: 'NEW',
+          location: 'OAU',
+          createdAt: '2024-08-09T20:22:56.624Z',
+          seller: {
+            name: 'Seller 1',
+            phone: '8012228021',
+            email: 'seller1@gmail.com',
           },
-        ],
+          images: [
+            {
+              secure_url:
+                'https://res.cloudinary.com/unimarket/image/upload/v1723234978/unimarket/posts/qwb17b2au7ghhaly9t3n.jpg',
+            },
+          ],
+        },
+        totalPages: 1,
       },
     },
   })
@@ -117,18 +122,15 @@ export class ProductController {
   })
   async getAllProducts(
     @Query('searchText') searchText?: string,
-    @Query('category', new ParseEnumPipe(CategoryType, { optional: true }))
-    category?: CategoryType,
-    @Query('location', new ParseEnumPipe(Location, { optional: true }))
-    location?: Location,
-    @Query('minPrice', new ParseIntPipe({ optional: true })) minPrice?: number,
-    @Query('maxPrice', new ParseIntPipe({ optional: true })) maxPrice?: number,
-    @Query('orderBy', new ParseEnumPipe(OrderByEnum, { optional: true }))
-    orderBy?: OrderByEnum,
+    @Query('category') category?: CategoryType,
+    @Query('location') location?: Location,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @Query('minPrice') minPrice?: number,
+    @Query('maxPrice') maxPrice?: number,
+    @Query('orderBy') orderBy?: OrderByEnum,
     @Query('dateFrom') dateFrom?: Date,
     @Query('dateTo') dateTo?: Date,
-    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
   ): Promise<{ products: ProductResponseDto[]; totalPages: number }> {
     const categories = Object.values(CategoryType);
     const locations = Object.values(Location);
@@ -152,7 +154,6 @@ export class ProductController {
     // Create a dynamic filter object, consisting of the queries passed
     const filter = {
       ...(searchText && {
-        // name: { search: searchText.split(' ').join(' & ') },
         name: {
           contains: searchText.split(' ').join(' & '),
           mode: 'insensitive',
@@ -164,9 +165,7 @@ export class ProductController {
       ...(createdAt && { createdAt }),
     };
 
-    const orderProductsBy = {
-      ...(orderBy && { price: orderBy }),
-    };
+    const orderProductsBy = { ...(orderBy && { price: orderBy }) };
 
     const take = limit ? Math.max(1, limit) : 10; // Ensure a positive limit or default to 10 items per page
     const page_ = Math.max(1, page) || 1; // Ensure a positive page number or default to page 1
@@ -198,7 +197,7 @@ export class ProductController {
     return this.productService.getSingleProduct(productId);
   }
 
-  @Post()
+  @Post("/add-product")
   @Roles(UserType.SELLER)
   @UseInterceptors(FilesInterceptor('productImages'))
   async addProduct(
