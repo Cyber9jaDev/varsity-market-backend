@@ -84,7 +84,6 @@ export class ProductController {
     description: 'Ok',
     schema: {
       example: {
-      
         products: {
           id: '58b7f14f-dcdd-4957-867e-0cf7f88b00fb',
           name: 'Range Rover',
@@ -185,11 +184,6 @@ export class ProductController {
     };
   }
 
-  // @Get('/:sellerId')
-  // getProductsBySeller(): Promise<ProductResponseDto[]> {
-  //   return this.productService.getAllProducts();
-  // }
-
   @Get('/:productId')
   getSingleProduct(
     @Param('productId') productId: string,
@@ -197,7 +191,7 @@ export class ProductController {
     return this.productService.getSingleProduct(productId);
   }
 
-  @Post("/add-product")
+  @Post('/add-product')
   @Roles(UserType.SELLER)
   @UseInterceptors(FilesInterceptor('productImages'))
   async addProduct(
@@ -208,10 +202,6 @@ export class ProductController {
     if (!productImages || productImages.length === 0) {
       throw new UnauthorizedException('Please upload at least one image');
     }
-
-    // const uploadPromises = productImages.map((image) =>
-    //   this.cloudinaryService.uploadImage(image, 'unimarket/posts'),
-    // );
 
     const uploadPromises = productImages.map(
       async (image) =>
