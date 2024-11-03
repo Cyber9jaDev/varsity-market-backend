@@ -4,10 +4,7 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
-  ParseEnumPipe,
-  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -154,7 +151,7 @@ export class ProductController {
     const filter = {
       ...(searchText && {
         name: {
-          contains: searchText.split(' ').join(' & '),
+          search: searchText.split(' ').join(' & '),
           mode: 'insensitive',
         },
       }),
