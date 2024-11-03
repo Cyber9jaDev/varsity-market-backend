@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CategoryType, ConditionType, Location } from '@prisma/client';
-import { Exclude, Type } from 'class-transformer';
 import {
   IsEnum,
   IsNotEmpty,
@@ -24,27 +23,32 @@ export class ImageDto {
 }
 
 export class CreateProductDto {
-  @ApiProperty({})
+  @ApiProperty({ type: 'string', example: 'Samsung Galaxy 12 Notebook' })
   @IsNotEmpty()
   @IsString()
   name: string;
 
+  @ApiProperty({ type: 'string', example: 'Samsung Galaxy 12 Notebook' })
   @IsNotEmpty()
   @IsString()
   description: string;
 
+  @ApiProperty({ enum: Location, example: Location.OAU })
   @IsNotEmpty()
   @IsEnum(Location)
   location: Location;
 
+  @ApiProperty({ type: 'number', example: 120000 })
   @IsNotEmpty()
   @IsNumber()
   price: number;
 
+  @ApiProperty({ enum: ConditionType, example: ConditionType.USED })
   @IsNotEmpty()
   @IsEnum(ConditionType)
   condition: ConditionType;
 
+  @ApiProperty({ enum: CategoryType, example: CategoryType.BOOK })
   @IsNotEmpty()
   @IsEnum(CategoryType)
   category: CategoryType;

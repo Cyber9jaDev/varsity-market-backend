@@ -25,7 +25,13 @@ import { Roles } from 'src/decorator/roles.decorator';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { OrderByEnum } from './interface/product.interface';
-import { ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+} from '@nestjs/swagger';
 
 @Controller('products')
 export class ProductController {
@@ -246,9 +252,16 @@ export class ProductController {
   @Post('/add-product')
   @Roles(UserType.SELLER)
   @UseInterceptors(FilesInterceptor('productImages'))
+  @ApiBody({
+    required: true,
+    type: CreateProductDto,
+    schema: {
+      example: CreateProductDto,
+    },
+  })
   async addProduct(
     @Body() createProductDto: CreateProductDto,
-    @User() user: UserEntity, // This user details will come from the interceptor
+    @User() user: UserEntity,
     @UploadedFiles() productImages: Express.Multer.File[],
   ): Promise<ProductResponseDto> {
     if (!productImages || productImages.length === 0) {
