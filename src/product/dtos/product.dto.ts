@@ -23,32 +23,48 @@ export class ImageDto {
 }
 
 export class CreateProductDto {
-  @ApiProperty({ type: 'string', example: 'Samsung Galaxy 12 Notebook' })
+  @ApiProperty({
+    type: 'string',
+    example: 'Samsung Galaxy 12 Notebook',
+    required: true,
+  })
   @IsNotEmpty()
   @IsString()
   name: string;
 
-  @ApiProperty({ type: 'string', example: 'Samsung Galaxy 12 Notebook' })
+  @ApiProperty({
+    type: 'string',
+    example: 'Samsung Galaxy 12 Notebook',
+    required: true,
+  })
   @IsNotEmpty()
   @IsString()
   description: string;
 
-  @ApiProperty({ enum: Location, example: Location.OAU })
+  @ApiProperty({ enum: Location, example: Location.OAU, required: true })
   @IsNotEmpty()
   @IsEnum(Location)
   location: Location;
 
-  @ApiProperty({ type: 'number', example: 120000 })
+  @ApiProperty({ type: 'number', example: 120000, required: true })
   @IsNotEmpty()
   @IsNumber()
   price: number;
 
-  @ApiProperty({ enum: ConditionType, example: ConditionType.USED })
+  @ApiProperty({
+    enum: ConditionType,
+    example: ConditionType.USED,
+    required: true,
+  })
   @IsNotEmpty()
   @IsEnum(ConditionType)
   condition: ConditionType;
 
-  @ApiProperty({ enum: CategoryType, example: CategoryType.BOOK })
+  @ApiProperty({
+    enum: CategoryType,
+    example: CategoryType.BOOK,
+    required: true,
+  })
   @IsNotEmpty()
   @IsEnum(CategoryType)
   category: CategoryType;

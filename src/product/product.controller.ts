@@ -20,13 +20,20 @@ import {
 } from './dtos/product.dto';
 import { User } from 'src/user/decorators/user.decorator';
 import { UserEntity } from 'src/user/interface/user.interface';
-import { CategoryType, Location, UserType } from '@prisma/client';
+import {
+  CategoryType,
+  ConditionType,
+  Location,
+  UserType,
+} from '@prisma/client';
 import { Roles } from 'src/decorator/roles.decorator';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { OrderByEnum } from './interface/product.interface';
 import {
+  ApiBearerAuth,
   ApiBody,
+  ApiConsumes,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -251,12 +258,53 @@ export class ProductController {
 
   @Post('/add-product')
   @Roles(UserType.SELLER)
+  @ApiBearerAuth('JWT_Auth')
+  @ApiOperation({
+    summary: 'Add new product',
+    description: 'Only a verified SELLER can add new product',
+  })
+  @ApiConsumes('multipart/form-data')
   @UseInterceptors(FilesInterceptor('productImages'))
   @ApiBody({
     required: true,
-    type: CreateProductDto,
     schema: {
-      example: CreateProductDto,
+      type: 'object',
+      required: [
+        'name',
+        'description',
+        'price',
+        'location',
+        'category',
+        'condition',
+        'productImages',
+      ],
+      properties: {
+        name: { type: 'string', example: 'Samsung Galaxy 12 Notebook' },
+        description: { type: 'string', example: 'Samsung Galaxy 12 Notebook' },
+        price: { type: 'number' },
+        location: {
+          type: 'string',
+          enum: Object.values(Location),
+          example: Location.OAU,
+        },
+        condition: {
+          type: 'string',
+          enum: Object.values(ConditionType),
+          example: ConditionType.NEW,
+        },
+        category: {
+          type: 'string',
+          enum: Object.values(CategoryType),
+          example: CategoryType.COMPUTER,
+        },
+        productImages: {
+          type: 'array',
+          items: {
+            type: 'string',
+            format: 'binary',
+          },
+        },
+      },
     },
   })
   async addProduct(
@@ -268,6 +316,7 @@ export class ProductController {
       throw new UnauthorizedException('Please upload at least one image');
     }
 
+    // Upload images to cloudinary
     const uploadPromises = productImages.map(
       async (image) =>
         await this.cloudinaryService.uploadImage(image, 'unimarket/posts'),

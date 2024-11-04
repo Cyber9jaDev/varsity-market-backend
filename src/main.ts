@@ -14,9 +14,10 @@ async function bootstrap() {
   }));
   const config = new DocumentBuilder()
     .setTitle('Varsity Market Backend')
-    .setDescription('TVarsity Market Backend')
+    .setDescription('Varsity Market Backend')
     .setVersion('1.0')
     .addTag('Varsity Market')
+    .addBearerAuth()
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
