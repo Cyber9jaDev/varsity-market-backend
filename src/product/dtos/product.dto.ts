@@ -9,17 +9,10 @@ import {
 } from 'class-validator';
 
 export class ImageDto {
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   secure_url: string;
-
-  // @IsNotEmpty()
-  // @IsString()
-  // asset_id: string;
-
-  // @IsNotEmpty()
-  // @IsString()
-  // public_id: string;
 }
 
 export class CreateProductDto {
@@ -76,31 +69,53 @@ export class CreateProductDto {
 }
 
 export class UpdateProductDto {
+  @ApiProperty({
+    type: 'string',
+    example: 'Samsung Galaxy 12 Notebook',
+    required: false,
+  })
   @IsOptional()
   @IsNotEmpty()
   @IsString()
   name?: string;
 
+  @ApiProperty({
+    type: 'string',
+    example: 'Samsung Galaxy 12 Notebook',
+    required: false,
+  })
   @IsOptional()
   @IsNotEmpty()
   @IsString()
   description?: string;
 
+  @ApiProperty({ enum: Location, example: Location.OAU, required: false })
   @IsOptional()
   @IsNotEmpty()
   @IsEnum(Location)
   location?: Location;
 
+  @ApiProperty({ type: 'number', example: 120000, required: false })
   @IsOptional()
   @IsNotEmpty()
   @IsNumber()
   price?: number;
 
+  @ApiProperty({
+    enum: ConditionType,
+    example: ConditionType.USED,
+    required: false,
+  })
   @IsOptional()
   @IsNotEmpty()
   @IsEnum(ConditionType)
   condition?: ConditionType;
 
+  @ApiProperty({
+    enum: CategoryType,
+    example: CategoryType.BOOK,
+    required: false,
+  })
   @IsOptional()
   @IsNotEmpty()
   @IsEnum(CategoryType)
@@ -114,13 +129,20 @@ export class UpdateProductDto {
 }
 
 export class ProductResponseDto {
+  @ApiProperty({ example: '58b7f14f-dcdd-4957-867e-0cf7f88b00fb' })
   id: string;
+  @ApiProperty({ example: 'testing Microphone' })
   name: string;
+  @ApiProperty()
   description: string;
+  @ApiProperty()
   location: Location;
+  @ApiProperty()
   price: number;
+  @ApiProperty()
   condition: ConditionType;
-  images: ImageDto[]
+  @ApiProperty()
+  images: ImageDto[];
 
   constructor(partial: Partial<ProductResponseDto>) {
     Object.assign(this, partial);

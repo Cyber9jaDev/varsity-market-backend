@@ -47,9 +47,11 @@ export class ProductController {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
+  // Get all products
   @Get()
+  @ApiOperation({ summary: 'Get all products' })
   @ApiQuery({
-    example: 'Toyota Camry',
+    example: '',
     required: false,
     name: 'searchText',
     type: 'string',
@@ -58,25 +60,27 @@ export class ProductController {
   @ApiQuery({ required: false, name: 'orderBy', enum: OrderByEnum })
   @ApiQuery({ required: false, name: 'location', enum: Location })
   @ApiQuery({
-    example: 10000,
+    // example: 10000,
     required: false,
     name: 'minPrice',
     type: 'number',
+    minimum: 1,
+    maximum: 10000000,
   })
   @ApiQuery({
-    example: 500000,
+    // example: 500000,
     required: false,
     name: 'maxPrice',
     type: 'number',
   })
   @ApiQuery({
-    example: '2020-08-12T16:16:32.282Z',
+    example: '2010-08-12T16:16:32.282Z',
     required: false,
     name: 'dateFrom',
     type: Date,
   })
   @ApiQuery({
-    example: '2024-08-12T16:16:32.282Z',
+    example: '2024-12-12T16:16:32.282Z',
     required: false,
     name: 'dateTo',
     type: Date,
@@ -92,6 +96,7 @@ export class ProductController {
   @ApiResponse({
     status: 200,
     description: 'Ok',
+    // type: [ProductResponseDto],
     schema: {
       example: {
         products: {
@@ -194,6 +199,7 @@ export class ProductController {
     };
   }
 
+  // Find a single product
   @Get('/:productId')
   @ApiParam({
     name: 'productId',
@@ -256,6 +262,7 @@ export class ProductController {
     return this.productService.getSingleProduct(productId);
   }
 
+  // Add a new product
   @Post('/add-product')
   @Roles(UserType.SELLER)
   @ApiBearerAuth()
@@ -402,7 +409,46 @@ export class ProductController {
     );
   }
 
+  // Update a single product
   @Put('/:productId')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update a product' })
+  @ApiParam({ name: 'productId', required: true })
+  @ApiResponse({ status: 200, description: 'Ok', type: UpdateProductDto })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    schema: {
+      example: {
+        message: 'An error has occurred, please try again',
+        error: 'Internal Server Error',
+        statusCode: 500,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+    schema: {
+      example: {
+        message: 'You are not allowed tp update product',
+        error: 'Forbidden',
+        statusCode: 403,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Mot Found',
+    schema: {
+      example: {
+        message: 'No product found',
+        error: 'Not Found',
+        statusCode: 404,
+      },
+    },
+  })
+
   @Roles(UserType.SELLER)
   async updateProduct(
     @Param('productId') productId: string,
