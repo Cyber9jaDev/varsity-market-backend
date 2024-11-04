@@ -258,7 +258,7 @@ export class ProductController {
 
   @Post('/add-product')
   @Roles(UserType.SELLER)
-  @ApiBearerAuth('JWT_Auth')
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Add new product',
     description: 'Only a verified SELLER can add new product',
@@ -304,6 +304,66 @@ export class ProductController {
             format: 'binary',
           },
         },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Created',
+    schema: {
+      example: {
+        id: '2fa0d359-497d-45cb-9e53-431170ca18ed',
+        name: 'Yamaha 50CC Bike',
+        description: 'Yamaha 50CC Bike',
+        price: 20000,
+        category: 'BIKE',
+        condition: 'USED',
+        location: 'UI',
+        seller: {
+          name: 'Seller 1',
+          phone: '8012228021',
+          email: 'seller1@gmail.com',
+        },
+        images: [
+          {
+            secure_url:
+              'https://res.cloudinary.com/unimarket/image/upload/v1730728428/unimarket/posts/mfktzcxhefc7otlgxthj.jpg',
+          },
+        ],
+        createdAt: '2024-11-04T11:50:59.775Z',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+    schema: {
+      example: {
+        message: 'An error',
+        error: 'bad Request',
+        statusCode: 400,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+    schema: {
+      example: {
+        message: 'You are not allowed to add new product',
+        error: 'Forbidden',
+        statusCode: 403,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    schema: {
+      example: {
+        message: 'An error has occurred, please try again',
+        error: 'Internal Server Error',
+        statusCode: 500,
       },
     },
   })

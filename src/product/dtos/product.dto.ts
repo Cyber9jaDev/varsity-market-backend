@@ -13,13 +13,13 @@ export class ImageDto {
   @IsString()
   secure_url: string;
 
-  @IsNotEmpty()
-  @IsString()
-  asset_id: string;
+  // @IsNotEmpty()
+  // @IsString()
+  // asset_id: string;
 
-  @IsNotEmpty()
-  @IsString()
-  public_id: string;
+  // @IsNotEmpty()
+  // @IsString()
+  // public_id: string;
 }
 
 export class CreateProductDto {
@@ -120,6 +120,7 @@ export class ProductResponseDto {
   location: Location;
   price: number;
   condition: ConditionType;
+  images: ImageDto[]
 
   constructor(partial: Partial<ProductResponseDto>) {
     Object.assign(this, partial);

@@ -64,17 +64,10 @@ export class ProductService {
   async addProduct(
     sellerId: string,
     images: ProductImageParams[],
-    {
-      name,
-      description,
-      price,
-      category,
-      condition,
-      location,
-    }: createProductParams,
+    { name, description, price, category, condition, location }: createProductParams,
   ): Promise<ProductResponseDto> {
-    return await this.databaseService.$transaction(async (prisma) => {
-      const product = await prisma.product.create({
+    return await this.databaseService.$transaction(async (db) => {
+      const product = await db.product.create({
         data: {
           name,
           description,
@@ -84,26 +77,23 @@ export class ProductService {
           location,
           sellerId,
         },
-        select: {
-          id: true,
-          name: true,
-          description: true,
-          price: true,
-          category: true,
-          condition: true,
-          location: true,
-          sellerId: true,
-        },
+        select: { ...selectOptions },
       });
 
-      await prisma.image.createMany({
+      await db.image.createMany({
         data: images.map((image) => ({
           ...image,
           productId: product.id,
         })),
       });
-      // return new ProductResponseDto(product);
-      return product;
+
+      const createdImages = await db.image.findMany({
+        where: { productId: product.id},
+        select: { secure_url: true }
+      })
+
+      return new ProductResponseDto({...product, images: createdImages});
+      // return {...product, images: createdImages};
     });
   }
 
