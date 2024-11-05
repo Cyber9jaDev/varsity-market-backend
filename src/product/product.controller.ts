@@ -430,11 +430,22 @@ export class ProductController {
     },
   })
   @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+    schema: {
+      example: {
+        message: 'Bad Request',
+        error: 'Bad Request',
+        statusCode: 400,
+      },
+    },
+  })
+  @ApiResponse({
     status: 403,
     description: 'Forbidden',
     schema: {
       example: {
-        message: 'You are not allowed tp update product',
+        message: 'You are not allowed to update this product',
         error: 'Forbidden',
         statusCode: 403,
       },
@@ -468,6 +479,66 @@ export class ProductController {
     return this.productService.updateProduct(productId, updateProductDto);
   }
 
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Delete a product',
+    description: 'Only a seller can delete a product',
+  })
+  @ApiParam({ name: 'productId', required: true })
+  @ApiResponse({
+    status: 200,
+    description: 'Ok',
+    schema: {
+      example: {
+        message: 'Product deleted successfully',
+        statusCode: 200,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error',
+    schema: {
+      example: {
+        message: 'An error has occurred, please try again',
+        error: 'Internal Server Error',
+        statusCode: 500,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request',
+    schema: {
+      example: {
+        message: 'Bad Request',
+        error: 'Bad Request',
+        statusCode: 400,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+    schema: {
+      example: {
+        message: 'You are not allowed to delete this product',
+        error: 'Forbidden',
+        statusCode: 403,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Mot Found',
+    schema: {
+      example: {
+        message: 'No product found',
+        error: 'Not Found',
+        statusCode: 404,
+      },
+    },
+  })
   @Delete('/:productId')
   @Roles(UserType.SELLER)
   async deleteProduct(

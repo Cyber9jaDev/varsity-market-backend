@@ -125,11 +125,12 @@ export class ProductService {
 
     const deletedProduct = await this.databaseService.product.delete({
       where: { id },
+      select: { ...selectOptions },
     });
 
     if (!deletedProduct) throw new BadRequestException();
 
-    return deletedProduct;
+    return { message: 'Product deleted successfully', statusCode: 200 };
   }
 
   async findUserByProductId(id: string) {
