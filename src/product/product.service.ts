@@ -64,7 +64,14 @@ export class ProductService {
   async addProduct(
     sellerId: string,
     images: ProductImageParams[],
-    { name, description, price, category, condition, location }: createProductParams,
+    {
+      name,
+      description,
+      price,
+      category,
+      condition,
+      location,
+    }: createProductParams,
   ): Promise<ProductResponseDto> {
     return await this.databaseService.$transaction(async (db) => {
       const product = await db.product.create({
@@ -88,12 +95,11 @@ export class ProductService {
       });
 
       const createdImages = await db.image.findMany({
-        where: { productId: product.id},
-        select: { secure_url: true }
-      })
+        where: { productId: product.id },
+        select: { secure_url: true },
+      });
 
-      return new ProductResponseDto({...product, images: createdImages});
-      // return {...product, images: createdImages};
+      return new ProductResponseDto({ ...product, images: createdImages });
     });
   }
 
@@ -101,6 +107,7 @@ export class ProductService {
     const updatedProduct = await this.databaseService.product.update({
       where: { id },
       data: { ...updateProductParams },
+      select: { ...selectOptions },
     });
 
     if (!updatedProduct) throw new BadRequestException();

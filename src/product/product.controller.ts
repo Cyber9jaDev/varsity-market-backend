@@ -412,7 +412,10 @@ export class ProductController {
   // Update a single product
   @Put('/:productId')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Update a product' })
+  @ApiOperation({
+    summary: 'Update a product',
+    description: 'Only a seller can update a product',
+  })
   @ApiParam({ name: 'productId', required: true })
   @ApiResponse({ status: 200, description: 'Ok', type: UpdateProductDto })
   @ApiResponse({
@@ -448,7 +451,6 @@ export class ProductController {
       },
     },
   })
-
   @Roles(UserType.SELLER)
   async updateProduct(
     @Param('productId') productId: string,
