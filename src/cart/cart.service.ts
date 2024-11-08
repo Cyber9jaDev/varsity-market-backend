@@ -20,7 +20,7 @@ export class CartService {
     // Ensure the product exist in the database
     const product = await this.databaseService.product.findUnique({
       where: { id: productId },
-    }); 
+    });
 
     if (!product) {
       return new NotFoundException();
@@ -35,20 +35,13 @@ export class CartService {
       if (!cart) {
         // create a new cart
         await this.databaseService.cart.create({
-          data: {
-            buyer: {
-              connect: { id: buyerId },
-            },
-          },
+          data: { buyer: { connect: { id: buyerId } } },
           include: { cartItems: true },
         });
       }
 
       const existingCartItem = await this.databaseService.cartItem.findFirst({
-        where: {
-          cartId: cart.id,
-          productId,
-        },
+        where: { cartId: cart.id, productId },
       });
 
       if (existingCartItem) {
@@ -60,12 +53,8 @@ export class CartService {
         await this.databaseService.cartItem.create({
           data: {
             quantity,
-            product: {
-              connect: { id: productId },
-            },
-            cart: {
-              connect: { buyerId },
-            },
+            product: { connect: { id: productId } },
+            cart: { connect: { buyerId } },
           },
         });
       }
@@ -115,7 +104,6 @@ export class CartService {
     buyerId: string,
     { productId }: RemoveItemFromCartParams,
   ) {
-    
     // Check if the buyer has a Cart
     const cart = await this.databaseService.cart.findUnique({
       where: { buyerId },
@@ -136,19 +124,19 @@ export class CartService {
       (item) => item.product.id === productId,
     );
 
-    if(!cartItemToRemove) {
-      return { message: 'Item not found in cart' }
+    if (!cartItemToRemove) {
+      return { message: 'Item not found in cart' };
     }
 
     const deletedCartItem = await this.databaseService.cartItem.delete({
       where: {
-        id: cartItemToRemove.id 
+        id: cartItemToRemove.id,
       },
-      include: {} 
-    }); 
+      include: {},
+    });
 
-    if(!deletedCartItem){
-      throw new InternalServerErrorException();  
+    if (!deletedCartItem) {
+      throw new InternalServerErrorException();
     }
 
     return deletedCartItem;
