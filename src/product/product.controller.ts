@@ -39,6 +39,7 @@ import {
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
+import { isValidDate } from 'src/helpers/functions';
 
 @Controller('products')
 export class ProductController {
@@ -77,13 +78,13 @@ export class ProductController {
     example: '2010-08-12T16:16:32.282Z',
     required: false,
     name: 'dateFrom',
-    type: Date,
+    type: String,
   })
   @ApiQuery({
     example: '2024-12-12T16:16:32.282Z',
     required: false,
     name: 'dateTo',
-    type: Date,
+    type: String,
   })
   @ApiQuery({ example: 1, required: false, name: 'page', type: 'page number' })
   @ApiQuery({
@@ -143,11 +144,21 @@ export class ProductController {
     @Query('minPrice') minPrice?: number,
     @Query('maxPrice') maxPrice?: number,
     @Query('orderBy') orderBy?: OrderByEnum,
-    @Query('dateFrom') dateFrom?: Date,
-    @Query('dateTo') dateTo?: Date,
+    @Query('dateFrom') dateFrom?: string,
+    @Query('dateTo') dateTo?: string,
   ): Promise<{ products: ProductResponseDto[]; totalPages: number }> {
     const categories = Object.values(CategoryType);
     const locations = Object.values(Location);
+
+    console.log(dateFrom);
+    console.log(dateTo);
+
+    if (
+      (dateFrom && !isValidDate(dateFrom)) ||
+      (dateTo && !isValidDate(dateTo))
+    ) {
+      throw new BadRequestException('Invalid date format');
+    }
 
     const price =
       minPrice || maxPrice
