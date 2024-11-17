@@ -11,9 +11,10 @@ import { AuthGuard } from './guard/auth.guard';
 import { CartModule } from './cart/cart.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ChatModule } from './chat/chat.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), DatabaseModule, UserModule, ProductModule, CartModule, CloudinaryModule, ChatModule],
+  imports: [ConfigModule.forRoot(), DatabaseModule, UserModule, ProductModule, CartModule, CloudinaryModule, ChatModule, PaymentModule],
   controllers: [AppController],
   providers: [
     AppService, 

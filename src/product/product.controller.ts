@@ -150,9 +150,6 @@ export class ProductController {
     const categories = Object.values(CategoryType);
     const locations = Object.values(Location);
 
-    console.log(dateFrom);
-    console.log(dateTo);
-
     if (
       (dateFrom && !isValidDate(dateFrom)) ||
       (dateTo && !isValidDate(dateTo))

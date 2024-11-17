@@ -11,6 +11,7 @@ import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
   providers: [ProductService, {
     provide: APP_INTERCEPTOR,
     useClass: ClassSerializerInterceptor
-  }]
+  }],
+  exports: [ProductService]
 })
 export class ProductModule {}
