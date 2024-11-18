@@ -8,6 +8,7 @@ import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { UserType } from '@prisma/client';
 import { AuthResponseDto } from '../dtos/auth.dto';
+
 const select = {
   id: true,
   email: true,
@@ -15,15 +16,16 @@ const select = {
   phone: true,
   userType: true,
 };
+
 interface AuthParams {
   name: string;
   email: string;
   password: string;
   phone: string;
   userType: UserType;
-  businessName: string;
-  bankName: string;
-  accountNumber: string;
+  businessName?: string;
+  bankName?: string;
+  accountNumber?: string;
 }
 
 @Injectable()
@@ -37,7 +39,9 @@ export class AuthService {
     password,
     phone,
     userType,
-    bankName, businessName, accountNumber
+    bankName,
+    businessName,
+    accountNumber,
   }: Partial<AuthParams>): Promise<AuthResponseDto> {
     const userExists = await this.databaseService.user.findUnique({
       where: { email },
@@ -59,7 +63,7 @@ export class AuthService {
           userType,
           businessName,
           accountNumber,
-          bankName
+          bankName,
         },
         select: { ...select },
       });
@@ -93,7 +97,7 @@ export class AuthService {
 
     const token = this.generateJWT(user.id, user.name);
 
-    delete user.password
+    delete user.password;
 
     return { ...user, token };
   }

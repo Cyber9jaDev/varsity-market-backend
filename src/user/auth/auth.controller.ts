@@ -7,12 +7,16 @@ import {
   SignUpDto,
 } from '../dtos/auth.dto';
 import { UserType } from '@prisma/client';
-import { ApiBody, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiProperty, ApiResponse } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiOperation({
+    summary:
+      "Only a SELLER should provide 'businessName', 'bankName' and 'accountNumber'",
+  })
   @ApiParam({
     name: 'userType',
     enum: UserType,
@@ -55,13 +59,21 @@ export class AuthController {
     },
   })
   @ApiBody({
-    required: true,
     type: SignUpDto,
   })
   @Post('/signup/:userType')
   async SignUp(
     // @Body() { name, email, password, phone, registration_key }: SignUpDto,
-    @Body() { name, email, password, phone, businessName, bankName, accountNumber }: SignUpDto,
+    @Body()
+    {
+      name,
+      email,
+      password,
+      phone,
+      businessName,
+      bankName,
+      accountNumber,
+    }: SignUpDto,
     @Param('userType', new ParseEnumPipe(UserType)) userType: UserType,
   ): Promise<AuthResponseDto> {
     // In order to signup as a SELLER, a key is needed from the ADMIN
@@ -82,7 +94,16 @@ export class AuthController {
     //   }
     // }
 
-    return this.authService.signUp({ name, email, password, phone, userType, businessName, accountNumber, bankName });
+    return this.authService.signUp({
+      name,
+      email,
+      password,
+      phone,
+      userType,
+      businessName,
+      accountNumber,
+      bankName,
+    });
   }
 
   @Post('/signin')
