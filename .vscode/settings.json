@@ -1,10 +1,12 @@
 {
   "cSpell.ignoreWords": [
+    "PAYSTACK",
     "createproduct",
     "dtos",
+    "longcode",
     "nestjs",
     "streamifier",
     "subaccount"
   ],
-  "cSpell.words": ["cloudinary", "Cloudinary"]
+  "cSpell.words": ["cloudinary", "Cloudinary", "Kuda"]
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { ProductService } from 'src/product/product.service';
 import { initializePaymentDto } from './dtos/payment.dto';
@@ -13,6 +13,7 @@ export class PaymentController {
     private readonly databaseService: DatabaseService,
   ) {}
 
+
   @Post('/initialize')
   @ApiBody({
     required: true,
@@ -26,4 +27,5 @@ export class PaymentController {
     // 1 Create a subaccount
     // 2 Initialize payment
   }
+
 }
