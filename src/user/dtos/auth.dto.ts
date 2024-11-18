@@ -2,10 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { UserType } from '@prisma/client';
 import {
   IsEmail,
-  isEnum,
   IsEnum,
   IsNotEmpty,
-  IsOptional,
   IsString,
   Matches,
   MinLength,
@@ -43,6 +41,21 @@ export class SignUpDto {
     message: 'Phone must be a valid phone number',
   })
   phone: string;
+
+  @ApiProperty({ type: String, example: 'Arike Gold Pre-order' })
+  @IsString()
+  @IsNotEmpty()
+  businessName: string
+
+  @ApiProperty({ type: String, example: '012202222' })
+  @IsString()
+  @IsNotEmpty()
+  accountNumber: string
+
+  @ApiProperty({ type: String, example: 'Guaranty Trust Bank' })
+  @IsString()
+  @IsNotEmpty()
+  bankName: string
 
   // @IsOptional()
   // @IsString()

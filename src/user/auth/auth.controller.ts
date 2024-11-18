@@ -61,7 +61,7 @@ export class AuthController {
   @Post('/signup/:userType')
   async SignUp(
     // @Body() { name, email, password, phone, registration_key }: SignUpDto,
-    @Body() { name, email, password, phone }: SignUpDto,
+    @Body() { name, email, password, phone, businessName, bankName, accountNumber }: SignUpDto,
     @Param('userType', new ParseEnumPipe(UserType)) userType: UserType,
   ): Promise<AuthResponseDto> {
     // In order to signup as a SELLER, a key is needed from the ADMIN
@@ -82,7 +82,7 @@ export class AuthController {
     //   }
     // }
 
-    return this.authService.signUp({ name, email, password, phone, userType });
+    return this.authService.signUp({ name, email, password, phone, userType, businessName, accountNumber, bankName });
   }
 
   @Post('/signin')

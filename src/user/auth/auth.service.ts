@@ -21,6 +21,9 @@ interface AuthParams {
   password: string;
   phone: string;
   userType: UserType;
+  businessName: string;
+  bankName: string;
+  accountNumber: string;
 }
 
 @Injectable()
@@ -34,6 +37,7 @@ export class AuthService {
     password,
     phone,
     userType,
+    bankName, businessName, accountNumber
   }: Partial<AuthParams>): Promise<AuthResponseDto> {
     const userExists = await this.databaseService.user.findUnique({
       where: { email },
@@ -53,6 +57,9 @@ export class AuthService {
           name,
           password: hashedPassword,
           userType,
+          businessName,
+          accountNumber,
+          bankName
         },
         select: { ...select },
       });
