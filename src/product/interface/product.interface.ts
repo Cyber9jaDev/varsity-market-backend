@@ -32,6 +32,7 @@ export interface createProductParams {
   category: CategoryType;
   condition: ConditionType;
   location: Location;
+  quantity: number
 }
 
 export interface ProductImageParams {

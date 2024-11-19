@@ -62,6 +62,11 @@ export class CreateProductDto {
   @IsEnum(CategoryType)
   category: CategoryType;
 
+  @ApiProperty({ type: 'number', example: 1, required: true, default: 1 })
+  @IsNotEmpty()
+  @IsNumber()
+  quantity: number
+
   // @IsArray()
   // @ValidateNested({ each: true })
   // @Type(() => Image)

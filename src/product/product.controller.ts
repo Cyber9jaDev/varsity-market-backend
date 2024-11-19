@@ -292,11 +292,13 @@ export class ProductController {
         'category',
         'condition',
         'productImages',
+        "quantity"
       ],
       properties: {
         name: { type: 'string', example: 'Samsung Galaxy 12 Notebook' },
         description: { type: 'string', example: 'Samsung Galaxy 12 Notebook' },
         price: { type: 'number' },
+        quantity: { type: 'number', default: 1 },
         location: {
           type: 'string',
           enum: Object.values(Location),

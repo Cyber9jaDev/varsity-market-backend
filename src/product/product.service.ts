@@ -20,6 +20,7 @@ const selectOptions = {
   price: true,
   condition: true,
   location: true,
+  quantity: true,
   seller: { select: { name: true, phone: true, email: true } },
   images: { select: { secure_url: true } },
   createdAt: true,
@@ -71,6 +72,7 @@ export class ProductService {
       category,
       condition,
       location,
+      quantity
     }: createProductParams,
   ): Promise<ProductResponseDto> {
     return await this.databaseService.$transaction(async (db) => {
@@ -83,6 +85,7 @@ export class ProductService {
           condition,
           location,
           sellerId,
+          quantity
         },
         select: { ...selectOptions },
       });

@@ -58,7 +58,8 @@ model ChatParticipant {
 model Product {
   id          String        @id @default(uuid())
   name        String
-  price       Float
+  price       Float         
+  quantity    Int           @default(1)
   description String
   location    Location
   condition   ConditionType
