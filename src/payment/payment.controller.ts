@@ -13,7 +13,13 @@ import { User } from 'src/user/decorators/user.decorator';
 import { UserEntity } from 'src/user/interface/user.interface';
 import { ApiBody } from '@nestjs/swagger';
 import { PaymentService } from './payment.service';
-import { SubaccountResponse } from './interface/payment.interface';
+import { createSubaccount } from '../helpers/helpers';
+
+import {
+  CreateSubaccount,
+  SubaccountResponse,
+} from './interface/payment.interface';
+import { getBankCode } from 'src/helpers/helpers';
 
 @Controller('payment')
 export class PaymentController {
@@ -23,7 +29,13 @@ export class PaymentController {
     private readonly paymentService: PaymentService,
   ) {}
 
-  @Post('/initialize')
+
+  @Get('/banks')
+  async getBanks(){
+    return await this.paymentService.getBanks();
+  }
+
+  @Post('/initialize-transaction')
   @ApiBody({
     required: true,
     description: 'Create a subaccount for seller',
@@ -46,6 +58,7 @@ export class PaymentController {
 
     const product = await this.databaseService.product.findUnique({
       where: { id: createSubaccountDto.productId },
+      select: { seller: true, quantity: true },
     });
 
     if (!product) {
@@ -58,6 +71,14 @@ export class PaymentController {
       );
     }
 
-    return await this.paymentService.createSubaccount();
+    const createSubaccount: CreateSubaccount = {
+      business_name: product.seller.businessName,
+      bank_code: getBankCode(product.seller.bankName),
+      account_number: product.seller.accountNumber,
+      percentage_charge: 2.5,
+    };
+
+    // return await createSubaccount();
+    return await this.paymentService.createSubaccount(createSubaccount);
   }
 }
