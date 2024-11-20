@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { initializePaymentDto } from './dtos/payment.dto';
+import { PaystackService } from './paystack/paystack.service';
+import { SubaccountResponse } from './interface/payment.interface';
 
 @Injectable()
 export class PaymentService {
-  async initializePayment(){
-    
+  constructor(private readonly paystackService: PaystackService) {}
+
+  async createSubaccount(): Promise<SubaccountResponse> {
+    return await this.paystackService.createSubaccount()
   }
 }

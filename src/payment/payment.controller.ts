@@ -8,12 +8,11 @@ import {
 } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { ProductService } from 'src/product/product.service';
-import { initializePaymentDto } from './dtos/payment.dto';
+import { CreateSubaccountDto } from './dtos/payment.dto';
 import { User } from 'src/user/decorators/user.decorator';
 import { UserEntity } from 'src/user/interface/user.interface';
 import { ApiBody } from '@nestjs/swagger';
 import { PaymentService } from './payment.service';
-import { createSubaccount } from 'src/helpers/helpers';
 import { SubaccountResponse } from './interface/payment.interface';
 
 @Controller('payment')
@@ -28,10 +27,10 @@ export class PaymentController {
   @ApiBody({
     required: true,
     description: 'Create a subaccount for seller',
-    type: initializePaymentDto,
+    type: CreateSubaccountDto,
   })
-  async initializePayment(
-    @Body() initializePaymentDto: initializePaymentDto,
+  async createSubaccount(
+    @Body() createSubaccountDto: CreateSubaccountDto,
     @User() user: UserEntity,
   ): Promise<SubaccountResponse> {
     // Check if buyer has an account
@@ -46,20 +45,19 @@ export class PaymentController {
     }
 
     const product = await this.databaseService.product.findUnique({
-      where: { id: initializePaymentDto.productId },
+      where: { id: createSubaccountDto.productId },
     });
 
     if (!product) {
       throw new UnauthorizedException('This product does not exist');
     }
 
-    if (initializePaymentDto.quantity > product.quantity) {
+    if (createSubaccountDto.quantity > product.quantity) {
       throw new BadRequestException(
         `Only ${product.quantity} items available in stock`,
       );
     }
 
-    return await createSubaccount();
-    // return this.paymentService.initializePayment();
+    return await this.paymentService.createSubaccount();
   }
 }

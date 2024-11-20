@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class initializePaymentDto {
+export class CreateSubaccountDto {
   @ApiProperty({
     type: 'string',
     example: '2532cadc-7b3c-420b-9f8b-c3cdbec73e69',
