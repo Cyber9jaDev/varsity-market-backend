@@ -14,6 +14,7 @@ import { UserEntity } from 'src/user/interface/user.interface';
 import { ApiBody } from '@nestjs/swagger';
 import { PaymentService } from './payment.service';
 import { createSubaccount } from 'src/helpers/helpers';
+import { SubaccountResponse } from './interface/payment.interface';
 
 @Controller('payment')
 export class PaymentController {
@@ -32,7 +33,7 @@ export class PaymentController {
   async initializePayment(
     @Body() initializePaymentDto: initializePaymentDto,
     @User() user: UserEntity,
-  ) {
+  ): Promise<SubaccountResponse> {
     // Check if buyer has an account
     const buyer = await this.databaseService.user.findUnique({
       where: { id: user.userId },
