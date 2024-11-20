@@ -7,7 +7,7 @@ import {
   SignUpDto,
 } from '../dtos/auth.dto';
 import { UserType } from '@prisma/client';
-import { ApiBody, ApiOperation, ApiParam, ApiProperty, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -71,7 +71,7 @@ export class AuthController {
       password,
       phone,
       businessName,
-      bankName,
+      bankCode,
       accountNumber,
     }: SignUpDto,
     @Param('userType', new ParseEnumPipe(UserType)) userType: UserType,
@@ -102,7 +102,7 @@ export class AuthController {
       userType,
       businessName,
       accountNumber,
-      bankName,
+      bankCode,
     });
   }
 

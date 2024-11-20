@@ -73,13 +73,13 @@ export class SignUpDto {
 
   @ApiProperty({
     type: String,
-    example: 'Guaranty Trust Bank',
+    example: '044',
     required: false,
   })
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  bankName?: string;
+  bankCode?: string;
 }
 
 export class SignInDto {

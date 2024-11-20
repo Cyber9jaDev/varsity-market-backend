@@ -24,7 +24,7 @@ interface AuthParams {
   phone: string;
   userType: UserType;
   businessName?: string;
-  bankName?: string;
+  bankCode?: string;
   accountNumber?: string;
 }
 
@@ -39,7 +39,7 @@ export class AuthService {
     password,
     phone,
     userType,
-    bankName,
+    bankCode,
     businessName,
     accountNumber,
   }: Partial<AuthParams>): Promise<AuthResponseDto> {
@@ -63,7 +63,7 @@ export class AuthService {
           userType,
           businessName,
           accountNumber,
-          bankName,
+          bankCode,
         },
         select: { ...select },
       });
