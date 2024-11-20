@@ -8,6 +8,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+model Payment{
+  id            String            @id @default(uuid())  
+  quantity      Int
+  amount        Float
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  status        PaymentStatus
+  reference     String            @unique
+  // buyer         User
+  // seller        User
+  // product       Product
+}
+
 model User {
   id                String            @id @default(uuid())
   email             String            @unique
@@ -121,7 +140,7 @@ model Image {
   product    Product @relation(fields: [productId], references: [id])
   productId  String
 }
-
+                                                              
 model Picture {
   id         String  @id @default(uuid())
   secure_url String?
@@ -164,9 +183,10 @@ enum CategoryType {
   FASHION
   ACCOMMODATION
 }
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 enum ConditionType {
   NEW
   USED
   REFURBISHED
 }
+

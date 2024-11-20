@@ -20,6 +20,7 @@ const selectOptions = {
   price: true,
   condition: true,
   location: true,
+  category: true,
   quantity: true,
   seller: { select: { name: true, phone: true, email: true } },
   images: { select: { secure_url: true } },

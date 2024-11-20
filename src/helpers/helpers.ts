@@ -2,7 +2,6 @@ import { BadRequestException } from '@nestjs/common';
 import axios, { AxiosResponse } from 'axios';
 import Paystack from 'paystack';
 import { BankResponseOk } from 'src/payment/interface/payment.interface';
-Paystack;
 
 const wordsToCheck = [
   'Access Bank',
@@ -15,6 +14,18 @@ const wordsToCheck = [
   'First Bank',
 ];
 
+export const createSubaccount = async (): Promise<AxiosResponse> => {
+  try {
+    const response = await axios.post('https://api.paystack.co/subaccount', {
+      headers: {
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new BadRequestException(error.message);
+  }
+};
 export const getBanksList = async (): Promise<BankResponseOk> => {
   try {
     const { data }: AxiosResponse = await axios.get(
