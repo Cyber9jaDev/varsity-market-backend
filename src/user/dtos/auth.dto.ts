@@ -11,6 +11,18 @@ import {
   MinLength,
 } from 'class-validator';
 
+
+enum BankCode {
+  AccessBank = '044',
+  FirstBank = '011',
+  GTBank = '058',
+  KudaBank = '50211',
+  OPay = '999992',
+  PalmPay = '999991',
+  UnionBank = '032',
+  ZenithBank = '057'
+}
+
 export class SignUpDto {
   @ApiProperty({ type: String, example: 'Seller 1', required: true })
   @IsString()
@@ -73,7 +85,8 @@ export class SignUpDto {
 
   @ApiProperty({
     type: String,
-    example: '044',
+    examples: ["044", "011", "058"],
+    description: 'Use the /payment/banks endpoint to get a list of all bank codes',
     required: false,
   })
   @IsString()
