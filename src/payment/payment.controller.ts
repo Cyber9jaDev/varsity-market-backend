@@ -73,10 +73,12 @@ export class PaymentController {
 
     const createSubaccount: CreateSubaccount = {
       business_name: product.seller.businessName,
-      bank_code: getBankCode(product.seller.bankName),
+      bank_code: product.seller.bankCode,
       account_number: product.seller.accountNumber,
       percentage_charge: 2.5,
     };
+
+    console.log(createSubaccount);
 
     // return await createSubaccount();
     return await this.paymentService.createSubaccount(createSubaccount);

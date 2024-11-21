@@ -1,4 +1,7 @@
 -- CreateEnum
+CREATE TYPE "PaymentStatus" AS ENUM ('PENDING', 'SUCCESS', 'FAILED');
+
+-- CreateEnum
 CREATE TYPE "UserType" AS ENUM ('BUYER', 'SELLER', 'ADMIN');
 
 -- CreateEnum
@@ -11,6 +14,19 @@ CREATE TYPE "CategoryType" AS ENUM ('PET', 'CAR', 'PHONE', 'LAPTOP', 'COMPUTER',
 CREATE TYPE "ConditionType" AS ENUM ('NEW', 'USED', 'REFURBISHED');
 
 -- CreateTable
+CREATE TABLE "Payment" (
+    "id" TEXT NOT NULL,
+    "quantity" INTEGER NOT NULL,
+    "amount" DOUBLE PRECISION NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "status" "PaymentStatus" NOT NULL,
+    "reference" TEXT NOT NULL,
+
+    CONSTRAINT "Payment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -18,6 +34,9 @@ CREATE TABLE "User" (
     "password" VARCHAR(255) NOT NULL,
     "phone" TEXT NOT NULL,
     "userType" "UserType" NOT NULL,
+    "businessName" TEXT,
+    "bankCode" TEXT,
+    "accountNumber" VARCHAR(10),
     "hasDisplayPicture" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -26,10 +45,38 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
+CREATE TABLE "Message" (
+    "id" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "sentAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "senderId" TEXT NOT NULL,
+    "chatId" TEXT NOT NULL,
+
+    CONSTRAINT "Message_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Chat" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Chat_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ChatParticipant" (
+    "chatId" TEXT NOT NULL,
+    "participantId" TEXT NOT NULL,
+
+    CONSTRAINT "ChatParticipant_pkey" PRIMARY KEY ("chatId","participantId")
+);
+
+-- CreateTable
 CREATE TABLE "Product" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
+    "quantity" INTEGER NOT NULL DEFAULT 1,
     "description" TEXT NOT NULL,
     "location" "Location" NOT NULL,
     "condition" "ConditionType" NOT NULL,
@@ -107,16 +154,8 @@ CREATE TABLE "Picture" (
     CONSTRAINT "Picture_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
-CREATE TABLE "Message" (
-    "id" TEXT NOT NULL,
-    "message" TEXT,
-    "senderId" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Message_pkey" PRIMARY KEY ("id")
-);
+-- CreateIndex
+CREATE UNIQUE INDEX "Payment_reference_key" ON "Payment"("reference");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
@@ -129,6 +168,18 @@ CREATE UNIQUE INDEX "Cart_buyerId_key" ON "Cart"("buyerId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Picture_userId_key" ON "Picture"("userId");
+
+-- AddForeignKey
+ALTER TABLE "Message" ADD CONSTRAINT "Message_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Message" ADD CONSTRAINT "Message_chatId_fkey" FOREIGN KEY ("chatId") REFERENCES "Chat"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ChatParticipant" ADD CONSTRAINT "ChatParticipant_chatId_fkey" FOREIGN KEY ("chatId") REFERENCES "Chat"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ChatParticipant" ADD CONSTRAINT "ChatParticipant_participantId_fkey" FOREIGN KEY ("participantId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Product" ADD CONSTRAINT "Product_sellerId_fkey" FOREIGN KEY ("sellerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

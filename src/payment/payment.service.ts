@@ -19,7 +19,7 @@ export class PaymentService {
   }
 
   async createSubaccount(createSubaccount: CreateSubaccount): Promise<SubaccountResponse> {
-    return await this.paystackService.createSubaccount()
+    return await this.paystackService.createSubaccount(createSubaccount)
   }
 
   async initialize (){
