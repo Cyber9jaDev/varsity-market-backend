@@ -22,7 +22,6 @@ interface AuthParams {
   email: string;
   password: string;
   phone: string;
-  userType: UserType;
   businessName?: string;
   bankCode?: string;
   accountNumber?: string;
@@ -33,41 +32,36 @@ export class AuthService {
   constructor(private readonly databaseService: DatabaseService) {}
 
   // async signUp({ name, email, password, phone, userType }: signUpParams) {
-  async signUp({
-    name,
-    email,
-    password,
-    phone,
-    userType,
-    bankCode,
-    businessName,
-    accountNumber,
-  }: Partial<AuthParams>): Promise<AuthResponseDto> {
+  async signUp(
+    userType: UserType,
+    body: AuthParams,
+  ): Promise<AuthResponseDto> {
     const userExists = await this.databaseService.user.findUnique({
-      where: { email },
+      where: { email: body.email },
     });
 
     if (userExists) {
       throw new ConflictException('User already exists');
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(body.password, 10);
 
     try {
       const user = await this.databaseService.user.create({
         data: {
-          email,
-          phone,
-          name,
+          email: body.email,
+          phone: body.phone,
+          name: body.name,
           password: hashedPassword,
           userType,
-          businessName,
-          accountNumber,
-          bankCode,
+          businessName: body.businessName,
+          accountNumber: body.accountNumber,
+          bankCode: body.bankCode,
         },
         select: { ...select },
       });
       const token = this.generateJWT(user.id, user.name);
+
       return { ...user, token };
     } catch (error) {
       throw new BadRequestException(

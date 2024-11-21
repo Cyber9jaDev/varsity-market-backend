@@ -39,7 +39,7 @@ export class SignUpDto {
   @ApiProperty({
     description: 'Phone must be a valid phone number',
     type: String,
-    example: '8097122170',
+    example: '1000000001',
     required: true,
   })
   @Matches(/^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, {
@@ -59,7 +59,7 @@ export class SignUpDto {
 
   @ApiProperty({
     type: String,
-    example: '0122022262',
+    example: '0138427910',
     required: false,
     minLength: 10,
     maxLength: 10,
