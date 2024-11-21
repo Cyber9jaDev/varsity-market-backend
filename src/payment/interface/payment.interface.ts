@@ -52,4 +52,16 @@ export interface CreateSubaccount {
   bank_code: string;
   account_number: string;
   percentage_charge: number;
+  primary_contact_email: string;
+  primary_contact_name: string;
+  primary_contact_phone: string;
+}
+
+export interface VerifyAccountResponse {
+  status: boolean;
+  message: string;
+  data: {
+    verified: boolean;
+    verificationMessage: string;
+  };
 }

@@ -8,14 +8,11 @@ export class PaymentService {
   constructor(private readonly paystackService: PaystackService) {}
 
   async getBanks() {
-    const { data } = await axios.get('https://api.paystack.co/bank', {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-      },
-    });
+    return await this.paystackService.bankList()
+  }
 
-    return data
+  async verifySellerBankAccount (accountNumber: string, bankCode: string){
+    return await this.paystackService.verifyAccountNumber(accountNumber, bankCode)
   }
 
   async createSubaccount(createSubaccount: CreateSubaccount): Promise<SubaccountResponse> {
