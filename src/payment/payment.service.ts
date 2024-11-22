@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PaystackService } from './paystack/paystack.service';
 import { CreateSubaccount, SubaccountResponse } from './interface/payment.interface';
-import axios from 'axios';
+// import axios from 'axios';
 
 @Injectable()
 export class PaymentService {
