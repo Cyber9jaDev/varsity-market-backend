@@ -10,8 +10,13 @@ import APICall from 'src/helpers/APICall';
 export class PaystackService {
   async bankList() {
     try {
-      const data = await APICall<unknown>( '/bank', 'GET', {}, { 
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` },
+      const data = await APICall<unknown>(
+        '/bank',
+        'GET',
+        {},
+        {
+          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+        },
       );
       return data;
     } catch (error) {
@@ -31,12 +36,15 @@ export class PaystackService {
     }
   }
 
-  async verifyAccountNumber(accountNumber: string, bankCode: string) {
+  async verifyAccountNumber(account_number: string, bank_code: string) {
+    const num = '0138427910';
+    const code = '058';
     try {
       const data = APICall<VerifyAccountResponse>(
-        `/bank/resolve?account_number=${accountNumber}&bank_code=${bankCode}`,
+        `/bank/resolve?account_number=${num}&bank_code=${code}`,
+        // `/bank/resolve?account_number=${account_number}&bank_code=${bank_code}`,
         'POST',
-        { accountNumber, bankCode },
+        {},
         { Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` },
       );
       return data;

@@ -68,13 +68,18 @@ export class PaymentController {
       );
     }
 
+    console.log(1);
+
     // Verify Seller Account Details
     const isValidAccount = await this.paymentService.verifySellerBankAccount(
       product.seller.accountNumber,
       product.seller.bankCode,
     );
 
+    console.log(2);
     console.log(isValidAccount);
+    console.log(3);
+
 
     const createSubaccount: CreateSubaccount = {
       business_name: product.seller.businessName,
