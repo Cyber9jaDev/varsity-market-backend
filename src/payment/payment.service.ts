@@ -19,7 +19,4 @@ export class PaymentService {
     return await this.paystackService.createSubaccount(createSubaccount)
   }
 
-  async initialize (){
-    // return await this.paystackService.initia
-  }
 }
