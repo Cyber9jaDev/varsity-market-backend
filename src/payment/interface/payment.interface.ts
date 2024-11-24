@@ -1,3 +1,5 @@
+import { User } from "@prisma/client";
+
 export interface BankResponseOk {
   status: false;
   message: string;
@@ -47,7 +49,7 @@ export interface SubaccountResponse {
   };
 }
 
-export interface CreateSubaccount {
+export interface CreateSubaccount{
   business_name: string;
   bank_code: string;
   account_number: string;

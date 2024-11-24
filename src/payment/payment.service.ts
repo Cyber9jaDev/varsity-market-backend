@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PaystackService } from './paystack/paystack.service';
-import {
-  CreateSubaccount,
-  SubaccountResponse,
-} from './interface/payment.interface';
+import { SubaccountResponse } from './interface/payment.interface';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class PaymentService {
@@ -20,9 +18,7 @@ export class PaymentService {
     );
   }
 
-  async createSubaccount(
-    createSubaccount: CreateSubaccount,
-  ): Promise<SubaccountResponse> {
-    return await this.paystackService.createSubaccount(createSubaccount);
+  async createSubaccount(seller: Omit<User, "password">): Promise<SubaccountResponse> {
+    return await this.paystackService.createSubaccount(seller);
   }
 }

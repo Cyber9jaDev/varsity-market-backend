@@ -40,7 +40,7 @@ export class PaymentController {
     type: CreateSubaccountDto,
   })
   async createSubaccount(
-    @Body() createSubaccountDto: CreateSubaccountDto,
+    @Body() body: CreateSubaccountDto,
     @User() user: UserEntity,
   ): Promise<SubaccountResponse> {
     const buyer = await this.databaseService.user.findUnique({
@@ -54,7 +54,7 @@ export class PaymentController {
     }
 
     const product = await this.databaseService.product.findUnique({
-      where: { id: createSubaccountDto.productId },
+      where: { id: body.productId },
       select: { seller: true, quantity: true },
     });
 
@@ -62,37 +62,14 @@ export class PaymentController {
       throw new NotFoundException('This product does not exist');
     }
 
-    if (createSubaccountDto.quantity > product.quantity) {
-      throw new BadRequestException(
-        `Only ${product.quantity} items available in stock`,
-      );
+    if (body.quantity > product.quantity) {
+      throw new BadRequestException(`Only ${product.quantity} items available in stock`);
     }
 
-    console.log(1);
-
     // Verify Seller Account Details
-    const isValidAccount = await this.paymentService.verifySellerBankAccount(
-      product.seller.accountNumber,
-      product.seller.bankCode,
-    );
+    await this.paymentService.verifySellerBankAccount(product.seller.accountNumber, product.seller.bankCode);
 
-    console.log(2);
-    console.log(isValidAccount);
-    console.log(3);
-
-
-    const createSubaccount: CreateSubaccount = {
-      business_name: product.seller.businessName,
-      bank_code: product.seller.bankCode,
-      account_number: product.seller.accountNumber,
-      percentage_charge: 2.5,
-      primary_contact_email: product.seller.email,
-      primary_contact_name: product.seller.businessName,
-      primary_contact_phone: product.seller.phone,
-    };
-
-    const subAccount =
-      await this.paymentService.createSubaccount(createSubaccount);
-    return subAccount;
+    // Create subaccount
+    return await this.paymentService.createSubaccount(product.seller);
   }
 }
