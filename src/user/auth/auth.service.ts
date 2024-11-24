@@ -6,8 +6,10 @@ import {
 import { DatabaseService } from 'src/database/database.service';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
-import { UserType } from '@prisma/client';
+import { User, UserType } from '@prisma/client';
 import { AuthResponseDto } from '../dtos/auth.dto';
+import { PaystackService } from 'src/payment/paystack/paystack.service';
+import { PaymentService } from 'src/payment/payment.service';
 
 const select = {
   id: true,
@@ -25,16 +27,21 @@ interface AuthParams {
   businessName?: string;
   bankCode?: string;
   accountNumber?: string;
+  subaccountCode?: string;
 }
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(
+    private readonly databaseService: DatabaseService, 
+    private readonly paystackService: PaystackService,
+    private readonly paymentService: PaymentService
+  ) {}
 
-  // async signUp({ name, email, password, phone, userType }: signUpParams) {
   async signUp(
     userType: UserType,
-    body: AuthParams,
+    // body: AuthParams,
+    body: User,
   ): Promise<AuthResponseDto> {
     const userExists = await this.databaseService.user.findUnique({
       where: { email: body.email },
@@ -45,6 +52,8 @@ export class AuthService {
     }
 
     const hashedPassword = await bcrypt.hash(body.password, 10);
+    
+    const subaccount = await this.paymentService.createSubaccount(body)
 
     try {
       const user = await this.databaseService.user.create({
@@ -57,6 +66,7 @@ export class AuthService {
           businessName: body.businessName,
           accountNumber: body.accountNumber,
           bankCode: body.bankCode,
+          subaccountCode: 
         },
         select: { ...select },
       });

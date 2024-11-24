@@ -11,11 +11,15 @@ import { User } from '@prisma/client';
 export class PaystackService {
   async bankList() {
     try {
-      const data = await APICall<unknown>( '/bank', 'GET', {}, { 
-        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` 
-      },
+      const response = await APICall<unknown>(
+        '/bank',
+        'GET',
+        {},
+        {
+          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+        },
       );
-      return data;
+      return response;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -49,7 +53,10 @@ export class PaystackService {
     }
   }
 
-  async verifyAccountNumber(account_number:string, bank_code:string): Promise<VerifyAccountNumberResponse> {
+  async verifyAccountNumber(
+    account_number: string,
+    bank_code: string,
+  ): Promise<VerifyAccountNumberResponse> {
     if (!account_number || !bank_code) {
       throw new BadRequestException(
         'Account number and bank code are required',
@@ -59,6 +66,20 @@ export class PaystackService {
     try {
       const data = await APICall<VerifyAccountNumberResponse>(
         `/bank/resolve?account_number=${account_number}&bank_code=${bank_code}`,
+        'GET',
+        {},
+        { Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` },
+      );
+      return data;
+    } catch (error) {
+      throw new BadRequestException('Unable to verify seller bank details');
+    }
+  }
+
+  async findSubaccount(id_or_code: string) {
+    try {
+      const data = await APICall<VerifyAccountNumberResponse>(
+        `/subaccount/${id_or_code}`,
         'GET',
         {},
         { Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` },

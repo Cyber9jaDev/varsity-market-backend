@@ -28,24 +28,25 @@ model Payment{
 }
 
 model User {
-  id                String            @id @default(uuid())
-  email             String            @unique
-  name              String            @db.VarChar(255)
-  password          String            @db.VarChar(255)
-  phone             String            @unique
-  userType          UserType
-  businessName      String?
-  bankCode          String?
-  accountNumber     String?           @db.VarChar(10)
-  hasDisplayPicture Boolean           @default(false)
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
-  displayPicture    Picture?
-  products          Product[]
-  cart              Cart? // One active cart per user
-  orders            Order[] // Historical orders
-  sentMessages      Message[]         @relation("sentMessages")
-  chats             ChatParticipant[]
+  id                  String            @id @default(uuid())
+  email               String            @unique
+  name                String            @db.VarChar(255)
+  password            String            @db.VarChar(255)
+  phone               String            @unique
+  userType            UserType
+  businessName        String?
+  bankCode            String?
+  accountNumber       String?           @db.VarChar(10)
+  subaccountCode      String?
+  hasDisplayPicture   Boolean           @default(false)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  displayPicture      Picture?
+  products            Product[]
+  cart                Cart? // One active cart per user
+  orders              Order[] // Historical orders
+  sentMessages        Message[]         @relation("sentMessages")
+  chats               ChatParticipant[]
 }
 
 model Message {

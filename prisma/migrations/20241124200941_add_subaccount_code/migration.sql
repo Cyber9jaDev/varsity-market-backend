@@ -37,6 +37,7 @@ CREATE TABLE "User" (
     "businessName" TEXT,
     "bankCode" TEXT,
     "accountNumber" VARCHAR(10),
+    "subaccountCode" TEXT,
     "hasDisplayPicture" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,

@@ -78,9 +78,18 @@ export class SignUpDto {
     required: false,
   })
   @IsString()
-  // @IsNotEmpty()
   @IsOptional()
   bankCode?: string;
+
+  @ApiProperty({
+    type: String,
+    example: "ACCT_6uujpqtzmnufzkw",
+    description: 'Use the /payment/create-subaccount endpoint to create a subaccount',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  subaccountCode?: string;
 }
 
 export class SignInDto {
