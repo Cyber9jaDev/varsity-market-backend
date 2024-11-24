@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   CreateSubaccount,
-  SubaccountResponse,
-  VerifyAccountResponse,
+  CreateSubaccountResponse,
+  VerifyAccountNumberResponse,
 } from '../interface/payment.interface';
 import APICall from 'src/helpers/APICall';
 import { User } from '@prisma/client';
@@ -23,7 +23,7 @@ export class PaystackService {
 
   async createSubaccount(
     seller: Omit<User, 'password'>,
-  ): Promise<SubaccountResponse> {
+  ): Promise<CreateSubaccountResponse> {
     const data: CreateSubaccount = {
       business_name: seller.businessName,
       bank_code: seller.bankCode,
@@ -34,7 +34,7 @@ export class PaystackService {
       primary_contact_phone: seller.phone,
     };
     try {
-      const response = APICall<SubaccountResponse>(
+      const response = APICall<CreateSubaccountResponse>(
         '/subaccount',
         'POST',
         data,
@@ -49,10 +49,7 @@ export class PaystackService {
     }
   }
 
-  async verifyAccountNumber(
-    account_number: string,
-    bank_code: string,
-  ): Promise<Boolean> {
+  async verifyAccountNumber(account_number:string, bank_code:string): Promise<VerifyAccountNumberResponse> {
     if (!account_number || !bank_code) {
       throw new BadRequestException(
         'Account number and bank code are required',
@@ -60,13 +57,13 @@ export class PaystackService {
     }
 
     try {
-      const data = await APICall<VerifyAccountResponse>(
+      const data = await APICall<VerifyAccountNumberResponse>(
         `/bank/resolve?account_number=${account_number}&bank_code=${bank_code}`,
         'GET',
         {},
         { Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` },
       );
-      return data.status;
+      return data;
     } catch (error) {
       throw new BadRequestException('Unable to verify seller bank details');
     }

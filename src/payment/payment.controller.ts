@@ -14,10 +14,7 @@ import { User } from 'src/user/decorators/user.decorator';
 import { UserEntity } from 'src/user/interface/user.interface';
 import { ApiBody } from '@nestjs/swagger';
 import { PaymentService } from './payment.service';
-import {
-  CreateSubaccount,
-  SubaccountResponse,
-} from './interface/payment.interface';
+import { CreateSubaccountResponse } from './interface/payment.interface';
 // import { getBankCode } from 'src/helpers/helpers'
 
 @Controller('payment')
@@ -42,7 +39,7 @@ export class PaymentController {
   async createSubaccount(
     @Body() body: CreateSubaccountDto,
     @User() user: UserEntity,
-  ): Promise<SubaccountResponse> {
+  ): Promise<CreateSubaccountResponse> {
     const buyer = await this.databaseService.user.findUnique({
       where: { id: user.userId },
     });
@@ -62,12 +59,21 @@ export class PaymentController {
       throw new NotFoundException('This product does not exist');
     }
 
+    // Ensure a seller cannot buy their product
+    if (product.seller.id === user.userId) {
+      throw new UnauthorizedException(
+        'You are not allowed to buy your product',
+      );
+    }
+
     if (body.quantity > product.quantity) {
-      throw new BadRequestException(`Only ${product.quantity} items available in stock`);
+      throw new BadRequestException(
+        `Only ${product.quantity} items available in stock`,
+      );
     }
 
     // Verify Seller Account Details
-    await this.paymentService.verifySellerBankAccount(product.seller.accountNumber, product.seller.bankCode);
+    await this.paymentService.verifySellerBankAccount(product.seller);
 
     // Create subaccount
     return await this.paymentService.createSubaccount(product.seller);

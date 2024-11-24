@@ -23,7 +23,7 @@ interface Banks {
   updatedAt: string;
 }
 
-export interface SubaccountResponse {
+export interface CreateSubaccountResponse {
   status: boolean;
   message: string;
   data: {
@@ -59,7 +59,7 @@ export interface CreateSubaccount{
   primary_contact_phone: string;
 }
 
-export interface VerifyAccountResponse {
+export interface VerifyAccountNumberResponse {
   status: boolean;
   message: string;
   data: {
