@@ -2,7 +2,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   CreateSubaccount,
   CreateSubaccountResponse,
-  SellerSubaccount,
   VerifyAccountNumberResponse,
 } from '../interface/payment.interface';
 import APICall from 'src/helpers/APICall';
@@ -12,14 +11,9 @@ import { User } from '@prisma/client';
 export class PaystackService {
   async bankList() {
     try {
-      const response = await APICall<unknown>(
-        '/bank',
-        'GET',
-        {},
-        {
-          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-        },
-      );
+      const response = await APICall<unknown>( '/bank', 'GET', {}, {
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` 
+      });
       return response;
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -37,7 +31,7 @@ export class PaystackService {
       primary_contact_name: seller.name,
       primary_contact_phone: seller.phone,
     };
-    
+
     try {
       const response = APICall<CreateSubaccountResponse>( '/subaccount', 'POST', data, {
           Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,

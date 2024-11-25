@@ -50,7 +50,7 @@ export interface CreateSubaccount{
 }
 
 
-export type SellerSubaccount = Partial<Pick<User, "businessName" | "bankCode" |"accountNumber" | "email" | "name" | "phone">>
+// export type SellerSubaccount = Partial<Pick<User, "businessName" | "bankCode" |"accountNumber" | "email" | "name" | "phone">>
 
 export interface VerifyAccountNumberResponse {
   status: boolean;

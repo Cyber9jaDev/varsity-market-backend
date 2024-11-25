@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PaystackService } from './paystack/paystack.service';
-import { CreateSubaccountResponse, SellerSubaccount } from './interface/payment.interface';
+import { CreateSubaccountResponse } from './interface/payment.interface';
 import { User } from '@prisma/client';
 
 @Injectable()
