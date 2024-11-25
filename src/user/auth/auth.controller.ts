@@ -6,7 +6,7 @@ import {
   SignInDto,
   SignUpDto,
 } from '../dtos/auth.dto';
-import { UserType } from '@prisma/client';
+import {  UserType } from '@prisma/client';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 @Controller('auth')
@@ -63,8 +63,7 @@ export class AuthController {
   })
   @Post('/signup/:userType')
   async SignUp(
-    // @Body() { name, email, password, phone, registration_key }: SignUpDto,
-    @Body() body: SignUpDto,
+    @Body() body: SignUpDto, 
     @Param('userType', new ParseEnumPipe(UserType)) userType: UserType,
   ): Promise<AuthResponseDto> {
     // In order to signup as a SELLER, a key is needed from the ADMIN
@@ -84,7 +83,6 @@ export class AuthController {
     //     throw new UnauthorizedException()
     //   }
     // }
-
 
     return this.authService.signUp(userType, body);
   }

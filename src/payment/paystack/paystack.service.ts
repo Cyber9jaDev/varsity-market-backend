@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   CreateSubaccount,
   CreateSubaccountResponse,
+  SellerSubaccount,
   VerifyAccountNumberResponse,
 } from '../interface/payment.interface';
 import APICall from 'src/helpers/APICall';
@@ -25,9 +26,8 @@ export class PaystackService {
     }
   }
 
-  async createSubaccount(
-    seller: Omit<User, 'password'>,
-  ): Promise<CreateSubaccountResponse> {
+  async createSubaccount(seller: Partial<User>): Promise<CreateSubaccountResponse> {
+
     const data: CreateSubaccount = {
       business_name: seller.businessName,
       bank_code: seller.bankCode,
@@ -37,12 +37,9 @@ export class PaystackService {
       primary_contact_name: seller.name,
       primary_contact_phone: seller.phone,
     };
+    
     try {
-      const response = APICall<CreateSubaccountResponse>(
-        '/subaccount',
-        'POST',
-        data,
-        {
+      const response = APICall<CreateSubaccountResponse>( '/subaccount', 'POST', data, {
           Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
           'Content-Type': 'application/json',
         },
@@ -53,10 +50,7 @@ export class PaystackService {
     }
   }
 
-  async verifyAccountNumber(
-    account_number: string,
-    bank_code: string,
-  ): Promise<VerifyAccountNumberResponse> {
+  async verifyAccountNumber( account_number: string, bank_code: string ): Promise<VerifyAccountNumberResponse> {
     if (!account_number || !bank_code) {
       throw new BadRequestException(
         'Account number and bank code are required',
@@ -78,11 +72,8 @@ export class PaystackService {
 
   async findSubaccount(id_or_code: string) {
     try {
-      const data = await APICall<VerifyAccountNumberResponse>(
-        `/subaccount/${id_or_code}`,
-        'GET',
-        {},
-        { Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` },
+      const data = await APICall<VerifyAccountNumberResponse>( `/subaccount/${id_or_code}`, 'GET', {}, { 
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` },
       );
       return data;
     } catch (error) {

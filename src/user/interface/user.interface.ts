@@ -6,3 +6,14 @@ export interface UserEntity {
   iat: number,
   exp: number
 }
+
+export interface AuthParams {
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+  businessName?: string;
+  bankCode?: string;
+  accountNumber?: string;
+  subaccountCode?: string;
+}

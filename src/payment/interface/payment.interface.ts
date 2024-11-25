@@ -31,21 +31,11 @@ export interface CreateSubaccountResponse {
     account_number: string;
     percentage_charge: number;
     settlement_bank: string;
-    currency: string;
     bank: number;
-    integration: number;
-    domain: string;
     account_name: string;
     product: string;
-    managed_by_integration: number;
     subaccount_code: string;
-    is_verified: boolean;
-    settlement_schedule: string;
-    active: boolean;
-    migrate: boolean;
     id: number;
-    createdAt: string;
-    updatedAt: string;
   };
 }
 
@@ -58,6 +48,9 @@ export interface CreateSubaccount{
   primary_contact_name: string;
   primary_contact_phone: string;
 }
+
+
+export type SellerSubaccount = Partial<Pick<User, "businessName" | "bankCode" |"accountNumber" | "email" | "name" | "phone">>
 
 export interface VerifyAccountNumberResponse {
   status: boolean;

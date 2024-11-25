@@ -38,8 +38,9 @@ export class PaymentController {
   })
   async createSubaccount(
     @Body() body: CreateSubaccountDto,
-    @User() user: UserEntity,
+    @User() user: UserEntity
   ): Promise<CreateSubaccountResponse> {
+    
     const buyer = await this.databaseService.user.findUnique({
       where: { id: user.userId },
     });
@@ -61,15 +62,11 @@ export class PaymentController {
 
     // Ensure a seller cannot buy their product
     if (product.seller.id === user.userId) {
-      throw new UnauthorizedException(
-        'You are not allowed to buy your product',
-      );
+      throw new UnauthorizedException('You are not allowed to buy your product');
     }
 
     if (body.quantity > product.quantity) {
-      throw new BadRequestException(
-        `Only ${product.quantity} items available in stock`,
-      );
+      throw new BadRequestException( `Only ${product.quantity} items available in stock`);
     }
 
     // Verify Seller Account Details
