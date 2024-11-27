@@ -49,14 +49,11 @@ export interface CreateSubaccount{
   primary_contact_phone: string;
 }
 
-
-// export type SellerSubaccount = Partial<Pick<User, "businessName" | "bankCode" |"accountNumber" | "email" | "name" | "phone">>
-
 export interface VerifyAccountNumberResponse {
   status: boolean;
   message: string;
   data: {
-    verified: boolean;
-    verificationMessage: string;
-  };
+    account_number: string,
+    account_name: string
+  }
 }

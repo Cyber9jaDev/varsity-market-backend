@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, Logger } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
@@ -6,6 +6,7 @@ import { UserType } from '@prisma/client';
 import { AuthResponse } from '../dtos/auth.dto';
 import { PaymentService } from 'src/payment/payment.service';
 import { AuthParams } from '../interface/user.interface';
+import { data } from 'src/helpers/functions';
 
 const selectOptions = {
   id: true,
@@ -19,43 +20,40 @@ const selectOptions = {
 export class AuthService {
   constructor(
     private readonly databaseService: DatabaseService, 
-    private readonly paymentService: PaymentService
+    private readonly paymentService: PaymentService 
   ) {}
 
+  private readonly logger = new Logger(AuthService.name);
+
   async signUp(userType: UserType, body: AuthParams): Promise<AuthResponse> {
+
+    this.logger.log(`Signup attempt for email: ${body.email}, user type: ${userType}`);
+
     const userExists = await this.databaseService.user.findUnique({
       where: { email: body.email },
     });
 
     if (userExists) { throw new ConflictException('User already exists')}
 
-    const hashedPassword = await bcrypt.hash(body.password, 10);
-
-    console.log(body);
     
     try {
-
+      // Verify bank account details and create subaccount
       let subaccountCode: string;
-
-      // Create subaccount
+      
       if(userType === UserType.SELLER && body.accountNumber !== undefined && body.bankCode !== undefined && body.businessName !== undefined ){
+        
+        // Verify seller account number
+        await this.paymentService.verifySellerBankAccount(body);
+        
+        // Create subaccount
         const subaccount = await this.paymentService.createSubaccount(body);
         subaccountCode = subaccount.data.subaccount_code
       }
+      
+      const hashedPassword = await bcrypt.hash(body.password, 10);
 
       const user = await this.databaseService.user.create({
-        data: {
-          email: body.email,
-          phone: body.phone,
-          name: body.name,
-          password: hashedPassword,
-          userType,
-          businessName: body.businessName,
-          accountNumber: body.accountNumber,
-          bankCode: body.bankCode,
-          // subaccountCode: subaccount.data.subaccount_code
-          subaccountCode
-        },
+        data: data(body, userType, hashedPassword, subaccountCode),
         select: { ...selectOptions },
       });
 
@@ -65,7 +63,7 @@ export class AuthService {
     } 
 
     catch (error) {
-      throw new BadRequestException( 'An error occurred while creating the user');
+      throw new BadRequestException(error.message);
     }
   }
 

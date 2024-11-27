@@ -2,3 +2,9 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMzgwYmNkZi02NTIxLTQwYzEtYTI
 
 BUYER
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3NGVjYTU1Ny0yYTA2LTQyNzctOWUxYi0wOWE2ZTcwZWU2MTkiLCJuYW1lIjoiQnV5ZXIgMSIsImlhdCI6MTczMjIxODE0MywiZXhwIjoxNzMyMzA0NTQzfQ.cBszw5E4fSJ6eaHHs7ToZ6qTVFuIajjscVCdNkjuOzU
+
+
+git commit -m "feat: implement Paystack subaccount creation for sellers" -m "- Add subaccount creation logic in signup flow for seller accounts
+- Store subaccount code in user database
+- Handle conditional subaccount creation based on user type
+- Validate required seller banking information"

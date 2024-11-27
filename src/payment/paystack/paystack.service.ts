@@ -1,11 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import {
-  CreateSubaccount,
-  CreateSubaccountResponse,
-  VerifyAccountNumberResponse,
-} from '../interface/payment.interface';
+import { CreateSubaccount, CreateSubaccountResponse, VerifyAccountNumberResponse } from '../interface/payment.interface';
 import APICall from 'src/helpers/APICall';
-import { User, UserType } from '@prisma/client';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class PaystackService {
@@ -40,38 +36,22 @@ export class PaystackService {
       );
       return response;
     } catch (error) {
-      throw new BadRequestException(error.message);
+      throw new BadRequestException("Please submit a valid bank account number");
     }
   }
 
   async verifyAccountNumber(account_number: string, bank_code: string): Promise<VerifyAccountNumberResponse> {
     if (!account_number || !bank_code) {
-      throw new BadRequestException(
-        'Account number and bank code are required',
-      );
+      throw new BadRequestException('Account number and bank code are required');
     }
 
     try {
-      const data = await APICall<VerifyAccountNumberResponse>(
-        `/bank/resolve?account_number=${account_number}&bank_code=${bank_code}`,
-        'GET',
-        {},
-        { Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` },
-      );
-      return data;
-    } catch (error) {
-      throw new BadRequestException('Unable to verify seller bank details');
-    }
-  }
-
-  async findSubaccount(id_or_code: string) {
-    try {
-      const data = await APICall<VerifyAccountNumberResponse>( `/subaccount/${id_or_code}`, 'GET', {}, { 
+      const response = await APICall<VerifyAccountNumberResponse>( `/bank/resolve?account_number=${account_number}&bank_code=${bank_code}`, 'GET', {}, { 
         Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` },
       );
-      return data;
+      return response;
     } catch (error) {
-      throw new BadRequestException('Unable to verify seller bank details');
+      throw new BadRequestException('Unable to verify seller bank account');
     }
   }
 }
