@@ -1,15 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UserType } from '@prisma/client';
-import {
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  Matches,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 export class SignUpDto {
   @ApiProperty({ type: String, example: 'Seller 1', required: true })
@@ -17,53 +8,26 @@ export class SignUpDto {
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({
-    type: String,
-    example: 'seller1@gmail.com',
-    required: true,
-  })
+  @ApiProperty({ type: String, example: 'seller1@gmail.com', required: true })
   @IsEmail()
   email: string;
 
-  @ApiProperty({
-    description:
-      'Password must contain an upper case, lower case, number and special character. \n It must have minimum Length of 5 characters',
-    type: String,
-    example: 'Test@123',
-    required: true,
-  })
+  @ApiProperty({ description: 'Password must contain an upper case, lower case, number and special character. \n It must have minimum Length of 5 characters', type: String, example: 'Test@123', required: true })
   @MinLength(5)
   @IsString()
   password: string;
 
-  @ApiProperty({
-    description: 'Phone must be a valid phone number',
-    type: String,
-    example: '1000000001',
-    required: true,
-  })
-  @Matches(/^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, {
-    message: 'Phone must be a valid phone number',
-  })
+  @ApiProperty({ description: 'Phone must be a valid phone number', type: String, example: '1000000001', required: true })
+  @Matches(/^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, { message: 'Phone must be a valid phone number' })
   phone: string;
 
-  @ApiProperty({
-    type: String,
-    example: 'Evelyn Gold Pre-order',
-    required: false,
-  })
+  @ApiProperty({ type: String, example: 'Evelyn Gold Pre-order', required: false })
   @IsString()
   // @IsNotEmpty()
   @IsOptional()
   businessName?: string;
 
-  @ApiProperty({
-    type: String,
-    example: '0138427910',
-    required: false,
-    minLength: 10,
-    maxLength: 10,
-  })
+  @ApiProperty({ type: String, example: '0138427910', required: false, minLength: 10, maxLength: 10 })
   @IsString()
   // @IsNotEmpty()
   @IsOptional()
@@ -71,33 +35,19 @@ export class SignUpDto {
   @MaxLength(10)
   accountNumber?: string;
 
-  @ApiProperty({
-    type: String,
-    examples: ["044", "011", "058"],
-    description: 'Use the /payment/banks endpoint to get a list of all bank codes',
-    required: false,
-  })
+  @ApiProperty({ type: String, examples: ["044", "011", "058"], description: 'Use the /payment/banks endpoint to get a list of all bank codes', required: false })
   @IsString()
   @IsOptional()
   bankCode?: string;
 
-  @ApiProperty({
-    type: String,
-    example: "ACCT_6uujpqtzmnufzkw",
-    description: 'Use the /payment/create-subaccount endpoint to create a subaccount',
-    required: false,
-  })
+  @ApiProperty({ type: String, example: "ACCT_6uujpqtzmnufzkw", description: 'Use the /payment/create-subaccount endpoint to create a subaccount', required: false })
   @IsString()
   @IsOptional()
   subaccountCode?: string;
 }
 
 export class SignInDto {
-  @ApiProperty({
-    description: 'Email must be a valid email address',
-    type: String,
-    example: 'steven.david@gmail.com',
-  })
+  @ApiProperty({ description: 'Email must be a valid email address', type: String, example: 'steven.david@gmail.com' })
   @IsEmail()
   email: string;
 
@@ -114,17 +64,11 @@ export class RegistrationKeyDto {
   userType: UserType;
 }
 
-export class AuthResponseDto {
-  @ApiProperty({})
+export class AuthResponse {
   id: string;
-  @ApiProperty({})
   email: string;
-  @ApiProperty({})
   name: string;
-  @ApiProperty({})
   phone: string;
-  @ApiProperty({})
   userType: UserType;
-  @ApiProperty({})
   token: string;
 }

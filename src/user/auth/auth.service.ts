@@ -1,24 +1,19 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-} from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { UserType } from '@prisma/client';
-import { AuthResponseDto } from '../dtos/auth.dto';
+import { AuthResponse } from '../dtos/auth.dto';
 import { PaymentService } from 'src/payment/payment.service';
 import { AuthParams } from '../interface/user.interface';
 
-const select = {
+const selectOptions = {
   id: true,
   email: true,
   name: true,
   phone: true,
   userType: true,
 };
-
 
 @Injectable()
 export class AuthService {
@@ -27,7 +22,7 @@ export class AuthService {
     private readonly paymentService: PaymentService
   ) {}
 
-  async signUp(userType: UserType, body: AuthParams): Promise<AuthResponseDto> {
+  async signUp(userType: UserType, body: AuthParams): Promise<AuthResponse> {
     const userExists = await this.databaseService.user.findUnique({
       where: { email: body.email },
     });
@@ -36,9 +31,18 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(body.password, 10);
 
-    const subaccount = await this.paymentService.createSubaccount(body)
-
+    console.log(body);
+    
     try {
+
+      let subaccountCode: string;
+
+      // Create subaccount
+      if(userType === UserType.SELLER && body.accountNumber !== undefined && body.bankCode !== undefined && body.businessName !== undefined ){
+        const subaccount = await this.paymentService.createSubaccount(body);
+        subaccountCode = subaccount.data.subaccount_code
+      }
+
       const user = await this.databaseService.user.create({
         data: {
           email: body.email,
@@ -49,27 +53,29 @@ export class AuthService {
           businessName: body.businessName,
           accountNumber: body.accountNumber,
           bankCode: body.bankCode,
-          subaccountCode: subaccount.data.subaccount_code
+          // subaccountCode: subaccount.data.subaccount_code
+          subaccountCode
         },
-        select: { ...select },
+        select: { ...selectOptions },
       });
+
       const token = this.generateJWT(user.id, user.name);
 
       return { ...user, token };
-    } catch (error) {
-      throw new BadRequestException(
-        'An error occurred while creating the user',
-      );
+    } 
+
+    catch (error) {
+      throw new BadRequestException( 'An error occurred while creating the user');
     }
   }
 
   async signIn({
     email,
     password,
-  }: Partial<AuthParams>): Promise<AuthResponseDto> {
+  }: Partial<AuthParams>): Promise<AuthResponse> {
     const user = await this.databaseService.user.findUnique({
       where: { email },
-      select: { ...select, password: true },
+      select: { ...selectOptions, password: true },
     });
 
     if (!user) {

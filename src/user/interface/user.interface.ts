@@ -15,5 +15,4 @@ export interface AuthParams {
   businessName?: string;
   bankCode?: string;
   accountNumber?: string;
-  subaccountCode?: string;
 }

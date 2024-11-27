@@ -1,11 +1,6 @@
 import { Body, Controller, Param, ParseEnumPipe, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import {
-  AuthResponseDto,
-  RegistrationKeyDto,
-  SignInDto,
-  SignUpDto,
-} from '../dtos/auth.dto';
+import { AuthResponse, RegistrationKeyDto, SignInDto, SignUpDto } from '../dtos/auth.dto';
 import {  UserType } from '@prisma/client';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
@@ -13,19 +8,9 @@ import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @ApiOperation({
-    summary:
-      "Only a SELLER should provide 'businessName', 'bankName' and 'accountNumber'",
-  })
-  @ApiParam({
-    name: 'userType',
-    enum: UserType,
-    required: true,
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'Created',
-    schema: {
+  @ApiOperation({ summary: "Only a SELLER should provide 'businessName', 'bankName' and 'accountNumber'"})
+  @ApiParam({ name: 'userType', enum: UserType, required: true })
+  @ApiResponse({ status: 201, description: 'Created', schema: {
       example: {
         id: '02b4c5a9-aef2-4189-8f0e-aa75df03f4b6',
         email: 'seller4@gmail.com',
@@ -36,36 +21,20 @@ export class AuthController {
       },
     },
   })
-  @ApiResponse({
-    status: 409,
-    description: 'Conflict',
-    schema: {
-      example: {
-        message: 'User already exists',
-        error: 'Conflict',
-        statusCode: 409,
-      },
+  @ApiResponse({ status: 409, description: 'Conflict', schema: {
+      example: { message: 'User already exists', error: 'Conflict', statusCode: 409 },
     },
   })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal Server Error',
-    schema: {
-      example: {
-        statusCode: 500,
-        message: 'Internal server error',
-        error: 'Internal Server Error',
-      },
+  @ApiResponse({ status: 500, description: 'Internal Server Error', schema: {
+      example: { statusCode: 500, message: 'Internal server error', error: 'Internal Server Error' },
     },
   })
-  @ApiBody({
-    type: SignUpDto,
-  })
+  @ApiBody({ type: SignUpDto })
   @Post('/signup/:userType')
   async SignUp(
     @Body() body: SignUpDto, 
     @Param('userType', new ParseEnumPipe(UserType)) userType: UserType,
-  ): Promise<AuthResponseDto> {
+  ): Promise<AuthResponse> {
     // In order to signup as a SELLER, a key is needed from the ADMIN
     // if(userType !== UserType.BUYER){
 
@@ -83,6 +52,8 @@ export class AuthController {
     //     throw new UnauthorizedException()
     //   }
     // }
+
+    // if(userType === UserType.BUYER) 
 
     return this.authService.signUp(userType, body);
   }
@@ -128,7 +99,7 @@ export class AuthController {
     required: true,
     type: SignInDto,
   })
-  signin(@Body() body: SignInDto): Promise<AuthResponseDto> {
+  signin(@Body() body: SignInDto): Promise<AuthResponse> {
     return this.authService.signIn(body);
   }
 

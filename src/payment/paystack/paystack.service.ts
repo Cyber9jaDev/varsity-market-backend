@@ -5,7 +5,7 @@ import {
   VerifyAccountNumberResponse,
 } from '../interface/payment.interface';
 import APICall from 'src/helpers/APICall';
-import { User } from '@prisma/client';
+import { User, UserType } from '@prisma/client';
 
 @Injectable()
 export class PaystackService {
@@ -44,7 +44,7 @@ export class PaystackService {
     }
   }
 
-  async verifyAccountNumber( account_number: string, bank_code: string ): Promise<VerifyAccountNumberResponse> {
+  async verifyAccountNumber(account_number: string, bank_code: string): Promise<VerifyAccountNumberResponse> {
     if (!account_number || !bank_code) {
       throw new BadRequestException(
         'Account number and bank code are required',
