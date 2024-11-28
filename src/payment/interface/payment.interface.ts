@@ -3,6 +3,7 @@ import { User } from "@prisma/client";
 export interface BankResponseOk {
   status: false;
   message: string;
+  
   data: Banks[];
 }
 
