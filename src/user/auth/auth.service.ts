@@ -29,13 +29,13 @@ export class AuthService {
 
     this.logger.log(`Signup attempt for email: ${body.email}, user type: ${userType}`);
 
-    const userExists = await this.databaseService.user.findUnique({
-      where: { email: body.email },
-    });
+    const userExists = await this.databaseService.user.findUnique({ where: { email: body.email } });
 
-    if (userExists) { throw new ConflictException('User already exists')}
+    if (userExists) { 
+      this.logger.warn(`Signup attempt failed: User already exists (email: ${body.email})`);
+      throw new ConflictException('User already exists')
+    }
 
-    
     try {
       // Verify bank account details and create subaccount
       let subaccountCode: string;
@@ -43,6 +43,7 @@ export class AuthService {
       if(userType === UserType.SELLER && body.accountNumber !== undefined && body.bankCode !== undefined && body.businessName !== undefined ){
         
         // Verify seller account number
+        this.logger.log(`Verifying seller bank account for: ${body.businessName}`);
         await this.paymentService.verifySellerBankAccount(body);
         
         // Create subaccount

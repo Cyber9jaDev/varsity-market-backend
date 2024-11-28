@@ -46,6 +46,7 @@ export class PaystackService {
     }
 
     try {
+      
       const response = await APICall<VerifyAccountNumberResponse>( `/bank/resolve?account_number=${account_number}&bank_code=${bank_code}`, 'GET', {}, { 
         Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` },
       );
