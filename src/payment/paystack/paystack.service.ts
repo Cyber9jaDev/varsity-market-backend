@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateSubaccount, CreateSubaccountResponse, VerifyAccountNumberResponse } from '../interface/payment.interface';
+import { CreateSubaccount, CreateSubaccountResponse, InitializeTransactionResponse, VerifyAccountNumberResponse } from '../interface/payment.interface';
 import APICall from 'src/helpers/APICall';
 import { User } from '@prisma/client';
 
@@ -11,6 +11,18 @@ export class PaystackService {
         Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` 
       });
       return response;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async initializeTransaction(buyerEmail: string, quantity: number, amount: number, subaccount: string) {
+    const data = { email: buyerEmail, amount: String(amount * 100 * quantity), subaccount }
+    try {
+      const response = await APICall<InitializeTransactionResponse>( '/transaction/initialize', 'POST', data, {
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+      });
+      return response
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -53,6 +65,16 @@ export class PaystackService {
       return response;
     } catch (error) {
       throw new BadRequestException('Unable to verify seller bank account');
+    }
+  }
+
+  async fetchSubaccount(id_or_code: string) {
+    try {
+      return await APICall<CreateSubaccountResponse>( `/subaccount/${id_or_code}`, 'GET', {}, {
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` },
+      );
+    } catch (error) {
+      throw new BadRequestException("An error occurred while verifying seller bank information");
     }
   }
 }

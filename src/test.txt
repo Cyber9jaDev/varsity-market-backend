@@ -1,57 +1,8 @@
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMzgwYmNkZi02NTIxLTQwYzEtYTI0ZC1kNTc0OGNhOTYxZjciLCJuYW1lIjoiU2VsbGVyIDEiLCJpYXQiOjE3MzIyMTgxMjMsImV4cCI6MTczMjMwNDUyM30.7cHz0aMF5XHsxCwobEWDls8Wpj5tn1yqLfR2QZ1ccV0
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNjE1Mzg1NS1iNjc1LTQ5MTktOTQ2Ni1lM2MwYWYwZDgyOTkiLCJuYW1lIjoiU2VsbGVyIDEiLCJpYXQiOjE3MzI5MDkwMDMsImV4cCI6MTczMjk5NTQwM30.uNp-Md9r9qEt51pbthRn9tP6mo8QofSabSqVB6wXyyM
+
+
+
+
 
 BUYER
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3NGVjYTU1Ny0yYTA2LTQyNzctOWUxYi0wOWE2ZTcwZWU2MTkiLCJuYW1lIjoiQnV5ZXIgMSIsImlhdCI6MTczMjIxODE0MywiZXhwIjoxNzMyMzA0NTQzfQ.cBszw5E4fSJ6eaHHs7ToZ6qTVFuIajjscVCdNkjuOzU
-
-
-git commit -m "feat: implement Paystack subaccount creation for sellers" -m "- Add subaccount creation logic in signup flow for seller accounts
-- Store subaccount code in user database
-- Handle conditional subaccount creation based on user type
-- Validate required seller banking information"
-
-
-
-  async signUp(userType: UserType, body: AuthParams): Promise<AuthResponse> {
-
-    this.logger.log(`Signup attempt for email: ${body.email}, user type: ${userType}`);
-
-    const userExists = await this.databaseService.user.findUnique({ where: { email: body.email } });
-
-    if (userExists) { 
-      this.logger.warn(`Signup attempt failed: User already exists (email: ${body.email})`);
-      throw new ConflictException('User already exists')
-    }
-
-    try {
-      // Verify bank account details and create subaccount
-      return await this.databaseService.$transaction(async (db) => {
-        let subaccountCode: string;
-
-        if(userType === UserType.SELLER && body.accountNumber !== undefined && body.bankCode !== undefined && body.businessName !== undefined ){
-        
-          // Verify seller account number
-          this.logger.log(`Verifying seller bank account for: ${body.businessName}`);
-          await this.paymentService.verifySellerBankAccount(body);
-          
-          // Create subaccount
-          const subaccount = await this.paymentService.createSubaccount(body);
-          subaccountCode = subaccount.data.subaccount_code
-        }
-        
-        const hashedPassword = await bcrypt.hash(body.password, 10);
-
-        const user = await db.user.create({
-          data: data(body, userType, hashedPassword, subaccountCode),
-          select: { ...selectOptions },
-        });
-
-        const token = this.generateJWT(user.id, user.name);
-        
-        return { ...user, token };
-      })
-    } 
-    catch (error) {
-      this.logger.error(`Signup transaction failed: ${error.message}`);
-      throw new Error(error.message);
-    }
-  }
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyOTNjMzNlOC02MTZjLTQzYTUtYTY1OS05M2I0NjEyMGEyMWMiLCJuYW1lIjoiQnV5ZXIgMSIsImlhdCI6MTczMjkxMDYyMywiZXhwIjoxNzMyOTk3MDIzfQ.IMIDqhmBZnc0IWPniGi3NejsxV4PH0DZHIq4gWbRXX4

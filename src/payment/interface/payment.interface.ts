@@ -22,6 +22,16 @@ interface Banks {
   updatedAt: string;
 }
 
+export interface InitializeTransactionResponse {
+  status: boolean;
+  message: string;
+  data: {
+    authorization_url: string;
+    access_code: string;
+    reference: string;
+  }
+}
+
 export interface CreateSubaccountResponse {
   status: boolean;
   message: string;
@@ -56,3 +66,9 @@ export interface VerifyAccountNumberResponse {
     account_name: string
   }
 }
+
+export interface PaystackMetadata{ 
+  quantity: number
+}
+
+export type PaystackPayment = { email: string, metadata: PaystackMetadata }

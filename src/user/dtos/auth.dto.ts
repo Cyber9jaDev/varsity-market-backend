@@ -26,7 +26,7 @@ export class SignUpDto {
   @IsOptional()
   businessName?: string;
 
-  @ApiProperty({ type: String, example: '0138997910', required: false, minLength: 10, maxLength: 10 })
+  @ApiProperty({ type: String, example: '0138427910', required: false, minLength: 10, maxLength: 10 })
   @IsString()
   // @IsNotEmpty()
   @IsOptional()
@@ -34,7 +34,7 @@ export class SignUpDto {
   @MaxLength(10)
   accountNumber?: string;
 
-  @ApiProperty({ type: String, examples: ["044", "011", "058"], description: 'Use the /payment/banks endpoint to get a list of all bank codes', required: false })
+  @ApiProperty({ type: String, example: "058", description: 'Use the /payment/banks endpoint to get a list of all bank codes', required: false })
   @IsString()
   @IsOptional()
   bankCode?: string;

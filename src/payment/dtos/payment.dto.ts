@@ -1,50 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class CreateSubaccountDto {
-  // @ApiProperty({
-  //   type: 'string',
-  //   example: '2532cadc-7b3c-420b-9f8b-c3cdbec73e69',
-  // })
-  // @IsNotEmpty()
-  // @IsString()
-  // sellerId: string;
-
-  @ApiProperty({
-    type: 'string',
-    example: 'a29671da-9922-4a38-b506-841a5d03d9a1',
-  })
+export class InitializePaystackTransactionDto {
+  @ApiProperty({ type: 'string', example: 'a29671da-9922-4a38-b506-841a5d03d9a1', required: true })
   @IsNotEmpty()
   @IsString()
   productId: string;
 
-  @ApiProperty({
-    type: 'number',
-    example: '1',
-  })
+  @ApiProperty({ type: 'number', example: 1, required: true })
   @IsNotEmpty()
   @IsNumber()
   quantity: number;
 
-  // @ApiProperty()
+  // @ApiProperty({ type: 'string', example: '200' })
   // @IsNotEmpty()
   // @IsString()
-  // business_name: string;
+  // amount: string;
 
-  // @ApiProperty()
+  // @ApiProperty({ type: 'string', example: 'buyer1@gmail.com'})
   // @IsNotEmpty()
-  // @IsString()
-  // bank_code: string;
-
-  // @ApiProperty()
-  // @IsNotEmpty()
-  // @IsString()
-  // account_number: string;
-
-  // @ApiProperty()
-  // @IsNotEmpty()
-  // @IsNumber()
-  // percentage_charge: number;
+  // @IsEmail()
+  // email: string;
 }
-
 
