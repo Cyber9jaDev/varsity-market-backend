@@ -3,9 +3,8 @@ import { DatabaseService } from 'src/database/database.service';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { UserType } from '@prisma/client';
-import { AuthResponse } from '../dtos/auth.dto';
 import { PaymentService } from 'src/payment/payment.service';
-import { AuthParams } from '../interface/user.interface';
+import { AuthParams, AuthResponse } from '../interface/user.interface';
 import { data } from 'src/helpers/functions';
 
 const selectOptions = {
@@ -24,51 +23,6 @@ export class AuthService {
   ) {}
 
   private readonly logger = new Logger(AuthService.name);
-
-  // async signUp(userType: UserType, body: AuthParams): Promise<AuthResponse> {
-
-  //   this.logger.log(`Signup attempt for email: ${body.email}, user type: ${userType}`);
-
-  //   const userExists = await this.databaseService.user.findUnique({ where: { email: body.email } });
-
-  //   if (userExists) { 
-  //     this.logger.warn(`Signup attempt failed: User already exists (email: ${body.email})`);
-  //     throw new ConflictException('User already exists')
-  //   }
-
-  //   try {
-  //     // Verify bank account details and create subaccount
-  //     return await this.databaseService.$transaction(async (db) => {
-  //       let subaccountCode: string;
-
-  //       if(userType === UserType.SELLER && body.accountNumber !== undefined && body.bankCode !== undefined && body.businessName !== undefined ){
-        
-  //         // Verify seller account number
-  //         this.logger.log(`Verifying seller bank account for: ${body.businessName}`);
-  //         await this.paymentService.verifySellerBankAccount(body);
-          
-  //         // Create subaccount
-  //         const subaccount = await this.paymentService.createSubaccount(body);
-  //         subaccountCode = subaccount.data.subaccount_code
-  //       }
-        
-  //       const hashedPassword = await bcrypt.hash(body.password, 10);
-
-  //       const user = await db.user.create({
-  //         data: data(body, userType, hashedPassword, subaccountCode),
-  //         select: { ...selectOptions },
-  //       });
-
-  //       const token = this.generateJWT(user.id, user.name);
-        
-  //       return { ...user, token };
-  //     })
-  //   } 
-  //   catch (error) {
-  //     this.logger.error(`Signup transaction failed: ${error.message}`);
-  //     throw new Error(error.message);
-  //   }
-  // }
 
   async signUp(userType: UserType, body: AuthParams): Promise<AuthResponse> {
     this.logger.log(`Signup attempt for email: ${body.email}, user type: ${userType}`);
@@ -128,7 +82,9 @@ export class AuthService {
         this.logger.log(`Signup completed successfully for user: ${user.id}`);
         return { ...user, token };
       });
-    } catch (error) {
+    } 
+
+    catch (error) {
       this.logger.error('Signup process failed', {
         error: error.message,
         stack: error.stack,

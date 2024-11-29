@@ -1,3 +1,4 @@
+import { UserType } from "@prisma/client";
 
 // User from JWT
 export interface UserEntity {
@@ -15,4 +16,13 @@ export interface AuthParams {
   businessName?: string;
   bankCode?: string;
   accountNumber?: string;
+}
+
+export class AuthResponse {
+  id: string;
+  email: string;
+  name: string;
+  phone: string;
+  userType: UserType;
+  token: string;
 }

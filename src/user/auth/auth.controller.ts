@@ -1,14 +1,20 @@
 import { Body, Controller, Param, ParseEnumPipe, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthResponse, RegistrationKeyDto, SignInDto, SignUpDto } from '../dtos/auth.dto';
+import { RegistrationKeyDto, SignInDto, SignUpDto } from '../dtos/auth.dto';
 import {  UserType } from '@prisma/client';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { AuthResponse } from '../interface/user.interface';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @ApiOperation({ summary: "Only a SELLER should provide 'businessName', 'bankName' and 'accountNumber'"})
+
+  @ApiOperation({ 
+    summary: "Sign up as a BUYER or SELLER",
+    description: "1. Only a SELLER should provide 'businessName', 'bankCode' and 'accountNumber'.\n2. Use the /payment/bank endpoint to get a list of banks and their corresponding bankCode.\n3. Exclude the first 0 (zero) from your phone number."
+  })
+  
   @ApiParam({ name: 'userType', enum: UserType, required: true })
   @ApiResponse({ status: 201, description: 'Created', schema: {
       example: {

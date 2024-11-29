@@ -23,11 +23,10 @@ export class SignUpDto {
 
   @ApiProperty({ type: String, example: 'Evelyn Gold Pre-order', required: false })
   @IsString()
-  // @IsNotEmpty()
   @IsOptional()
   businessName?: string;
 
-  @ApiProperty({ type: String, example: '0138427910', required: false, minLength: 10, maxLength: 10 })
+  @ApiProperty({ type: String, example: '0138997910', required: false, minLength: 10, maxLength: 10 })
   @IsString()
   // @IsNotEmpty()
   @IsOptional()
@@ -39,11 +38,6 @@ export class SignUpDto {
   @IsString()
   @IsOptional()
   bankCode?: string;
-
-  @ApiProperty({ type: String, example: "ACCT_6uujpqtzmnufzkw", description: 'Use the /payment/create-subaccount endpoint to create a subaccount', required: false })
-  @IsString()
-  @IsOptional()
-  subaccountCode?: string;
 }
 
 export class SignInDto {
@@ -64,11 +58,3 @@ export class RegistrationKeyDto {
   userType: UserType;
 }
 
-export class AuthResponse {
-  id: string;
-  email: string;
-  name: string;
-  phone: string;
-  userType: UserType;
-  token: string;
-}
