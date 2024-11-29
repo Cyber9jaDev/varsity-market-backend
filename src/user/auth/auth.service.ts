@@ -25,48 +25,125 @@ export class AuthService {
 
   private readonly logger = new Logger(AuthService.name);
 
+  // async signUp(userType: UserType, body: AuthParams): Promise<AuthResponse> {
+
+  //   this.logger.log(`Signup attempt for email: ${body.email}, user type: ${userType}`);
+
+  //   const userExists = await this.databaseService.user.findUnique({ where: { email: body.email } });
+
+  //   if (userExists) { 
+  //     this.logger.warn(`Signup attempt failed: User already exists (email: ${body.email})`);
+  //     throw new ConflictException('User already exists')
+  //   }
+
+  //   try {
+  //     // Verify bank account details and create subaccount
+  //     return await this.databaseService.$transaction(async (db) => {
+  //       let subaccountCode: string;
+
+  //       if(userType === UserType.SELLER && body.accountNumber !== undefined && body.bankCode !== undefined && body.businessName !== undefined ){
+        
+  //         // Verify seller account number
+  //         this.logger.log(`Verifying seller bank account for: ${body.businessName}`);
+  //         await this.paymentService.verifySellerBankAccount(body);
+          
+  //         // Create subaccount
+  //         const subaccount = await this.paymentService.createSubaccount(body);
+  //         subaccountCode = subaccount.data.subaccount_code
+  //       }
+        
+  //       const hashedPassword = await bcrypt.hash(body.password, 10);
+
+  //       const user = await db.user.create({
+  //         data: data(body, userType, hashedPassword, subaccountCode),
+  //         select: { ...selectOptions },
+  //       });
+
+  //       const token = this.generateJWT(user.id, user.name);
+        
+  //       return { ...user, token };
+  //     })
+  //   } 
+  //   catch (error) {
+  //     this.logger.error(`Signup transaction failed: ${error.message}`);
+  //     throw new Error(error.message);
+  //   }
+  // }
+
   async signUp(userType: UserType, body: AuthParams): Promise<AuthResponse> {
-
     this.logger.log(`Signup attempt for email: ${body.email}, user type: ${userType}`);
-
-    const userExists = await this.databaseService.user.findUnique({ where: { email: body.email } });
-
-    if (userExists) { 
-      this.logger.warn(`Signup attempt failed: User already exists (email: ${body.email})`);
-      throw new ConflictException('User already exists')
-    }
-
+  
     try {
-      // Verify bank account details and create subaccount
-      let subaccountCode: string;
-      
-      if(userType === UserType.SELLER && body.accountNumber !== undefined && body.bankCode !== undefined && body.businessName !== undefined ){
-        
-        // Verify seller account number
-        this.logger.log(`Verifying seller bank account for: ${body.businessName}`);
-        await this.paymentService.verifySellerBankAccount(body);
-        
-        // Create subaccount
-        const subaccount = await this.paymentService.createSubaccount(body);
-        subaccountCode = subaccount.data.subaccount_code
-      }
-      
-      const hashedPassword = await bcrypt.hash(body.password, 10);
-
-      const user = await this.databaseService.user.create({
-        data: data(body, userType, hashedPassword, subaccountCode),
-        select: { ...selectOptions },
+      const userExists = await this.databaseService.user.findUnique({ 
+        where: { email: body.email } 
       });
-
-      const token = this.generateJWT(user.id, user.name);
-
-      return { ...user, token };
-    } 
-
-    catch (error) {
-      throw new BadRequestException(error.message);
+  
+      if (userExists) { 
+        this.logger.warn(`Signup attempt failed: User already exists (email: ${body.email})`);
+        throw new ConflictException('User already exists')
+      }
+  
+      this.logger.log('Starting transaction for user creation');
+      return await this.databaseService.$transaction(async (db) => {
+        let subaccountCode: string;
+        
+        if(userType === UserType.SELLER && 
+          body.accountNumber !== undefined && 
+          body.bankCode !== undefined && 
+          body.businessName !== undefined) {
+          
+          this.logger.log(`Verifying seller bank account for business: ${body.businessName}`);
+          try {
+            await this.paymentService.verifySellerBankAccount(body);
+            this.logger.log(`Bank account verification successful for business: ${body.businessName}`);
+          } catch (error) {
+            this.logger.error(`Bank account verification failed for business: ${body.businessName}`, error.stack);
+            throw error;
+          }
+          
+          this.logger.log(`Creating subaccount for business: ${body.businessName}`);
+          try {
+            const subaccount = await this.paymentService.createSubaccount(body);
+            subaccountCode = subaccount.data.subaccount_code;
+            this.logger.log(`Subaccount created successfully. Code: ${subaccountCode}`);
+          } catch (error) {
+            this.logger.error(`Subaccount creation failed for business: ${body.businessName}`, error.stack);
+            throw error;
+          }
+        }
+        
+        this.logger.log('Hashing user password');
+        const hashedPassword = await bcrypt.hash(body.password, 10);
+  
+        this.logger.log('Creating user record in database');
+        const user = await db.user.create({
+          data: data(body, userType, hashedPassword, subaccountCode),
+          select: { ...selectOptions },
+        });
+        this.logger.log(`User created successfully with ID: ${user.id}`);
+  
+        this.logger.log('Generating JWT token');
+        const token = this.generateJWT(user.id, user.name);
+  
+        this.logger.log(`Signup completed successfully for user: ${user.id}`);
+        return { ...user, token };
+      });
+    } catch (error) {
+      this.logger.error('Signup process failed', {
+        error: error.message,
+        stack: error.stack,
+        email: body.email,
+        userType: userType
+      });
+      
+      // Rethrow with more specific error handling
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+      throw new Error(`Failed to create user: ${error.message}`);
     }
   }
+  
 
   async signIn({
     email,

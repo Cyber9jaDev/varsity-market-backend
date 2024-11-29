@@ -66,45 +66,25 @@ export class ProductService {
   async addProduct(
     sellerId: string,
     images: ProductImageParams[],
-    {
-      name,
-      description,
-      price,
-      category,
-      condition,
-      location,
-      quantity
-    }: createProductParams,
-  ): Promise<ProductResponseDto> {
-    return await this.databaseService.$transaction(async (db) => {
-      const product = await db.product.create({
-        data: {
-          name,
-          description,
-          price,
-          category,
-          condition,
-          location,
-          sellerId,
-          quantity
-        },
-        select: { ...selectOptions },
-      });
+    { name, description, price, category, condition, location, quantity }: createProductParams ): Promise<ProductResponseDto> {
+    
+      return await this.databaseService.$transaction(async (db) => {
+        const product = await db.product.create({
+          data: { name, description, price, category, condition, location, sellerId, quantity },
+          select: { ...selectOptions },
+        });
 
-      await db.image.createMany({
-        data: images.map((image) => ({
-          ...image,
-          productId: product.id,
-        })),
-      });
+        await db.image.createMany({
+          data: images.map((image) => ({ ...image, productId: product.id })),
+        });
 
-      const createdImages = await db.image.findMany({
-        where: { productId: product.id },
-        select: { secure_url: true },
-      });
+        const createdImages = await db.image.findMany({
+          where: { productId: product.id },
+          select: { secure_url: true },
+        });
 
-      return new ProductResponseDto({ ...product, images: createdImages });
-    });
+        return new ProductResponseDto({ ...product, images: createdImages });
+      });
   }
 
   async updateProduct(id: string, updateProductParams: UpdateProductInterface) {
@@ -121,11 +101,7 @@ export class ProductService {
 
   async deleteProduct(id: string) {
     // To delete a product, we need to delete all the images associated with it first
-    await this.databaseService.image.deleteMany({
-      where: {
-        product: { id },
-      },
-    });
+    await this.databaseService.image.deleteMany({ where: { product: { id } } });
 
     const deletedProduct = await this.databaseService.product.delete({
       where: { id },
@@ -140,12 +116,7 @@ export class ProductService {
   async findUserByProductId(id: string) {
     const product = await this.databaseService.product.findUnique({
       where: { id },
-      select: {
-        sellerId: true,
-        // seller: {
-        //   select: { userId: true }
-        // },
-      },
+      select: { sellerId: true },
     });
 
     if (!product) throw new NotFoundException();
