@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch"]
+  previewFeatures = ["fullTextSearchPostgres"]
 }
 
 datasource db {
@@ -12,19 +12,23 @@ enum PaymentStatus {
   PENDING
   SUCCESS
   FAILED
+  ABANDONED
 }
 
-model Payment{
+model Transaction{
   id            String            @id @default(uuid())  
   quantity      Int
   amount        Float
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
-  status        PaymentStatus
+  status        PaymentStatus     @default(PENDING)
   reference     String            @unique
-  // buyer         User
-  // seller        User
-  // product       Product
+  buyer         User              @relation(fields: [buyerId], references: [id])
+  buyerId       String
+  // seller        User              @relation(fields: [sellerId], references: [id])
+  // sellerId      String
+  product       Product
+  productId     String
 }
 
 model User {
@@ -47,6 +51,7 @@ model User {
   orders              Order[] // Historical orders
   sentMessages        Message[]         @relation("sentMessages")
   chats               ChatParticipant[]
+  transaction         Transaction?
 }
 
 model Message {

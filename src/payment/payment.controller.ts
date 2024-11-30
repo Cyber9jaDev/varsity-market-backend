@@ -1,29 +1,30 @@
 import { BadRequestException, Body, Controller, Get, NotFoundException, Post, UnauthorizedException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { InitializePaystackTransactionDto } from './dtos/payment.dto';
+import { TransactionInitializationDto } from './dtos/payment.dto';
 import { User } from 'src/user/decorators/user.decorator';
 import { UserEntity } from 'src/user/interface/user.interface';
 import { ApiBody } from '@nestjs/swagger';
 import { PaymentService } from './payment.service';
-import { CreateSubaccountResponse, InitializeTransactionResponse } from './interface/payment.interface';
+import { InitializeTransactionResponse } from './interface/payment.interface';
+import { PaystackService } from './paystack/paystack.service';
 
 @Controller('payment')
 export class PaymentController {
   constructor(
-    // private readonly productService: ProductService,
     private readonly databaseService: DatabaseService,
     private readonly paymentService: PaymentService,
+    private readonly paystackService: PaystackService,
   ) {}
 
   @Get('/banks')
   async getBanks() {
-    return await this.paymentService.getBanks();
+    return await this.paystackService.bankList();
   }
 
   @Post('/initialize-transaction')
-  @ApiBody({ required: true, description: 'Initiate Paystack Transaction', type: InitializePaystackTransactionDto })
+  @ApiBody({ required: true, description: 'Initiate Paystack Transaction', type: TransactionInitializationDto })
   async initializeTransaction(
-    @Body() body: InitializePaystackTransactionDto,
+    @Body() body: TransactionInitializationDto,
     @User() user: UserEntity
   ): Promise<InitializeTransactionResponse> {
     
@@ -46,13 +47,13 @@ export class PaymentController {
     if (body.quantity > product.quantity) throw new BadRequestException( `Only ${product.quantity} items available in stock`) 
 
     // Verify Seller Account Details
-    await this.paymentService.verifySellerBankAccount(product.seller);
+    await this.paystackService.verifyAccountNumber(product.seller.accountNumber, product.seller.bankCode);
 
     // Fetch subaccount 
     await this.paymentService.fetchSubaccount(product.seller.subaccountCode);
 
     // Initialize Transaction
-    return await this.paymentService.initializeTransaction(buyer.email, body.quantity, (product.price), product.seller.subaccountCode);
+    return await this.paymentService.initializeTransaction(buyer.email, body.quantity, product.price, product.seller.subaccountCode);
 
   }
 }

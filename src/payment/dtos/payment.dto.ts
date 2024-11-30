@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class InitializePaystackTransactionDto {
+export class TransactionInitializationDto  {
   @ApiProperty({ type: 'string', example: 'a29671da-9922-4a38-b506-841a5d03d9a1', required: true })
   @IsNotEmpty()
   @IsString()
