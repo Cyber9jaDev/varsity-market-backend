@@ -20,15 +20,13 @@ model Transaction{
   quantity      Int
   amount        Float
   createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
+  verifiedAt    DateTime          @updatedAt
   status        PaymentStatus     @default(PENDING)
   reference     String            @unique
   buyer         User              @relation(fields: [buyerId], references: [id])
   buyerId       String
-  // seller        User              @relation(fields: [sellerId], references: [id])
-  // sellerId      String
-  product       Product
-  productId     String
+  product       Product           @relation(fields: [productId], references: [id])
+  productId     String            @unique
 }
 
 model User {
@@ -51,7 +49,7 @@ model User {
   orders              Order[] // Historical orders
   sentMessages        Message[]         @relation("sentMessages")
   chats               ChatParticipant[]
-  transaction         Transaction?
+  transactions        Transaction[]
 }
 
 model Message {
@@ -96,6 +94,7 @@ model Product {
   images      Image[]
   cartItems   CartItem[] // Products can appear in multiple cart items
   OrderItem   OrderItem[]
+  transaction Transaction?
 }
 
 model Cart {

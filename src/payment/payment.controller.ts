@@ -36,7 +36,7 @@ export class PaymentController {
 
     const product = await this.databaseService.product.findUnique({
       where: { id: body.productId },
-      select: { seller: true, quantity: true, price: true },
+      select: { id: true, seller: true, quantity: true, price: true },
     });
 
     if (!product) throw new NotFoundException('This product does not exist') 
@@ -51,9 +51,27 @@ export class PaymentController {
 
     // Fetch subaccount 
     await this.paymentService.fetchSubaccount(product.seller.subaccountCode);
+    
+    // Pending Initialization
+    // Create a transaction record in the database with PENDING status
 
+    await this.databaseService.transaction.create({
+      data:{
+        buyerId: buyer.id,
+        productId: product.id,
+        quantity: body.quantity,
+        amount: product.price,
+        reference: this.generateReference(),
+      }
+    })
+
+    
     // Initialize Transaction
     return await this.paymentService.initializeTransaction(buyer.email, body.quantity, product.price, product.seller.subaccountCode);
 
+  }
+
+  private generateReference(): string {
+    return `TX-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
 }

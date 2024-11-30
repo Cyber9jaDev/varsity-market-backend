@@ -16,6 +16,10 @@ export class PaystackService {
     }
   }
 
+  async verifyPayment(reference: string) {
+    return {}
+  }
+
   async initializeTransaction(buyerEmail: string, quantity: number, amount: number, subaccount: string) {
     const data = { email: buyerEmail, amount: String(amount * 100 * quantity), subaccount }
     try {

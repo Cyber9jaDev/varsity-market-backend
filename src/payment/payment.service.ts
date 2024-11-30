@@ -3,10 +3,22 @@ import { PaystackService } from './paystack/paystack.service';
 import { CreateSubaccountResponse } from './interface/payment.interface';
 import { User } from '@prisma/client';
 import { AuthParams } from 'src/user/interface/user.interface';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class PaymentService {
-  constructor(private readonly paystackService: PaystackService) {}
+  constructor(
+    private readonly paystackService: PaystackService, 
+    private readonly databaseService: DatabaseService
+  ) {}
+
+  async pendingTransaction (){
+
+  }
+  
+  async verifyPayment(reference: string) {
+    return await this.paystackService.verifyPayment(reference);
+  }
 
   async getBanks() {
     return await this.paystackService.bankList();
