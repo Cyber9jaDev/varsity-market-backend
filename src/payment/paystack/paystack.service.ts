@@ -23,11 +23,13 @@ export class PaystackService {
   async initializeTransaction(buyerEmail: string, quantity: number, amount: number, subaccount: string) {
     const data = { email: buyerEmail, amount: String(amount * 100 * quantity), subaccount }
     try {
+      console.log(data);
       const response = await APICall<InitializeTransactionResponse>( '/transaction/initialize', 'POST', data, {
         Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
       });
       return response
     } catch (error) {
+      console.log("Wetin happen na");
       throw new BadRequestException(error.message);
     }
   }

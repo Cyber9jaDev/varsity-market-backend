@@ -9,7 +9,7 @@ import { InitializeTransactionResponse } from './interface/payment.interface';
 import { PaystackService } from './paystack/paystack.service';
 
 @Controller('payment')
-export class PaymentController {
+export class PaymentController{
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly paymentService: PaymentService,
@@ -27,6 +27,7 @@ export class PaymentController {
     @Body() body: TransactionInitializationDto,
     @User() user: UserEntity
   ): Promise<InitializeTransactionResponse> {
+
     
     const buyer = await this.databaseService.user.findUnique({
       where: { id: user.userId },
@@ -55,6 +56,8 @@ export class PaymentController {
     // Pending Initialization
     // Create a transaction record in the database with PENDING status
 
+    console.log(1);
+
     await this.databaseService.transaction.create({
       data:{
         buyerId: buyer.id,
@@ -65,10 +68,13 @@ export class PaymentController {
       }
     })
 
-    
-    // Initialize Transaction
-    return await this.paymentService.initializeTransaction(buyer.email, body.quantity, product.price, product.seller.subaccountCode);
+    console.log(2);
 
+    // Initialize Transaction
+    const res =  await this.paymentService.initializeTransaction(buyer.email, body.quantity, product.price, product.seller.subaccountCode);
+
+    console.log(6)
+    return res;
   }
 
   private generateReference(): string {

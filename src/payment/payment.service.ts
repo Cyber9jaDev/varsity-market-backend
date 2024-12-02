@@ -25,6 +25,7 @@ export class PaymentService {
   }
 
   async initializeTransaction(buyerEmail: string, quantity: number, amount: number, subaccount: string){
+    console.log(3);
     return await this.paystackService.initializeTransaction(buyerEmail, quantity, amount, subaccount);
   }
 
