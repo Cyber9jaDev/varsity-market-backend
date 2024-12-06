@@ -48,15 +48,17 @@ export interface CreateSubaccountResponse {
   };
 }
 
-export interface CreateSubaccount{
-  business_name: string;
-  bank_code: string;
-  account_number: string;
-  percentage_charge: number;
-  primary_contact_email: string;
-  primary_contact_name: string;
-  primary_contact_phone: string;
-}
+// export interface CreateSubaccount{
+//   business_name: string;
+//   bank_code: string;
+//   account_number: string;
+//   percentage_charge: number;
+//   primary_contact_email: string;
+//   primary_contact_name: string;
+//   primary_contact_phone: string;
+// }
+
+export type CreateSubaccount = Record<string, string | number>
 
 export interface VerifyAccountNumberResponse {
   status: boolean;
@@ -67,8 +69,16 @@ export interface VerifyAccountNumberResponse {
   }
 }
 
-export interface PaystackMetadata{ 
-  quantity: number
+export interface VerifyPayment {
+  status: boolean;
+  message: string;
+  data: {
+    status: string;
+    reference: string;
+    amount: number;
+  }
 }
+
+export type PaystackMetadata = Record<string, string | number | object>
 
 export type PaystackPayment = { email: string, metadata: PaystackMetadata }

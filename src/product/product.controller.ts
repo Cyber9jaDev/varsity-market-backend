@@ -1,44 +1,14 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-  UnauthorizedException,
-  UploadedFiles,
-  UseInterceptors,
-} from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Query, UnauthorizedException, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { ProductService } from './product.service';
-import {
-  CreateProductDto,
-  ProductResponseDto,
-  UpdateProductDto,
-} from './dtos/product.dto';
+import { CreateProductDto, ProductResponseDto, UpdateProductDto } from './dtos/product.dto';
 import { User } from 'src/user/decorators/user.decorator';
 import { UserEntity } from 'src/user/interface/user.interface';
-import {
-  CategoryType,
-  ConditionType,
-  Location,
-  UserType,
-} from '@prisma/client';
+import { CategoryType, ConditionType, Location, UserType } from '@prisma/client';
 import { Roles } from 'src/decorator/roles.decorator';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { OrderByEnum } from './interface/product.interface';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiConsumes,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { isValidDate } from 'src/helpers/functions';
 
 @Controller('products')
@@ -51,12 +21,7 @@ export class ProductController {
   // Get all products
   @Get()
   @ApiOperation({ summary: 'Get all products' })
-  @ApiQuery({
-    example: '',
-    required: false,
-    name: 'searchText',
-    type: 'string',
-  })
+  @ApiQuery({ example: '', required: false, name: 'searchText', type: 'string' })
   @ApiQuery({ required: false, name: 'category', enum: CategoryType })
   @ApiQuery({ required: false, name: 'orderBy', enum: OrderByEnum })
   @ApiQuery({ required: false, name: 'location', enum: Location })
@@ -264,9 +229,7 @@ export class ProductController {
     },
   })
   @ApiOperation({ summary: 'Get a single product by id' })
-  getSingleProduct(
-    @Param('productId') productId: string,
-  ): Promise<ProductResponseDto> {
+  getSingleProduct( @Param('productId') productId: string ): Promise<ProductResponseDto> {
     return this.productService.getSingleProduct(productId);
   }
 

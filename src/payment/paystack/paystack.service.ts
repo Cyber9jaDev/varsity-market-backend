@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateSubaccount, CreateSubaccountResponse, InitializeTransactionResponse, VerifyAccountNumberResponse } from '../interface/payment.interface';
+import { CreateSubaccount, CreateSubaccountResponse, InitializeTransactionResponse, VerifyAccountNumberResponse, PaystackMetadata, VerifyPayment } from '../interface/payment.interface';
 import APICall from 'src/helpers/APICall';
 import { User } from '@prisma/client';
 
@@ -16,21 +16,39 @@ export class PaystackService {
     }
   }
 
-  async verifyPayment(reference: string) {
-    return {}
+  async verifyTransaction(reference: string): Promise<VerifyPayment> {
+    try {
+      const response = await APICall<VerifyPayment>(`/transaction/verify/${reference}`, 'GET', {}, {
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+      });
+      return response;
+    } 
+    catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
-  async initializeTransaction(buyerEmail: string, quantity: number, amount: number, subaccount: string) {
-    const data = { email: buyerEmail, amount: String(amount * 100 * quantity), subaccount }
+  async initializeTransaction(
+    buyerEmail: string, 
+    quantity: number, 
+    amount: number, 
+    subaccount: string, 
+    reference: string, 
+    callback_url: string,
+  ): Promise<InitializeTransactionResponse>{
+    
+    const data = { 
+      email: buyerEmail,  amount: String(amount * 100 * quantity), 
+      subaccount, reference, callback_url 
+    }
+
     try {
-      console.log(data);
       const response = await APICall<InitializeTransactionResponse>( '/transaction/initialize', 'POST', data, {
         Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
       });
       return response
     } catch (error) {
-      console.log("Wetin happen na");
-      throw new BadRequestException(error.message);
+      throw new BadRequestException("Unable to initialize transaction");
     }
   }
 
@@ -84,3 +102,4 @@ export class PaystackService {
     }
   }
 }
+

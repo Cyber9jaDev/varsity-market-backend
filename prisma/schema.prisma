@@ -26,7 +26,7 @@ model Transaction{
   buyer         User              @relation(fields: [buyerId], references: [id])
   buyerId       String
   product       Product           @relation(fields: [productId], references: [id])
-  productId     String            @unique
+  productId     String            
 }
 
 model User {
@@ -94,7 +94,7 @@ model Product {
   images      Image[]
   cartItems   CartItem[] // Products can appear in multiple cart items
   OrderItem   OrderItem[]
-  transaction Transaction?
+  transactions Transaction[]
 }
 
 model Cart {
