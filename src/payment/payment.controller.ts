@@ -83,13 +83,18 @@ export class PaymentController{
     // Check if transaction exists and it is successful
 
     const existingTransaction = await this.databaseService.transaction.findUnique({
-      where: { reference }, select: { status: true, productId: true, quantity: true }
+      where: { reference }, 
+      select: { 
+        status: true, quantity: true, amount: true, verifiedAt: true, reference: true, 
+        buyer: { select: { name: true } }, 
+        product: { select: { id: true, name: true } }
+      }
     });
 
     if(!existingTransaction) throw new NotFoundException("Transaction does not exist");
 
     if(existingTransaction.status === PaymentStatus.SUCCESS){
-      return "Payment Completed"
+      return { ...existingTransaction, total: (existingTransaction.amount * existingTransaction.quantity) };
     }
 
     const verifiedTransaction = await this.paymentService.verifyTransaction(reference)
@@ -98,21 +103,23 @@ export class PaymentController{
     if(verifiedTransaction.data.status === "success") {
 
       // Update payment status
-      await this.databaseService.transaction.update({
+      const successfulTransaction = await this.databaseService.transaction.update({
         where: { reference },
-        data: { status: PaymentStatus.SUCCESS }
-      });
-      
-      // Update payment quantity
-      await this.databaseService.product.update({
-        where: { id: existingTransaction.productId },
-        data: { quantity: { decrement: existingTransaction.quantity } }
+        data: { status: PaymentStatus.SUCCESS },
+        select: { 
+          status: true, quantity: true, amount: true, verifiedAt: true, reference: true, 
+          buyer: { select: { name: true } }, 
+          product: { select: { id: true, name: true } }
+        }
       });
 
-      return {
-        message: "Transaction verified",
-        data: verifiedTransaction.data
-      }
+      // Update payment quantity
+      const updatedProduct = await this.databaseService.product.update({
+        where: { id: existingTransaction.product.id },
+        data: { quantity: { decrement: existingTransaction.quantity } },
+      });
+
+      return { ...successfulTransaction,...updatedProduct, total: (existingTransaction.amount * existingTransaction.quantity ) }
     }
   }
 
