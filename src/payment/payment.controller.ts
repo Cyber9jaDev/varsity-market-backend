@@ -97,29 +97,33 @@ export class PaymentController{
       return { ...existingTransaction, total: (existingTransaction.amount * existingTransaction.quantity) };
     }
 
-    const verifiedTransaction = await this.paymentService.verifyTransaction(reference)
+    const verifyTransaction = await this.paymentService.verifyTransaction(reference)
 
     // Update product quantity
-    if(verifiedTransaction.data.status === "success") {
+    if(verifyTransaction.data.status === "success") {
+      try {
+        // Update payment status
+        const successfulTransaction = await this.databaseService.transaction.update({
+          where: { reference },
+          data: { status: PaymentStatus.SUCCESS },
+          select: { 
+            status: true, quantity: true, amount: true, verifiedAt: true, reference: true, 
+            buyer: { select: { name: true } }, 
+            product: { select: { id: true, name: true } }
+          }
+        });
 
-      // Update payment status
-      const successfulTransaction = await this.databaseService.transaction.update({
-        where: { reference },
-        data: { status: PaymentStatus.SUCCESS },
-        select: { 
-          status: true, quantity: true, amount: true, verifiedAt: true, reference: true, 
-          buyer: { select: { name: true } }, 
-          product: { select: { id: true, name: true } }
-        }
-      });
+        // Update payment quantity
+        await this.databaseService.product.update({
+          where: { id: existingTransaction.product.id },
+          data: { quantity: { decrement: existingTransaction.quantity } },
+        });
 
-      // Update payment quantity
-      const updatedProduct = await this.databaseService.product.update({
-        where: { id: existingTransaction.product.id },
-        data: { quantity: { decrement: existingTransaction.quantity } },
-      });
-
-      return { ...successfulTransaction,...updatedProduct, total: (existingTransaction.amount * existingTransaction.quantity ) }
+        return { ...successfulTransaction, total: (successfulTransaction.amount * successfulTransaction.quantity ) }
+      } 
+      catch (error) {
+        throw new Error(error.message)
+      }
     }
   }
 
