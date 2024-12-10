@@ -77,7 +77,8 @@ export class PaymentController{
   @ApiBearerAuth()
   @Roles(UserType.BUYER, UserType.SELLER)
   @ApiParam({ name: "reference", required: true, example: "TX-1733484067905-dtfisbbte" })
-  async verifiedTransaction(@Param("reference") reference: string){
+  async verifyTransaction(@Param("reference") reference: string){
+    
     if(!reference) throw new BadRequestException("Invalid reference code");
 
     // Check if transaction exists and it is successful

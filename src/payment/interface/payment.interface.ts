@@ -76,6 +76,7 @@ export interface VerifyPayment {
     status: string;
     reference: string;
     amount: number;
+    "paid-at": string
   }
 }
 
