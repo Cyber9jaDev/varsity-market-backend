@@ -173,7 +173,7 @@ export class ProductController {
   }
 
   // Get all products belonging to a user
-  @Get("/:userId")
+  @Get("/user-ads/:userId")
   @Roles(UserType.SELLER)
   @ApiParam({ name: 'userId', type: 'string', required: true, example: '58b7f14f-dcdd-4957-867e-0cf7f88b00fb' })
   async getAllUserProducts(
