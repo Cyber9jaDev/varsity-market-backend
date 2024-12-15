@@ -172,14 +172,25 @@ export class ProductController {
     };
   }
 
+  // Get all products belonging to a user
+  @Get("/:userId")
+  @Roles(UserType.SELLER)
+  @ApiParam({ name: 'userId', type: 'string', required: true, example: '58b7f14f-dcdd-4957-867e-0cf7f88b00fb' })
+  async getAllUserProducts(
+    @User() user: UserEntity,
+    @Param("userId") userId: string
+  ): Promise<ProductResponseDto[]>{
+
+    if (user.userId !== userId){
+      throw new UnauthorizedException("Unauthorized")
+    }
+
+    return this.productService.getAllUserProducts(userId);
+  }
+
   // Find a single product
   @Get('/:productId')
-  @ApiParam({
-    name: 'productId',
-    type: 'string',
-    required: true,
-    example: '58b7f14f-dcdd-4957-867e-0cf7f88b00fb',
-  })
+  @ApiParam({ name: 'productId', type: 'string', required: true, example: '58b7f14f-dcdd-4957-867e-0cf7f88b00fb'})
   @ApiResponse({
     status: 200,
     description: 'Ok',

@@ -52,6 +52,15 @@ export class ProductService {
     return { products, countProducts };
   }
 
+  async getAllUserProducts(userId: string): Promise<ProductResponseDto[]>{
+    try {
+      const products = await this.databaseService.product.findMany( { where: { sellerId: userId }, select: {...selectOptions} });
+      return products;
+    } catch (error) {
+      throw new Error();
+    }
+  }
+
   async getSingleProduct(id: string): Promise<ProductResponseDto> {
     const product = await this.databaseService.product.findUnique({
       where: { id },
