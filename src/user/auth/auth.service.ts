@@ -101,10 +101,7 @@ export class AuthService {
   }
   
 
-  async signIn({
-    email,
-    password,
-  }: Partial<AuthParams>): Promise<AuthResponse> {
+  async signIn({ email, password }: Partial<AuthParams>): Promise<AuthResponse> {
     const user = await this.databaseService.user.findUnique({
       where: { email },
       select: { ...selectOptions, password: true },

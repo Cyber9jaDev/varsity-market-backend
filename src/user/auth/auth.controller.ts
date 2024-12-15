@@ -9,7 +9,6 @@ import { AuthResponse } from '../interface/user.interface';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-
   @ApiOperation({ 
     summary: "Sign up as a BUYER or SELLER",
     description: "1. Only a SELLER should provide 'businessName', 'bankCode' and 'accountNumber'.\n2. Use the /payment/bank endpoint to get a list of banks and their corresponding bankCode.\n3. Exclude the first 0 (zero) from your phone number."
@@ -65,10 +64,7 @@ export class AuthController {
   }
 
   @Post('/signin')
-  @ApiResponse({
-    status: 201,
-    description: 'Created',
-    schema: {
+  @ApiResponse({ status: 201, description: 'Created', schema: {
       example: {
         id: '02b4c5a9-aef2-4189-8f0e-aa75df03f4b6',
         email: 'seller4@gmail.com',
@@ -82,29 +78,14 @@ export class AuthController {
   @ApiResponse({
     status: 400,
     description: 'Bad Request',
-    schema: {
-      example: {
-        message: 'Invalid credentials',
-        error: 'Bad Request',
-        statusCode: 400,
-      },
-    },
+    schema: { example: { message: 'Invalid credentials', error: 'Bad Request', statusCode: 400 } },
   })
   @ApiResponse({
     status: 500,
     description: 'Internal Server Error',
-    schema: {
-      example: {
-        statusCode: 500,
-        message: 'Internal server error',
-        error: 'Internal Server Error',
-      },
-    },
+    schema: { example: { statusCode: 500, message: 'Internal server error', error: 'Internal Server Error' } },
   })
-  @ApiBody({
-    required: true,
-    type: SignInDto,
-  })
+  @ApiBody({ required: true, type: SignInDto })
   signin(@Body() body: SignInDto): Promise<AuthResponse> {
     return this.authService.signIn(body);
   }

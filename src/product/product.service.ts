@@ -1,17 +1,7 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { ProductResponseDto } from './dtos/product.dto';
-import {
-  createProductParams,
-  Filter,
-  OrderBy,
-  ProductImageParams,
-  UpdateProductInterface,
-} from './interface/product.interface';
+import { createProductParams, Filter, OrderBy, ProductImageParams, UpdateProductInterface } from './interface/product.interface';
 
 const selectOptions = {
   id: true,
@@ -52,11 +42,17 @@ export class ProductService {
     return { products, countProducts };
   }
 
+  async getAllUserProducts(userId: string): Promise<ProductResponseDto[]>{
+    try {
+      const products = await this.databaseService.product.findMany( { where: { sellerId: userId }, select: {...selectOptions} });
+      return products;
+    } catch (error) {
+      throw new Error();
+    }
+  }
+
   async getSingleProduct(id: string): Promise<ProductResponseDto> {
-    const product = await this.databaseService.product.findUnique({
-      where: { id },
-      select: { ...selectOptions },
-    });
+    const product = await this.databaseService.product.findUnique({ where: { id }, select: { ...selectOptions } });
 
     if (!product) throw new NotFoundException();
 
