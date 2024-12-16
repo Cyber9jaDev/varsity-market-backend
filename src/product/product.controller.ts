@@ -463,6 +463,8 @@ export class ProductController {
     return this.productService.updateProduct(productId, updateProductDto);
   }
 
+
+  // Delete a Product
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Delete a product',
@@ -523,7 +525,7 @@ export class ProductController {
       },
     },
   })
-  @Delete('/:productId')
+  @Delete('/delete/:productId')
   @Roles(UserType.SELLER)
   async deleteProduct(
     @Param('productId') productId: string,
