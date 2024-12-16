@@ -368,29 +368,17 @@ export class ProductController {
     }
 
     // Upload images to cloudinary
-    const uploadPromises = productImages.map(
-      async (image) =>
-        await this.cloudinaryService.uploadImage(image, 'unimarket/posts'),
-    );
+    const uploadPromises = productImages.map(async (image) => await this.cloudinaryService.uploadImage(image, 'unimarket/posts'));
 
     const uploadedImages = await Promise.all(uploadPromises);
 
-    if (!uploadedImages)
-      throw new BadRequestException('Error uploading images');
+    if (!uploadedImages) throw new BadRequestException('Error uploading images');
 
-    const images = uploadedImages.map((image) => {
-      return {
-        secure_url: image.secure_url,
-        public_id: image.public_id,
-        asset_id: image.asset_id,
-      };
+    const images = uploadedImages.map(({ secure_url, public_id, asset_id }) => {
+      return { secure_url, public_id, asset_id };
     });
 
-    return this.productService.addProduct(
-      user?.userId,
-      images,
-      createProductDto,
-    );
+    return this.productService.addProduct( user?.userId, images, createProductDto );
   }
 
   // Update a single product
@@ -463,6 +451,8 @@ export class ProductController {
     return this.productService.updateProduct(productId, updateProductDto);
   }
 
+
+  // Delete a Product
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Delete a product',
@@ -523,7 +513,7 @@ export class ProductController {
       },
     },
   })
-  @Delete('/:productId')
+  @Delete('/delete/:productId')
   @Roles(UserType.SELLER)
   async deleteProduct(
     @Param('productId') productId: string,

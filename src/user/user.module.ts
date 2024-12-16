@@ -3,10 +3,13 @@ import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { DatabaseModule } from 'src/database/database.module';
 import { PaymentModule } from 'src/payment/payment.module';
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
+import { UserController } from './user.controller';
+import { UserService } from './user.service';
 
 @Module({
-  imports: [DatabaseModule, PaymentModule],
-  controllers: [AuthController],
-  providers: [AuthService]
+  imports: [DatabaseModule, PaymentModule, CloudinaryModule],
+  controllers: [AuthController, UserController],
+  providers: [AuthService, UserService]
 })
 export class UserModule {}

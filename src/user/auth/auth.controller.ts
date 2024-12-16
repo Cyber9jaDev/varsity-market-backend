@@ -1,13 +1,19 @@
-import { Body, Controller, Param, ParseEnumPipe, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Param, ParseEnumPipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegistrationKeyDto, SignInDto, SignUpDto } from '../dtos/auth.dto';
 import {  UserType } from '@prisma/client';
-import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
-import { AuthResponse } from '../interface/user.interface';
+import { ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { AuthResponse, UserEntity } from '../interface/user.interface';
+import { User } from '../decorators/user.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   @ApiOperation({ 
     summary: "Sign up as a BUYER or SELLER",
@@ -90,7 +96,7 @@ export class AuthController {
     return this.authService.signIn(body);
   }
 
-  // Only admin can generate a registration key
+    // Only admin can generate a registration key
   @Post('/registration_key')
   generateRegistrationKey(@Body() { email, userType }: RegistrationKeyDto) {
     return this.authService.generateRegistrationKey(email, userType);
