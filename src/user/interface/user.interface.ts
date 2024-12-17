@@ -26,3 +26,9 @@ export class AuthResponse {
   userType: UserType;
   token: string;
 }
+
+export interface PictureData{
+  public_id: string,
+  asset_id: string,
+  secure_url: string,
+}
