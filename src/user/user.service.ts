@@ -8,6 +8,7 @@ export class UserService {
   constructor(private readonly databaseService: DatabaseService) {}
   
   async uploadProfilePicture(user: UserEntity, picture:  UploadApiResponse | UploadApiErrorResponse){
+    
     const uploadProfilePicture = await this.databaseService.picture.upsert({ 
       where: { userId: user.userId },
       // Update if it exists
