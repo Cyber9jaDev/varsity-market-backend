@@ -13,6 +13,8 @@ const selectOptions = {
   name: true,
   phone: true,
   userType: true,
+  hasDisplayPicture: true,
+  displayPicture: { select: { secure_url: true } },
 };
 
 @Injectable()
@@ -41,11 +43,7 @@ export class AuthService {
       return await this.databaseService.$transaction(async (db) => {
         let subaccountCode: string;
         
-        if(userType === UserType.SELLER && 
-          body.accountNumber !== undefined && 
-          body.bankCode !== undefined && 
-          body.businessName !== undefined) {
-          
+        if(userType === UserType.SELLER && body.accountNumber !== undefined && body.bankCode !== undefined && body.businessName !== undefined ) {
           this.logger.log(`Verifying seller bank account for business: ${body.businessName}`);
           try {
             await this.paymentService.verifySellerBankAccount(body);

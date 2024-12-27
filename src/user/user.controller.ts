@@ -2,7 +2,6 @@ import { BadRequestException, Controller, Post, Put, UploadedFile, UseIntercepto
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { DatabaseService } from 'src/database/database.service';
 import { User } from './decorators/user.decorator';
 import { UserEntity } from './interface/user.interface';
 import { UserService } from './user.service';
