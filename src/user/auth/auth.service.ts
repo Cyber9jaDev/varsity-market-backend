@@ -50,8 +50,7 @@ export class AuthService {
             this.logger.log(`Bank account verification successful for business: ${body.businessName}`);
           } catch (error) {
             this.logger.error(`Bank account verification failed for business: ${body.businessName}`, error.stack);
-            throw error;
-          }
+            throw error;}
           
           this.logger.log(`Creating subaccount for business: ${body.businessName}`);
           try {

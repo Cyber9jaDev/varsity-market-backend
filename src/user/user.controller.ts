@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Controller, Patch, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
@@ -17,7 +17,7 @@ export class UserController {
 
   @ApiBearerAuth()
   @Roles(UserType.SELLER, UserType.BUYER)
-  @Put('/upload/profile-picture')
+  @Patch('/upload/profile-picture')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor("profilePicture"))
   async uploadProfilePicture(
