@@ -35,6 +35,6 @@ export class UserController {
     if (!picture) throw new BadRequestException('Error uploading profile picture to the server');
 
     // Upload image url to the database
-    return this.userService.uploadProfilePicture(user, picture
+    return this.userService.uploadProfilePicture(user, picture)
   }
 }
