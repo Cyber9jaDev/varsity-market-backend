@@ -37,4 +37,11 @@ export class UserController {
     // Upload image url to the database
     return this.userService.uploadProfilePicture(user, picture)
   }
+
+  @ApiBearerAuth()
+  @Roles(UserType.SELLER, UserType.BUYER)
+  @Patch('/update/:id')
+  async updateUser( user: UserEntity){
+    return this.userService.updateUser(user)
+  }
 }

@@ -6,10 +6,12 @@ import { UserEntity } from './interface/user.interface';
 @Injectable()
 export class UserService {
   constructor(private readonly databaseService: DatabaseService) {}
-  
-  async uploadProfilePicture(user: UserEntity, picture:  UploadApiResponse | UploadApiErrorResponse){
-    
-    const uploadProfilePicture = await this.databaseService.picture.upsert({ 
+
+  async uploadProfilePicture(
+    user: UserEntity,
+    picture: UploadApiResponse | UploadApiErrorResponse,
+  ) {
+    const uploadProfilePicture = await this.databaseService.picture.upsert({
       where: { userId: user.userId },
       // Update if it exists
       update: {
@@ -23,22 +25,27 @@ export class UserService {
         userId: user.userId,
         secure_url: picture.secure_url,
         public_id: picture.public_id,
-        asset_id: picture.asset_id
+        asset_id: picture.asset_id,
       },
-      select: { secure_url: true }
+      select: { secure_url: true },
     });
 
-    const updateProfile = await this.databaseService.user.update({ 
+    const updateProfile = await this.databaseService.user.update({
       where: { id: user.userId },
       data: { hasDisplayPicture: true },
-      select: { hasDisplayPicture: true }
+      select: { hasDisplayPicture: true },
     });
 
-    if(!uploadProfilePicture  || !updateProfile){
-      throw new BadRequestException("Error uploading picture!")
+    if (!uploadProfilePicture || !updateProfile) {
+      throw new BadRequestException('Error uploading picture!');
     }
 
-    return  {...uploadProfilePicture, ...updateProfile }
+    return { ...uploadProfilePicture, ...updateProfile };
+  }
 
+  async updateUser(
+    user: UserEntity
+  ) {
+    return user
   }
 }
