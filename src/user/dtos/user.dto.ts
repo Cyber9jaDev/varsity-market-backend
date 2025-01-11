@@ -9,21 +9,22 @@ import {
 } from 'class-validator';
 
 export class UpdateUserDto {
-  @ApiProperty({ type: String, example: 'Seller 1', required: true })
+  @ApiProperty({ type: String, example: 'Seller 1', required: false })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   name?: string;
 
   @ApiProperty({
     description: 'Phone must be a valid phone number',
     type: String,
     example: '1000000001',
-    required: true,
+    required: false,
   })
+  @IsOptional()
   @Matches(/^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, {
     message: 'Phone must be a valid phone number',
   })
-  phone: string;
+  phone?: string;
 
   @ApiProperty({
     type: String,
@@ -42,12 +43,11 @@ export class UpdateUserDto {
     maxLength: 10,
   })
   @IsString()
-  // @IsNotEmpty()
   @IsOptional()
   @MinLength(10)
   @MaxLength(10)
   accountNumber?: string;
-
+  
   @ApiProperty({
     type: String,
     example: '058',

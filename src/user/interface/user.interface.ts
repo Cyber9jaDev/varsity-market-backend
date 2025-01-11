@@ -32,3 +32,11 @@ export interface PictureData{
   asset_id: string,
   secure_url: string,
 }
+
+export interface UpdateUserParams {
+  name?: string;
+  phone?: string;
+  businessName?: string;
+  bankCode?: string;
+  accountNumber?: string;
+}

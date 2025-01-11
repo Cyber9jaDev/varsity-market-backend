@@ -100,6 +100,7 @@ export class ProductController {
       },
     },
   })
+  
   async getAllProducts(
     @Query('searchText') searchText?: string,
     @Query('category') category?: CategoryType,

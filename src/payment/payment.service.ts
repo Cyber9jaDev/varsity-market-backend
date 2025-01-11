@@ -24,7 +24,8 @@ export class PaymentService {
     return await this.paystackService.initializeTransaction(buyerEmail, quantity, amount, subaccount, reference, callback_url);
   }
 
-  async verifySellerBankAccount({ accountNumber, bankCode }: AuthParams) {
+  // async verifySellerBankAccount({ accountNumber, bankCode }: AuthParams) {
+  async verifySellerBankAccount({ accountNumber, bankCode }: Partial<AuthParams>) {
     return await this.paystackService.verifyAccountNumber( accountNumber, bankCode );
   }
 
