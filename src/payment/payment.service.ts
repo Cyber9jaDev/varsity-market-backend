@@ -26,6 +26,7 @@ export class PaymentService {
 
   // async verifySellerBankAccount({ accountNumber, bankCode }: AuthParams) {
   async verifySellerBankAccount({ accountNumber, bankCode }: Partial<AuthParams>) {
+    console.log(accountNumber, bankCode);
     return await this.paystackService.verifyAccountNumber( accountNumber, bankCode );
   }
 

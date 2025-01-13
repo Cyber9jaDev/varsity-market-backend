@@ -82,15 +82,8 @@ export class UserService {
       if (user.userType === 'BUYER') {
         throw new BadRequestException('Buyer cannot update bank details!');
       }
-
       // Verify new seller bank account
-      try {
-        const verifySellerBankInfo =
-          await this.paymentService.verifySellerBankAccount(body);
-        console.log(verifySellerBankInfo);
-      } catch (error) {
-        throw error;
-      }
+      await this.paymentService.verifySellerBankAccount(body); 
     }
 
     const updatedUser = await this.databaseService.user.update({

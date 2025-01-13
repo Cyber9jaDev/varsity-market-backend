@@ -88,7 +88,7 @@ export class PaystackService {
       );
       return response;
     } catch (error) {
-      throw new BadRequestException('Unable to verify seller bank account');
+      throw new BadRequestException('Unable to verify bank account');
     }
   }
 
