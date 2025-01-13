@@ -60,7 +60,7 @@ export class UserController {
     return this.userService.uploadProfilePicture(user, picture);
   }
 
-  @Patch('/update/:id')
+  @Put('/update/:id')
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Update user profile',

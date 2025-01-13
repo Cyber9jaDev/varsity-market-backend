@@ -2,8 +2,6 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { DatabaseService } from 'src/database/database.service';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
 import { UpdateUserParams, UserEntity } from './interface/user.interface';
-import { PaymentModule } from 'src/payment/payment.module';
-import { PaystackService } from 'src/payment/paystack/paystack.service';
 import { PaymentService } from 'src/payment/payment.service';
 import { UpdateSubaccountParams } from 'src/payment/interface/payment.interface';
 
@@ -77,7 +75,7 @@ export class UserService {
 
       if (existingPhoneNumber) {
         if (existingPhoneNumber.phone && user.phone !== body.phone) {
-          throw new BadRequestException('Phone number already exists!');
+          throw new BadRequestException('Phone number is tied to another account!');
         }
       }
     }
@@ -95,8 +93,6 @@ export class UserService {
         bank_code: body.bankCode,
         account_number: body.accountNumber,
       }
-
-      console.log(updateSubaccountBody);
 
       // Update Paystack subaccount to include new bank details
       await this.paymentService.updateSubaccount(user.subaccountCode, updateSubaccountBody);
