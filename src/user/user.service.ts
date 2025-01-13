@@ -59,33 +59,35 @@ export class UserService {
     return { ...uploadProfilePicture, ...updateProfile };
   }
 
-  async updateUser(id: string, updateUserParams: UpdateUserParams) {
+  async updateUser(id: string, body: UpdateUserParams) {
     const user = await this.databaseService.user.findFirst({
       where: { id },
       select: { ...selectOptions },
     });
 
-    if (updateUserParams.phone) {
-      const existingUser = await this.databaseService.user.findFirst({
-        where: { phone: updateUserParams.phone },
+    if (body.phone) {
+      const existingPhoneNumber = await this.databaseService.user.findFirst({
+        where: { phone: body.phone },
+        select: { phone: true },
       });
-      if (existingUser) {
-        throw new BadRequestException('Phone number already exists!');
+
+      if (existingPhoneNumber) {
+        if (existingPhoneNumber.phone && user.phone !== body.phone) {
+          throw new BadRequestException('Phone number already exists!');
+        }
       }
     }
 
-    if (
-      updateUserParams.bankCode ||
-      updateUserParams.accountNumber ||
-      updateUserParams.businessName
-    ) {
+    if (body.bankCode || body.accountNumber || body.businessName) {
       if (user.userType === 'BUYER') {
         throw new BadRequestException('Buyer cannot update bank details!');
       }
 
       // Verify new seller bank account
       try {
-        await this.paymentService.verifySellerBankAccount(updateUserParams);
+        const verifySellerBankInfo =
+          await this.paymentService.verifySellerBankAccount(body);
+        console.log(verifySellerBankInfo);
       } catch (error) {
         throw error;
       }
@@ -93,7 +95,7 @@ export class UserService {
 
     const updatedUser = await this.databaseService.user.update({
       where: { id },
-      data: { ...updateUserParams },
+      data: { ...body },
       select: { ...selectOptions },
     });
 
