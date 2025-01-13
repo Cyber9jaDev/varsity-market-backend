@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateSubaccount, CreateSubaccountResponse, InitializeTransactionResponse, VerifyAccountNumberResponse, PaystackMetadata, VerifyPayment } from '../interface/payment.interface';
+import { CreateSubaccount, CreateSubaccountResponse, InitializeTransactionResponse, VerifyAccountNumberResponse, PaystackMetadata, VerifyPayment, UpdateSubaccountResponse, UpdateSubaccountParams } from '../interface/payment.interface';
 import APICall from 'src/helpers/APICall';
 import { User } from '@prisma/client';
 
@@ -82,7 +82,6 @@ export class PaystackService {
     }
 
     try {
-      
       const response = await APICall<VerifyAccountNumberResponse>( `/bank/resolve?account_number=${account_number}&bank_code=${bank_code}`, 'GET', {}, { 
         Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` },
       );
@@ -99,6 +98,16 @@ export class PaystackService {
       );
     } catch (error) {
       throw new BadRequestException("An error occurred while verifying seller bank information");
+    }
+  }
+
+  async updateSubaccount(id_or_code: string, body: UpdateSubaccountParams) {
+    try {
+      return await APICall<UpdateSubaccountResponse>( `/subaccount/${id_or_code}`, 'PUT', body, {
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` },
+      );
+    } catch (error) {
+      throw new BadRequestException("An error occurred while updating bank information");
     }
   }
 }

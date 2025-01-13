@@ -1,4 +1,3 @@
-
 export interface BankResponseOk {
   status: false;
   message: string;
@@ -29,7 +28,7 @@ export interface InitializeTransactionResponse {
     authorization_url: string;
     access_code: string;
     reference: string;
-  }
+  };
 }
 
 export interface CreateSubaccountResponse {
@@ -48,25 +47,41 @@ export interface CreateSubaccountResponse {
   };
 }
 
-// export interface CreateSubaccount{
-//   business_name: string;
-//   bank_code: string;
-//   account_number: string;
-//   percentage_charge: number;
-//   primary_contact_email: string;
-//   primary_contact_name: string;
-//   primary_contact_phone: string;
-// }
+export interface UpdateSubaccountResponse {
+  status: boolean;
+  message: string;
+  data: {
+    subaccount_code: string;
+    business_name: string;
+    description: string;
+    metadata: Record<string, any> | null;
+    account_number: string;
+    account_name: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
 
-export type CreateSubaccount = Record<string, string | number>
+export type CreateSubaccount = Record<string, string | number>;
+
+export interface UpdateSubaccountParams {
+  business_name: string;
+  description: string;
+  bank_code?: string;
+  account_number?: string;
+  primary_contact_email?: string;
+  primary_contact_name?: string;
+  primary_contact_phone?: string;
+  metadata?: Record<string, string | number>;
+}
 
 export interface VerifyAccountNumberResponse {
   status: boolean;
   message: string;
   data: {
-    account_number: string,
-    account_name: string
-  }
+    account_number: string;
+    account_name: string;
+  };
 }
 
 export interface VerifyPayment {
@@ -76,10 +91,10 @@ export interface VerifyPayment {
     status: string;
     reference: string;
     amount: number;
-    "paid-at": string
-  }
+    'paid-at': string;
+  };
 }
 
-export type PaystackMetadata = Record<string, string | number | object>
+export type PaystackMetadata = Record<string, string | number | object>;
 
-export type PaystackPayment = { email: string, metadata: PaystackMetadata }
+export type PaystackPayment = { email: string; metadata: PaystackMetadata };

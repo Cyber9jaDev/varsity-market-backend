@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PaystackService } from './paystack/paystack.service';
-import { CreateSubaccountResponse, VerifyPayment } from './interface/payment.interface';
+import { CreateSubaccountResponse, UpdateSubaccountParams, VerifyPayment } from './interface/payment.interface';
 import { User } from '@prisma/client';
 import { AuthParams } from 'src/user/interface/user.interface';
 import { DatabaseService } from 'src/database/database.service';
@@ -36,6 +36,10 @@ export class PaymentService {
 
   async fetchSubaccount(id_or_code: string) {
     return await this.paystackService.fetchSubaccount(id_or_code);
+  }
+
+  async updateSubaccount(id_or_code: string, body: UpdateSubaccountParams) { 
+    return await this.paystackService.updateSubaccount(id_or_code, body);
   }
 
 }

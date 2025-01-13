@@ -1,10 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
 import { UpdateUserParams, UserEntity } from './interface/user.interface';
 import { PaymentModule } from 'src/payment/payment.module';
 import { PaystackService } from 'src/payment/paystack/paystack.service';
 import { PaymentService } from 'src/payment/payment.service';
+import { UpdateSubaccountParams } from 'src/payment/interface/payment.interface';
 
 const selectOptions = {
   id: true,
@@ -60,15 +61,18 @@ export class UserService {
   }
 
   async updateUser(id: string, body: UpdateUserParams) {
-    const user = await this.databaseService.user.findFirst({
+    const user = await this.databaseService.user.findUnique({
       where: { id },
-      select: { ...selectOptions },
+      select: { ...selectOptions, subaccountCode: true, businessName: true },
     });
+
+    if(!user) {
+      throw new NotFoundException('User not found!');
+    }
 
     if (body.phone) {
       const existingPhoneNumber = await this.databaseService.user.findFirst({
         where: { phone: body.phone },
-        select: { phone: true },
       });
 
       if (existingPhoneNumber) {
@@ -78,14 +82,27 @@ export class UserService {
       }
     }
 
+    // Verify bank account
     if (body.bankCode || body.accountNumber || body.businessName) {
       if (user.userType === 'BUYER') {
         throw new BadRequestException('Buyer cannot update bank details!');
       }
-      // Verify new seller bank account
-      await this.paymentService.verifySellerBankAccount(body); 
+      await this.paymentService.verifySellerBankAccount(body);
+
+      const updateSubaccountBody: UpdateSubaccountParams = {
+        business_name: body.businessName ?? user.businessName,
+        description: `Seller account for ${body.businessName ?? user.businessName}`,
+        bank_code: body.bankCode,
+        account_number: body.accountNumber,
+      }
+
+      console.log(updateSubaccountBody);
+
+      // Update Paystack subaccount to include new bank details
+      await this.paymentService.updateSubaccount(user.subaccountCode, updateSubaccountBody);
     }
 
+    // Update user details
     const updatedUser = await this.databaseService.user.update({
       where: { id },
       data: { ...body },
