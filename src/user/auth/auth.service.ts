@@ -19,6 +19,9 @@ const selectOptions = {
   userType: true,
   hasDisplayPicture: true,
   displayPicture: { select: { secure_url: true } },
+  businessName: true,
+  bankCode: true,
+  accountNumber: true,
 };
 
 @Injectable()
