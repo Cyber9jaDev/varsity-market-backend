@@ -14,18 +14,27 @@ import { ChatModule } from './chat/chat.module';
 import { PaymentModule } from './payment/payment.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), DatabaseModule, UserModule, ProductModule, CartModule, CloudinaryModule, ChatModule, PaymentModule],
+  imports: [
+    ConfigModule.forRoot(),
+    DatabaseModule,
+    UserModule,
+    ProductModule,
+    CartModule,
+    CloudinaryModule,
+    ChatModule,
+    PaymentModule,
+  ],
   controllers: [AppController],
   providers: [
-    AppService, 
+    AppService,
     {
       provide: APP_INTERCEPTOR,
-      useClass: UserInterceptor
+      useClass: UserInterceptor,
     },
     {
       provide: APP_GUARD,
-      useClass: AuthGuard
-    }
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {}
