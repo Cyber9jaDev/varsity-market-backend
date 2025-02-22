@@ -10,7 +10,10 @@ async function bootstrap() {
     logger: ['error', 'warn', 'log'],
   });
   app.enableCors({
-    origin: 'https://varsity-market-frontend.vercel.app',
+    origin: [
+      'https://varsity-market-frontend.vercel.app',
+      'http://localhost:3000',
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
   });
