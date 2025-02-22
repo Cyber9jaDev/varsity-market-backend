@@ -7,16 +7,24 @@ const PORT = process.env.PORT || 3001;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: ['error', 'warn', 'log']
+    logger: ['error', 'warn', 'log'],
   });
-  app.enableCors();
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    transform: true,
-    transformOptions: {
-      enableImplicitConversion: true
-    }
-  }));
+  app.enableCors({
+    origin: 'https://varsity-market-frontend.vercel.app',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    exposedHeaders: ['Content-Range', 'X-Content-Range']
+});
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
   const config = new DocumentBuilder()
     .setTitle('Varsity Market Backend')
     .setDescription('Varsity Market Backend')
