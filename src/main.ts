@@ -13,17 +13,11 @@ async function bootstrap() {
     origin: [
       'https://varsity-market-frontend.vercel.app',
       'http://localhost:3000',
+      'http://localhost:3001',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
   });
-  // app.enableCors({
-  //   origin: 'https://varsity-market-frontend.vercel.app',
-  //   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  //   credentials: true,
-  //   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-  //   exposedHeaders: ['Content-Range', 'X-Content-Range'],
-  // });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
