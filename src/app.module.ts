@@ -1,4 +1,5 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+// import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -38,21 +39,21 @@ import { PaymentModule } from './payment/payment.module';
   ],
 })
 export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply((req, res, next) => {
-        res.header(
-          'Access-Control-Allow-Origin',
-          'https://varsity-market-frontend.vercel.app',
-        );
-        res.header(
-          'Access-Control-Allow-Methods',
-          'GET,PUT,POST,DELETE,PATCH,OPTIONS',
-        );
-        res.header('Access-Control-Allow-Headers', 'Content-Type, Accept');
-        res.header('Access-Control-Allow-Credentials', 'true');
-        next();
-      })
-      .forRoutes('*');
-  }
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer
+  //     .apply((req, res, next) => {
+  //       res.header(
+  //         'Access-Control-Allow-Origin',
+  //         'https://varsity-market-frontend.vercel.app',
+  //       );
+  //       res.header(
+  //         'Access-Control-Allow-Methods',
+  //         'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+  //       );
+  //       res.header('Access-Control-Allow-Headers', 'Content-Type, Accept');
+  //       res.header('Access-Control-Allow-Credentials', 'true');
+  //       next();
+  //     })
+  //     .forRoutes('*');
+  // }
 }
