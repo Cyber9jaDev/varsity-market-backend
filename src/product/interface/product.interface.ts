@@ -6,23 +6,23 @@ export enum OrderByEnum {
 }
 
 export interface OrderBy {
-  price?: OrderByEnum
+  price?: OrderByEnum;
 }
 
 export interface Filter {
-  searchText?: string,
-  category?: CategoryType,
-  location?: Location,
+  searchText?: string;
+  category?: CategoryType;
+  location?: Location;
   createdAt?: {
-    gte?: Date,
-    lte?: Date,
-  },
-  dateFrom?: Date,
-  dateTo?: Date,
-  price?: { 
-    gte?: number, 
-    lte?: number,
-  }
+    gte?: Date;
+    lte?: Date;
+  };
+  dateFrom?: Date;
+  dateTo?: Date;
+  price?: {
+    gte?: number;
+    lte?: number;
+  };
 }
 
 export interface createProductParams {
@@ -32,7 +32,7 @@ export interface createProductParams {
   category: CategoryType;
   condition: ConditionType;
   location: Location;
-  quantity: number
+  quantity: number;
 }
 
 export interface ProductImageParams {

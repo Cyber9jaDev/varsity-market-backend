@@ -1,14 +1,44 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Query, UnauthorizedException, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UnauthorizedException,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
-import { CreateProductDto, ProductResponseDto, UpdateProductDto } from './dtos/product.dto';
+import {
+  CreateProductDto,
+  ProductResponseDto,
+  UpdateProductDto,
+} from './dtos/product.dto';
 import { User } from 'src/user/decorators/user.decorator';
 import { UserEntity } from 'src/user/interface/user.interface';
-import { CategoryType, ConditionType, Location, UserType } from '@prisma/client';
+import {
+  CategoryType,
+  ConditionType,
+  Location,
+  UserType,
+} from '@prisma/client';
 import { Roles } from 'src/decorator/roles.decorator';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { OrderByEnum } from './interface/product.interface';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { isValidDate } from 'src/helpers/functions';
 
 @Controller('products')
@@ -21,7 +51,12 @@ export class ProductController {
   // Get all products
   @Get()
   @ApiOperation({ summary: 'Get all products' })
-  @ApiQuery({ example: '', required: false, name: 'searchText', type: 'string' })
+  @ApiQuery({
+    example: '',
+    required: false,
+    name: 'searchText',
+    type: 'string',
+  })
   @ApiQuery({ required: false, name: 'category', enum: CategoryType })
   @ApiQuery({ required: false, name: 'orderBy', enum: OrderByEnum })
   @ApiQuery({ required: false, name: 'location', enum: Location })
@@ -100,7 +135,6 @@ export class ProductController {
       },
     },
   })
-  
   async getAllProducts(
     @Query('searchText') searchText?: string,
     @Query('category') category?: CategoryType,
@@ -174,16 +208,20 @@ export class ProductController {
   }
 
   // Get all products belonging to a user
-  @Get("/user-ads/:userId")
+  @Get('/user-ads/:userId')
   @Roles(UserType.SELLER)
-  @ApiParam({ name: 'userId', type: 'string', required: true, example: '58b7f14f-dcdd-4957-867e-0cf7f88b00fb' })
+  @ApiParam({
+    name: 'userId',
+    type: 'string',
+    required: true,
+    example: '58b7f14f-dcdd-4957-867e-0cf7f88b00fb',
+  })
   async getAllUserProducts(
     @User() user: UserEntity,
-    @Param("userId") userId: string
-  ): Promise<ProductResponseDto[]>{
-
-    if (user.userId !== userId){
-      throw new UnauthorizedException("Unauthorized")
+    @Param('userId') userId: string,
+  ): Promise<ProductResponseDto[]> {
+    if (user.userId !== userId) {
+      throw new UnauthorizedException('Unauthorized');
     }
 
     return this.productService.getAllUserProducts(userId);
@@ -191,7 +229,12 @@ export class ProductController {
 
   // Find a single product
   @Get('/:productId')
-  @ApiParam({ name: 'productId', type: 'string', required: true, example: '58b7f14f-dcdd-4957-867e-0cf7f88b00fb'})
+  @ApiParam({
+    name: 'productId',
+    type: 'string',
+    required: true,
+    example: '58b7f14f-dcdd-4957-867e-0cf7f88b00fb',
+  })
   @ApiResponse({
     status: 200,
     description: 'Ok',
@@ -241,7 +284,9 @@ export class ProductController {
     },
   })
   @ApiOperation({ summary: 'Get a single product by id' })
-  getSingleProduct( @Param('productId') productId: string ): Promise<ProductResponseDto> {
+  getSingleProduct(
+    @Param('productId') productId: string,
+  ): Promise<ProductResponseDto> {
     return this.productService.getSingleProduct(productId);
   }
 
@@ -267,7 +312,7 @@ export class ProductController {
         'category',
         'condition',
         'productImages',
-        "quantity"
+        'quantity',
       ],
       properties: {
         name: { type: 'string', example: 'Samsung Galaxy 12 Notebook' },
@@ -369,17 +414,25 @@ export class ProductController {
     }
 
     // Upload images to cloudinary
-    const uploadPromises = productImages.map(async (image) => await this.cloudinaryService.uploadImage(image, 'unimarket/posts'));
+    const uploadPromises = productImages.map(
+      async (image) =>
+        await this.cloudinaryService.uploadImage(image, 'unimarket/posts'),
+    );
 
     const uploadedImages = await Promise.all(uploadPromises);
 
-    if (!uploadedImages) throw new BadRequestException('Error uploading images');
+    if (!uploadedImages)
+      throw new BadRequestException('Error uploading images');
 
     const images = uploadedImages.map(({ secure_url, public_id, asset_id }) => {
       return { secure_url, public_id, asset_id };
     });
 
-    return this.productService.addProduct( user?.userId, images, createProductDto );
+    return this.productService.addProduct(
+      user?.userId,
+      images,
+      createProductDto,
+    );
   }
 
   // Update a single product
@@ -451,7 +504,6 @@ export class ProductController {
 
     return this.productService.updateProduct(productId, updateProductDto);
   }
-
 
   // Delete a Product
   @ApiBearerAuth()

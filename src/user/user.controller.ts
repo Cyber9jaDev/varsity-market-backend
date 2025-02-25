@@ -79,6 +79,7 @@ export class UserController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
+    console.log(updateUserDto);
     console.log(user.userId);
     console.log(id);
 
