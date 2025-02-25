@@ -10,6 +10,6 @@ import { FlutterwaveService } from './flutterwave/flutterwave.service';
   imports: [DatabaseModule, ProductModule],
   controllers: [PaymentController],
   providers: [PaymentService, PaystackService, FlutterwaveService],
-  exports: [PaymentService]
+  exports: [PaymentService],
 })
 export class PaymentModule {}

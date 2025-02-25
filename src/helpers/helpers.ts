@@ -1,7 +1,5 @@
-import { BadRequestException } from '@nestjs/common';
-import axios, { AxiosResponse } from 'axios';
-
-
+// import { BadRequestException } from '@nestjs/common';
+// import axios, { AxiosResponse } from 'axios';
 
 // export const bankList = [
 //   {

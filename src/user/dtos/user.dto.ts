@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsNotEmpty,
+  // IsNotEmpty,
   IsOptional,
   IsString,
   Matches,
@@ -47,7 +47,7 @@ export class UpdateUserDto {
   @MinLength(10)
   @MaxLength(10)
   accountNumber?: string;
-  
+
   @ApiProperty({
     type: String,
     example: '058',

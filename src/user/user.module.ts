@@ -10,6 +10,6 @@ import { PaymentModule } from 'src/payment/payment.module';
 @Module({
   imports: [DatabaseModule, PaymentModule, CloudinaryModule],
   controllers: [AuthController, UserController],
-  providers: [AuthService, UserService]
+  providers: [AuthService, UserService],
 })
 export class UserModule {}

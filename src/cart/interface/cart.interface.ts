@@ -1,8 +1,8 @@
 export interface AddItemToCartParams {
   quantity: number;
-  productId: string
+  productId: string;
 }
 
 export interface RemoveItemFromCartParams {
-  productId: string
+  productId: string;
 }

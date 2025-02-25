@@ -12,15 +12,15 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredRoles = await this.reflector.getAllAndOverride(
-      'roles',
-      [context.getHandler(), context.getClass()],
-    );
+    const requiredRoles = await this.reflector.getAllAndOverride('roles', [
+      context.getHandler(),
+      context.getClass(),
+    ]);
 
     if (!requiredRoles || requiredRoles.length === 0) {
       return true;
     }
-    
+
     const request = context.switchToHttp().getRequest();
     const authHeader = request.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
@@ -34,7 +34,6 @@ export class AuthGuard implements CanActivate {
       if (!user) return false;
 
       return requiredRoles.includes(user.userType);
-      
     } catch (error) {
       return false;
     }

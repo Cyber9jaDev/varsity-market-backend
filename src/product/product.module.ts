@@ -6,12 +6,15 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 
 @Module({
-  imports : [DatabaseModule, CloudinaryModule],
+  imports: [DatabaseModule, CloudinaryModule],
   controllers: [ProductController],
-  providers: [ProductService, {
-    provide: APP_INTERCEPTOR,
-    useClass: ClassSerializerInterceptor
-  }],
-  exports: [ProductService]
+  providers: [
+    ProductService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
+    },
+  ],
+  exports: [ProductService],
 })
 export class ProductModule {}

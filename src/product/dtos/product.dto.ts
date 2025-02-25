@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CategoryType, ConditionType, Location } from '@prisma/client';
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class ImageDto {
   @ApiProperty()
@@ -10,12 +16,20 @@ export class ImageDto {
 }
 
 export class CreateProductDto {
-  @ApiProperty({ type: 'string', example: 'Samsung Galaxy 12 Notebook', required: true })
+  @ApiProperty({
+    type: 'string',
+    example: 'Samsung Galaxy 12 Notebook',
+    required: true,
+  })
   @IsNotEmpty()
   @IsString()
   name: string;
 
-  @ApiProperty({ type: 'string', example: 'Samsung Galaxy 12 Notebook', required: true })
+  @ApiProperty({
+    type: 'string',
+    example: 'Samsung Galaxy 12 Notebook',
+    required: true,
+  })
   @IsNotEmpty()
   @IsString()
   description: string;
@@ -30,12 +44,20 @@ export class CreateProductDto {
   @IsNumber()
   price: number;
 
-  @ApiProperty({ enum: ConditionType, example: ConditionType.USED, required: true })
+  @ApiProperty({
+    enum: ConditionType,
+    example: ConditionType.USED,
+    required: true,
+  })
   @IsNotEmpty()
   @IsEnum(ConditionType)
   condition: ConditionType;
 
-  @ApiProperty({ enum: CategoryType, example: CategoryType.BOOK, required: true })
+  @ApiProperty({
+    enum: CategoryType,
+    example: CategoryType.BOOK,
+    required: true,
+  })
   @IsNotEmpty()
   @IsEnum(CategoryType)
   category: CategoryType;
@@ -43,7 +65,7 @@ export class CreateProductDto {
   @ApiProperty({ type: 'number', example: 1, required: true, default: 1 })
   @IsNotEmpty()
   @IsNumber()
-  quantity: number
+  quantity: number;
 
   // @IsArray()
   // @ValidateNested({ each: true })
@@ -52,13 +74,21 @@ export class CreateProductDto {
 }
 
 export class UpdateProductDto {
-  @ApiProperty({ type: 'string', example: 'Samsung Galaxy 12 Notebook', required: false })
+  @ApiProperty({
+    type: 'string',
+    example: 'Samsung Galaxy 12 Notebook',
+    required: false,
+  })
   @IsOptional()
   @IsNotEmpty()
   @IsString()
   name?: string;
 
-  @ApiProperty({ type: 'string', example: 'Samsung Galaxy 12 Notebook', required: false })
+  @ApiProperty({
+    type: 'string',
+    example: 'Samsung Galaxy 12 Notebook',
+    required: false,
+  })
   @IsOptional()
   @IsNotEmpty()
   @IsString()
@@ -76,13 +106,21 @@ export class UpdateProductDto {
   @IsNumber()
   price?: number;
 
-  @ApiProperty({ enum: ConditionType, example: ConditionType.USED, required: false })
+  @ApiProperty({
+    enum: ConditionType,
+    example: ConditionType.USED,
+    required: false,
+  })
   @IsOptional()
   @IsNotEmpty()
   @IsEnum(ConditionType)
   condition?: ConditionType;
 
-  @ApiProperty({ enum: CategoryType, example: CategoryType.BOOK, required: false })
+  @ApiProperty({
+    enum: CategoryType,
+    example: CategoryType.BOOK,
+    required: false,
+  })
   @IsOptional()
   @IsNotEmpty()
   @IsEnum(CategoryType)

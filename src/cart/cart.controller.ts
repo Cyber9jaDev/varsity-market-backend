@@ -14,16 +14,14 @@ export class CartController {
   @Post()
   addItemToCart(
     @Body() addItemToCartDto: AddItemToCartDto,
-    @User() user: UserEntity
+    @User() user: UserEntity,
   ) {
     return this.cartService.addItemToCart(user.userId, addItemToCartDto);
   }
 
   @Roles(UserType.BUYER)
   @Get()
-  userCart(
-    @User() user: UserEntity
-  ) {
+  userCart(@User() user: UserEntity) {
     return this.cartService.userCart(user.userId);
   }
 
@@ -31,8 +29,11 @@ export class CartController {
   @Delete()
   removeItemFromCart(
     @User() user: UserEntity,
-    @Body() removeItemFromCartDto: RemoveItemFromCartDto
+    @Body() removeItemFromCartDto: RemoveItemFromCartDto,
   ) {
-    return this.cartService.removeItemFromCart(user.userId, removeItemFromCartDto);
+    return this.cartService.removeItemFromCart(
+      user.userId,
+      removeItemFromCartDto,
+    );
   }
 }
