@@ -5,22 +5,13 @@ import {
 } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
-import { UpdateUserParams, UserEntity } from './interface/user.interface';
+import {
+  selectOptions,
+  UpdateUserParams,
+  UserEntity,
+} from './interface/user.interface';
 import { PaymentService } from 'src/payment/payment.service';
 import { UpdateSubaccountParams } from 'src/payment/interface/payment.interface';
-
-const selectOptions = {
-  id: true,
-  email: true,
-  name: true,
-  phone: true,
-  userType: true,
-  hasDisplayPicture: true,
-  displayPicture: { select: { secure_url: true } },
-  businessName: true,
-  bankCode: true,
-  accountNumber: true,
-};
 
 @Injectable()
 export class UserService {
@@ -29,6 +20,7 @@ export class UserService {
     private readonly paymentService: PaymentService,
   ) {}
 
+  // Update Profile Picture
   async uploadProfilePicture(
     user: UserEntity,
     picture: UploadApiResponse | UploadApiErrorResponse,
@@ -65,6 +57,7 @@ export class UserService {
     return { ...uploadProfilePicture, ...updateProfile };
   }
 
+  // Update User Profile
   async updateUser(id: string, body: UpdateUserParams) {
     const user = await this.databaseService.user.findUnique({
       where: { id },

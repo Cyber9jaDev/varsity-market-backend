@@ -1,11 +1,11 @@
-import { UserType } from "@prisma/client";
+import { UserType } from '@prisma/client';
 
 // User from JWT
 export interface UserEntity {
-  userId: string,
-  name: string,
-  iat: number,
-  exp: number
+  userId: string;
+  name: string;
+  iat: number;
+  exp: number;
 }
 
 export interface AuthParams {
@@ -27,10 +27,10 @@ export class AuthResponse {
   token: string;
 }
 
-export interface PictureData{
-  public_id: string,
-  asset_id: string,
-  secure_url: string,
+export interface PictureData {
+  public_id: string;
+  asset_id: string;
+  secure_url: string;
 }
 
 export interface UpdateUserParams {
@@ -40,3 +40,15 @@ export interface UpdateUserParams {
   bankCode?: string;
   accountNumber?: string;
 }
+export const selectOptions = {
+  id: true,
+  email: true,
+  name: true,
+  phone: true,
+  userType: true,
+  hasDisplayPicture: true,
+  displayPicture: { select: { secure_url: true } },
+  businessName: true,
+  bankCode: true,
+  accountNumber: true,
+};

@@ -79,6 +79,9 @@ export class UserController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
+    console.log(user.userId);
+    console.log(id);
+
     if (user.userId !== id) {
       throw new UnauthorizedException(
         'You are not authorized to update this user',
