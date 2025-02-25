@@ -4,7 +4,6 @@ import {
   Controller,
   Param,
   Patch,
-  Post,
   Put,
   UnauthorizedException,
   UploadedFile,
@@ -32,9 +31,10 @@ export class UserController {
     private readonly userService: UserService,
   ) {}
 
+  // Upload Profile Picture
   @ApiBearerAuth()
   @Roles(UserType.SELLER, UserType.BUYER)
-  @Patch('/upload/profile-picture')
+  @Patch('/upload/picture')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('profilePicture'))
   async uploadProfilePicture(
@@ -60,6 +60,7 @@ export class UserController {
     return this.userService.uploadProfilePicture(user, picture);
   }
 
+  // Update Profile Details
   @Put('/update/:id')
   @ApiBearerAuth()
   @ApiOperation({
@@ -78,9 +79,10 @@ export class UserController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-
     if (user.userId !== id) {
-      throw new UnauthorizedException('You are not authorized to update this user');
+      throw new UnauthorizedException(
+        'You are not authorized to update this user',
+      );
     }
     return this.userService.updateUser(id, updateUserDto);
   }

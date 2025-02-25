@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
 import { UpdateUserParams, UserEntity } from './interface/user.interface';
@@ -67,7 +71,7 @@ export class UserService {
       select: { ...selectOptions, subaccountCode: true, businessName: true },
     });
 
-    if(!user) {
+    if (!user) {
       throw new NotFoundException('User not found!');
     }
 
@@ -78,7 +82,9 @@ export class UserService {
 
       if (existingPhoneNumber) {
         if (existingPhoneNumber.phone && user.phone !== body.phone) {
-          throw new BadRequestException('Phone number is tied to another account!');
+          throw new BadRequestException(
+            'Phone number is tied to another account!',
+          );
         }
       }
     }
@@ -95,10 +101,13 @@ export class UserService {
         description: `Seller account for ${body.businessName ?? user.businessName}`,
         bank_code: body.bankCode,
         account_number: body.accountNumber,
-      }
+      };
 
       // Update Paystack subaccount to include new bank details
-      await this.paymentService.updateSubaccount(user.subaccountCode, updateSubaccountBody);
+      await this.paymentService.updateSubaccount(
+        user.subaccountCode,
+        updateSubaccountBody,
+      );
     }
 
     // Update user details
